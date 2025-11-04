@@ -1,7 +1,8 @@
-import "./App.css";
+import React from "react";
+import CalendarPage from "./pages/CalendarPage";
 
 function App() {
-  return <div className="App"></div>;
+  return <CalendarPage />;
 }
 
 export default App;
