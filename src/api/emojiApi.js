@@ -1,0 +1,17 @@
+export const emojiList = [
+  { id: 1, name: "heart", Image: "/emojis/heart.png" },
+  { id: 2, name: "love", Image: "/emojis/love.png" },
+  { id: 3, name: "happy", Image: "/emojis/happy.png" },
+  { id: 4, name: "calm", Image: "/emojis/calm.png" },
+  { id: 5, name: "laugh", Image: "/emojis/laugh.png" },
+  { id: 6, name: "surprised", Image: "/emojis/surprised.png" },
+  { id: 7, name: "joy", Image: "/emojis/joy.png" },
+  { id: 8, name: "down", Image: "/emojis/down.png" },
+  { id: 9, name: "confused", Image: "/emojis/confused.png" },
+  { id: 10, name: "sad", Image: "/emojis/sad.png" },
+  { id: 11, name: "dizzy", Image: "/emojis/dizzy.png" },
+  { id: 12, name: "cry", Image: "/emojis/cry.png" },
+  { id: 13, name: "gasp", Image: "/emojis/gasp.png" },
+  { id: 14, name: "sick", Image: "/emojis/sick.png" },
+  { id: 14, name: "anger", Image: "/emojis/anger.png" },
+];
