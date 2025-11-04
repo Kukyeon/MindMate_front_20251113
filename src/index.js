@@ -6,3 +6,4 @@ import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);
+//임시 수정 브런치 테스트
