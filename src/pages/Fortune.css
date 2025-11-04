@@ -1,0 +1,50 @@
+.fortune-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #d8b4fe, #fbcfe8);
+  padding: 20px;
+}
+
+.fortune-card {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.fortune-card h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #7c3aed;
+}
+
+.fortune-card button {
+  background-color: #7c3aed;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 9999px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: 0.3s;
+}
+
+.fortune-card button:hover {
+  background-color: #6d28d9;
+}
+
+.fortune-text {
+  background-color: #f3e8ff;
+  padding: 15px;
+  border-radius: 15px;
+  min-height: 120px;
+  text-align: left;
+  white-space: pre-line; /* \n 줄바꿈 적용 */
+  color: #4c1d95;
+}
