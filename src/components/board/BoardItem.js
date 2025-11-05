@@ -13,7 +13,7 @@ const BoardItem = ({ board, index }) => {
         {board.commentCount > 0 && <span>[{board.commentCount}]</span>}
       </td>
       <td>{board.writer}</td>
-      <td>{board.views}</td>
+      <td>{board.viewCount}</td>
       <td>{new Date(board.createdAt).toLocaleDateString()}</td>
     </tr>
   );

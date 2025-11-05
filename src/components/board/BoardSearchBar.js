@@ -1,11 +1,15 @@
 import { useState } from "react";
 
-const BoardSearchBar = ({ keyword, onSearch }) => {
+const BoardSearchBar = ({ keyword = "", onSearch }) => {
   const [input, setInput] = useState(keyword);
+
+  useEffect(() => {
+    setInput(keyword);
+  }, [keyword]);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    onSearch(input);
+    onSearch(input.trim());
   };
 
   return (

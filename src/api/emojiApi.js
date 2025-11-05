@@ -22,7 +22,7 @@ export const toggleBoardEmoji = (boardId, data) =>
   api.post(`/boards/${boardId}/emoji`, data);
 
 export const toggleCommentEmoji = (commentId, data) =>
-  api.post(`/comment/${commentId}/emoji`, data);
+  api.post(`/comments/${commentId}/emoji`, data);
 
 export const getEmojiCounts = (id, type) =>
   api.get(`/emoji/${type}/${id}/count`);

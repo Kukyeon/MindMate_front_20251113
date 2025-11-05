@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import BoardSearchBar from "../Components/BoardSearchBar";
+
 import { useNavigate } from "react-router-dom";
 import { fetchBoards } from "../api/boardApi";
 import BoardList from "../Components/BoardList";

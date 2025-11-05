@@ -7,24 +7,27 @@ export const fetchComments = async (boardId) => {
 };
 
 // 댓글 작성
-export const postComment = async (data) => {
-  const res = await api.post(`/comments`, data);
+export const postComment = async (commentData) => {
+  const res = await api.post(`/comments`, commentData);
   return res.data;
 };
 
 // 댓글 수정
-export const updateComment = async (id, content) => {
-  const res = await api.put(`/comments/${id}`, { content });
+export const updateComment = async (id, data) => {
+  const res = await api.put(`/comments/${id}`, data);
   return res.data;
 };
 
 // 댓글 삭제
-export const deleteComment = async (id) => {
-  await api.delete(`/comments/${id}`);
+export const deleteComment = async (commentId) => {
+  await api.delete(`/comments/${commentId}`);
 };
 
 // 댓글 이모지
-export const toggleCommentEmoji = async (commentId, emojiData) => {
-  const res = await api.post(`/comments/${commentId}/emoji`, emojiData);
-  return res.data;
-};
+// export const toggleCommentEmoji = async (commentId, emojiType, accountId) => {
+//   const res = await api.post(`/comments/${commentId}/emoji`, {
+//     accountId,
+//     emojiType,
+//   });
+//   return res.data;
+// };

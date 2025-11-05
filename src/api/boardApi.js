@@ -29,8 +29,8 @@ export const deleteBoard = async (id) => {
   await api.delete(`/boards/${id}`);
 };
 
-// 게시글 이모지
-export const toggleBoardEmoji = async (boardId, emojiData) => {
-  const res = await api.post(`/boards/${boardId}/emoji`, emojiData);
-  return res.data;
-};
+// // 게시글 이모지
+// export const toggleBoardEmoji = async (boardId, emojiData) => {
+//   const res = await api.post(`/boards/${boardId}/emoji`, emojiData);
+//   return res.data;
+// };

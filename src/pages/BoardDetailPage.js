@@ -5,7 +5,7 @@ import BoardContent from "../components/detail/BoardContent";
 import CommentForm from "../components/comment/CommentForm";
 import CommentList from "../components/comment/CommentList";
 
-const BoardDetailPage = () => {
+const BoardDetailPage = ({ accountId }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [board, setBoard] = useState(null);
@@ -26,15 +26,23 @@ const BoardDetailPage = () => {
     }
   };
 
+  const handleEdit = () => {
+    navigate(`/board/edit/${id}`);
+  };
+
   if (!board) return <div>로딩중...</div>;
 
   return (
     <div>
       <BoardContent board={board} />
-      <button onClick={() => navigate(`/board/edit/${id}`)}> 수정 </button>
+      <button onClick={handleEdit}> 수정 </button>
       <button onClick={handleDelete}> 삭제 </button>
 
-      <CommentForm boardId={id} onCommentAdded={loadBoard} />
+      <CommentForm
+        accountId={accountId}
+        boardId={id}
+        onCommentAdded={loadBoard}
+      />
       <CommentList boardId={id} />
     </div>
   );

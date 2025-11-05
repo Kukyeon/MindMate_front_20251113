@@ -1,3 +1,6 @@
+import EmojiSelector from "./EmojiSelector";
+import HashtagList from "./HashtagList";
+
 const BoardContent = ({ board }) => {
   return (
     <div>

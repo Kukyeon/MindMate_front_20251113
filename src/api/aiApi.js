@@ -3,7 +3,7 @@ import api from "./axiosConfig";
 export const generateHashtags = async (boardId) => {
   try {
     const response = await api.post("/ai/tags", { boardId });
-    const test = response.data.aicomment;
+    const text = response.data.aicomment;
     const hashtags = text
       .split(" ")
       .filter((tag) => tag.startsWith("#"))
