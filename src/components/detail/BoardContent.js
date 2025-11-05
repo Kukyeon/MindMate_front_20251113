@@ -2,7 +2,7 @@ const BoardContent = ({ board }) => {
   return (
     <div>
       <h2>{board.title}</h2>
-      <p>작성자: {board.account.username}</p>
+      <p>작성자: {board.writer}</p>
       <p>조회수: {board.viewCount}</p>
       <div>{board.content}</div>
 

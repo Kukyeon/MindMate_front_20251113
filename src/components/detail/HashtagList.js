@@ -1,10 +1,9 @@
 const HashtagList = ({ hashtags }) => {
-  const tagArray =
-    typeof hashtags === "string" ? hashtags.split(" ") : hashtags;
+  if (!hashtags || hashtags.length === 0) return null;
   return (
     <div>
-      {tagArray.map((tag, idx) => (
-        <span key={idx}>{tag.trim()}</span>
+      {hashtags.map((tag, idx) => (
+        <span key={idx}>{tag}</span>
       ))}
     </div>
   );

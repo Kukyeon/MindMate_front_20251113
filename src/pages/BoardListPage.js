@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchBoards } from "../api/boardApi";
 import BoardList from "../Components/BoardList";
 import BoardSearchBar from "../components/board/BoardSearchBar";
+import BoardPagination from "../components/board/BoardPagination";
 
 const BoardListPage = () => {
   const [boards, setBoards] = useState([]);
