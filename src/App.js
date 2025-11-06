@@ -1,3 +1,4 @@
+
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import BoardListPage from "./pages/BoardListPage";
@@ -5,13 +6,26 @@ import BoardDetailPage from "./pages/BoardDetailPage";
 import BoardEditPage from "./pages/BoardEditPage";
 import BoardWritePage from "./pages/BoardWritePage";
 import CommentEditForm from "./components/comment/CommentEditForm";
+
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import DiaryDetail from "./pages/DiaryDetail";
+import DiaryWrite from "./pages/DiaryWrite";
+import Calendar from "./pages/Calendar";
+import DiaryEditor from "./pages/DiaryEditor";
+import FakeLogin from "./pages/FakeLogin";
+
 import Fortune from "./component/Fortune.js";
 import DailyTest from "./component/DailyTest.js";
 import Daily from "./pages/Daily.js";
 
-function App() {
+function PrivateRoute({ children }) {
+  const token = localStorage.getItem("accessToken");
+  return token ? children : <Navigate to="/login" />;
+}
+
+export default function App() {
   return (
-    <div className="App">
+    <BrowserRouter>
       <Routes>
         <Route path="/fortune" element={<Fortune />}></Route>
         <Route path="/dailyTest" element={<DailyTest />}></Route>
@@ -36,9 +50,45 @@ function App() {
 
         {/* 잘못된 경로 → 목록으로 리다이렉트 */}
         <Route path="*" element={<Navigate to="/boards" />} />
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<FakeLogin />} />
+        <Route
+          path="/diary"
+          element={
+            <PrivateRoute>
+              <Calendar />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/diary/calendar"
+          element={
+            <PrivateRoute>
+              <Calendar />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/diary/:id"
+          element={
+            <PrivateRoute>
+              <DiaryDetail />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/diary/write"
+          element={
+            <PrivateRoute>
+              <DiaryWrite />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/diary/edit/:id" element={<DiaryEditor />} />
       </Routes>
-    </div>
+    </BrowserRouter>
   );
 }
-
-export default App;
