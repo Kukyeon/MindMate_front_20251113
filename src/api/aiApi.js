@@ -2,15 +2,15 @@ import api from "./axiosConfig";
 
 export const generateHashtags = async (boardId) => {
   try {
-    const response = await api.post("/ai/tags", { boardId });
-    const text = response.data.aicomment;
-    const hashtags = text
+    const res = await api.post(`/ai/tags`, { boardId });
+    const aiText = res.data.aicomment || res.data.text || "";
+    const hashtags = aiText
       .split(" ")
-      .filter((tag) => tag.startsWith("#"))
+      .filter((word) => word.startsWith("#"))
       .map((tag) => tag.trim());
     return { hashtags };
-  } catch (error) {
-    console.error("해시태그 생성 실패:", error);
+  } catch (err) {
+    console.error("AI 해시태그 생성 실패:", err);
     return { hashtags: [] };
   }
 };

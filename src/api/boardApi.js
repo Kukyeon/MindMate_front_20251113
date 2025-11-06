@@ -14,14 +14,20 @@ export const fetchBoardDetail = async (id) => {
 };
 
 // 게시글 작성
-export const createBoard = async (data) => {
-  const res = await api.post(`/boards`, data);
+export const createBoard = async ({ title, content, accountId }) => {
+  const res = await api.post(`/boards?accountId=${accountId}`, {
+    title,
+    content,
+  });
   return res.data;
 };
 
 // 게시글 수정
-export const updateBoard = async (id, data) => {
-  const res = await api.put(`/boards/${id}`, data);
+export const updateBoard = async (id, { title, content, accountId }) => {
+  const res = await api.put(`/boards/${id}?accountId=${accountId}`, {
+    title,
+    content,
+  });
   return res.data;
 };
 

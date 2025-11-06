@@ -18,11 +18,37 @@ export const emojiList = [
   { id: 15, name: "anger", image: "/emojis/anger.png" },
 ];
 
-export const toggleBoardEmoji = (boardId, data) =>
-  api.post(`/boards/${boardId}/emoji`, data);
+//  게시글 이모지 토글
+export const toggleBoardEmoji = async (boardId, data) => {
+  return await api.post(`/emoji/toggle`, {
+    boardId,
+    accountId: data.accountId, // 필요 시 전달
+    type: data.type,
+    imageUrl: data.imageUrl,
+  });
+};
 
-export const toggleCommentEmoji = (commentId, data) =>
-  api.post(`/comments/${commentId}/emoji`, data);
+//  댓글 이모지 토글
+export const toggleCommentEmoji = async (commentId, data) => {
+  return await api.post(`/emoji/toggle`, {
+    commentId,
+    accountId: data.accountId,
+    type: data.type,
+    imageUrl: data.imageUrl,
+  });
+};
 
-export const getEmojiCounts = (id, type) =>
-  api.get(`/emoji/${type}/${id}/count`);
+//  게시글/댓글 이모지 카운트 조회
+export const getEmojiCounts = async (id, targetType = "board") => {
+  const endpoint =
+    targetType === "board" ? `/emoji/board/${id}` : `/emoji/comment/${id}`;
+  const res = await api.get(endpoint);
+
+  // 백엔드 리스트 형태를 { type: count } 구조로 변환
+  const counts = {};
+  res.data.forEach((emoji) => {
+    counts[emoji.type] = emoji.count;
+  });
+
+  return counts;
+};
