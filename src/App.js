@@ -51,7 +51,7 @@ export default function App() {
         {/* 잘못된 경로 → 목록으로 리다이렉트 */}
         <Route path="*" element={<Navigate to="/boards" />} />
         <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<FakeLogin />} />
+         <Route path="/login" element={<FakeLogin />} />
         <Route
           path="/diary"
           element={
@@ -71,10 +71,19 @@ export default function App() {
         />
 
         <Route
-          path="/diary/:id"
+          path="/diary/date/:date"
           element={
             <PrivateRoute>
               <DiaryDetail />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/diary/edit/:date"
+          element={
+            <PrivateRoute>
+              <DiaryEditor />
             </PrivateRoute>
           }
         />
@@ -87,7 +96,6 @@ export default function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/diary/edit/:id" element={<DiaryEditor />} />
       </Routes>
     </BrowserRouter>
   );
