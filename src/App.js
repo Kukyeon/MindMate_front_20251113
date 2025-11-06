@@ -1,5 +1,5 @@
 
-import { Navigate, Route, Routes } from "react-router-dom";
+
 import "./App.css";
 import BoardListPage from "./pages/BoardListPage";
 import BoardDetailPage from "./pages/BoardDetailPage";
