@@ -1,46 +1,37 @@
 import { useEffect, useState } from "react";
+// ⬇️ useLocation 대신 useParams를 import 합니다.
 import { useParams, useNavigate } from "react-router-dom";
+import { fetchDiaryByDate } from "../api/diaryService";
 
-function DiaryDetail() {
-  const { id } = useParams(); // URL에서 일기 ID 가져오기 (예: /diary/3)
+export default function DiaryDetail() {
+  // ⬇️ useLocation() 대신 useParams()를 사용합니다.
+  const { date } = useParams(); // URL의 날짜(예: 2025-11-05)를 가져옵니다.
   const [diary, setDiary] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchDiary = async () => {
+    // ⬇️ 이제 date 변수에 URL에서 가져온 날짜가 정상적으로 들어옵니다.
+    if (!date) return;
+
+    const loadDiary = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/diary/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // JWT 토큰 사용
-          },
-        });
-        if (!response.ok) throw new Error("일기 조회 실패");
-        const data = await response.json();
-        setDiary(data);
-      } catch (error) {
-        console.error("❌ fetchDiary 오류:", error);
+        const res = await fetchDiaryByDate(date);
+        setDiary(res.data); // ⬅️ API 호출 성공
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          alert("해당 날짜에 작성된 일기가 없습니다.");
+          navigate("/diary/write", { state: { date } });
+        } else {
+          // 500 에러 등 (백엔드 오류가 아직 남아있다면 여기서 걸림)
+          console.error("❌ fetchDiary 오류:", err);
+        }
       }
     };
-    fetchDiary();
-  }, [id]);
 
-  const handleDelete = async () => {
-    if (!window.confirm("정말 삭제하시겠습니까?")) return;
-    try {
-      const response = await fetch(`http://localhost:8080/diary/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (!response.ok) throw new Error("삭제 실패");
-      alert("삭제되었습니다.");
-      navigate("/diary"); // 삭제 후 목록 페이지로 이동
-    } catch (error) {
-      console.error("❌ handleDelete 오류:", error);
-    }
-  };
+    loadDiary();
+  }, [date, navigate]); // ⬅️ 의존성 배열에 navigate 추가
 
+  // ⬇️ diary state에 API 응답 데이터가 채워지면 "로딩 중..."이 사라집니다.
   if (!diary) return <div>로딩 중...</div>;
 
   return (
@@ -50,33 +41,21 @@ function DiaryDetail() {
         <strong>작성자:</strong> {diary.username}
       </p>
       <p>
-        <strong>작성일:</strong> {diary.createdate}
+        <strong>작성일:</strong> {diary.date}
       </p>
-      {diary.emoji && (
-        <p>
-          <strong>이모지:</strong> {diary.emoji.name}
+      <p>
+        <strong>내용:</strong> {diary.content}
+      </p>
+      {/* ⬇️ AI 코멘트가 있다면 표시 (DiaryDto에 aiComment 필드 추가 후) */}
+      {diary.aiComment && (
+        <p style={{ fontStyle: "italic", color: "gray" }}>
+          <strong>AI 코멘트:</strong> {diary.aiComment}
         </p>
       )}
-      <p>
-        <strong>내용:</strong>
-      </p>
-      <p>{diary.content}</p>
 
-      {diary.aiComment && (
-        <>
-          <hr />
-          <p>
-            <strong>AI 코멘트:</strong>
-          </p>
-          <p>{diary.aiComment}</p>
-        </>
-      )}
-
-      <button onClick={() => navigate(`/diary/edit/${id}`)}>수정</button>
-      <button onClick={handleDelete}>삭제</button>
+      {/* ⬇️ 수정 버튼은 이미 URL 파라미터 방식이라 잘 동작합니다. */}
+      <button onClick={() => navigate(`/diary/edit/${date}`)}>수정</button>
       <button onClick={() => navigate("/diary")}>목록으로</button>
     </div>
   );
 }
-
-export default DiaryDetail;
