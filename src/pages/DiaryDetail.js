@@ -46,6 +46,18 @@ export default function DiaryDetail() {
       <p>
         <strong>내용:</strong> {diary.content}
       </p>
+      {/* ⬇️ 이모지가 있을 때만 렌더링 ⬇️ */}
+      {diary.emoji && (
+        <p>
+          <strong>감정:</strong>
+          <img
+            src={diary.emoji.imageUrl} /* ⬅️ id 대신 imageUrl 사용 */
+            alt={diary.emoji.type}      /* ⬅️ 이미지 설명 (접근성) */
+            width="30"                  /* ⬅️ 이미지 크기 (조절 가능) */
+            style={{ verticalAlign: "middle", marginLeft: "5px" }}
+          />
+        </p>
+      )}
       {/* ⬇️ AI 코멘트가 있다면 표시 (DiaryDto에 aiComment 필드 추가 후) */}
       {diary.aiComment && (
         <p style={{ fontStyle: "italic", color: "gray" }}>

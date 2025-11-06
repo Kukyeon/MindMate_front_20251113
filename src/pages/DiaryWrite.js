@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createDiary, fetchDiaryByDate } from "../api/diaryService";
-// import DiaryEmojiPicker from "../components/DiaryEmojiPicker"; // 이모지 피커 (이전 단계에서 추가)
+import DiaryEmojiPicker from "../component/DiaryEmojiPicker"; // 이모지 피커 (이전 단계에서 추가)
 
 export default function DiaryWritePage() {
   const location = useLocation();
@@ -40,7 +40,7 @@ export default function DiaryWritePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!date) return alert("날짜를 선택하세요.");
-
+    if (!emoji) return alert("감정을 선택해 주세요")
     const username = localStorage.getItem("username");
 
     try {
@@ -81,10 +81,10 @@ export default function DiaryWritePage() {
           onChange={(e) => setContent(e.target.value)}
         />
 
-        {/* <DiaryEmojiPicker 
+        <DiaryEmojiPicker 
           selectedEmoji={emoji} 
           onSelectEmoji={setEmoji} 
-        /> */}
+        />
 
         <button type="submit">저장</button>
       </form>

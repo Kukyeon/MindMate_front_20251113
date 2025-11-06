@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import DiaryEmojiPicker from "../component/DiaryEmojiPicker";
 
 function DiaryEditor() {
   const { date } = useParams(); 
+  const [emoji, setEmoji] = useState(null); 
   const navigate = useNavigate();
   const [diary, setDiary] = useState({
     title: "",
@@ -36,6 +38,8 @@ function DiaryEditor() {
   // 2. 수정 저장 처리 (주소 수정)
   const handleSave = async (e) => {
     e.preventDefault();
+    if (!date) return alert("날짜를 선택하세요.");
+    if (!emoji) return alert("감정을 선택해 주세요")
     try {
       // ⬇️ [수정됨] 경로 파라미터 대신 쿼리 파라미터 사용
       const response = await fetch(
@@ -92,7 +96,7 @@ function DiaryEditor() {
             required
           />
         </div>
-        <div>
+{/*         <div>
           <label>이모지</label>
           <input
             type="text"
@@ -105,7 +109,11 @@ function DiaryEditor() {
               })
             }
           />
-        </div>
+        </div> */}
+        <DiaryEmojiPicker 
+          selectedEmoji={emoji} 
+          onSelectEmoji={setEmoji} 
+        />
         <button type="submit">저장</button>
         <button type="button" onClick={() => navigate(`/diary/date/${date}`)}>
           취소
