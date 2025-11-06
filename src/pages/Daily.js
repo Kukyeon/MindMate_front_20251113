@@ -1,6 +1,6 @@
 import { useState } from "react";
-import DailyTest from "../component/DailyTest";
-import Fortune from "../component/Fortune";
+import DailyTest from "../components/DailyTest";
+import Fortune from "../components/Fortune";
 import "./Daily.css";
 
 export default function Daily() {
