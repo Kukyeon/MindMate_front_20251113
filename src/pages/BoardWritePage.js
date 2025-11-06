@@ -10,6 +10,9 @@ const BoardWritePage = ({ accountId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const accountId = localStorage.getItem("accountId") || 1;
+
     try {
       // 게시글 저장
       const savedBoard = await createBoard({
