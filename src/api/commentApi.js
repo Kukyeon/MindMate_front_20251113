@@ -7,8 +7,8 @@ export const fetchComments = async (boardId) => {
 };
 
 // 댓글 작성
-export const postComment = async (commentData) => {
-  const res = await api.post(`/comments`, commentData);
+export const postComment = async ({ boardId, content, accountId }) => {
+  const res = await api.post(`/comments`, { boardId, content, accountId });
   return res.data;
 };
 

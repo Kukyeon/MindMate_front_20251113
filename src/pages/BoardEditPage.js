@@ -24,9 +24,12 @@ const BoardEditPage = ({ accountId }) => {
     try {
       await updateBoard(id, { title, content, accountId });
       await generateHashtags(id);
+      alert("게시글이 수정되었습니다!");
+
       navigate(`/board/${id}`);
     } catch (err) {
       console.error("게시글 수정 실패:", err);
+      alert("수정 중 오류가 발생했습니다.");
     }
   };
 

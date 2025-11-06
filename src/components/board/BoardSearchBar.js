@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const BoardSearchBar = ({ keyword = "", onSearch }) => {
   const [input, setInput] = useState(keyword);
