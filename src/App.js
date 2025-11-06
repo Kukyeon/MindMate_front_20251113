@@ -1,16 +1,21 @@
-<<<<<<< HEAD
-import { Navigate, Route, BrowserRouter, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import BoardListPage from "./pages/BoardListPage";
 import BoardDetailPage from "./pages/BoardDetailPage";
 import BoardEditPage from "./pages/BoardEditPage";
 import BoardWritePage from "./pages/BoardWritePage";
 import CommentEditForm from "./components/comment/CommentEditForm";
+import Fortune from "./component/Fortune.js";
+import DailyTest from "./component/DailyTest.js";
+import Daily from "./pages/Daily.js";
 
 function App() {
   return (
-    <BrowserRouter>
+    <div className="App">
       <Routes>
+        <Route path="/fortune" element={<Fortune />}></Route>
+        <Route path="/dailyTest" element={<DailyTest />}></Route>
+        <Route path="/daily" element={<Daily />}></Route>
         {/* 기본 루트 → 게시판 목록 */}
         <Route path="/" element={<Navigate to="/boards" />} />
 
@@ -32,24 +37,7 @@ function App() {
         {/* 잘못된 경로 → 목록으로 리다이렉트 */}
         <Route path="*" element={<Navigate to="/boards" />} />
       </Routes>
-    </BrowserRouter>
-=======
-import "./App.css";
-import { Route, Routes } from "react-router-dom";
-import Fortune from "./component/Fortune.js";
-import DailyTest from "./component/DailyTest.js";
-import Daily from "./pages/Daily.js";
-
-function App() {
-  return (
-    <div className="App">
-      <Routes>
-        <Route path="/fortune" element={<Fortune />}></Route>
-        <Route path="/dailyTest" element={<DailyTest />}></Route>
-        <Route path="/daily" element={<Daily />}></Route>
-      </Routes>
     </div>
->>>>>>> 311cd786618e3b1b0b2e57f0def8971ec00210c6
   );
 }
 

@@ -8,16 +8,16 @@ import {
 
 const EmojiSelector = ({ boardId, commentId }) => {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(null); // { name, image } 저장
+  const [selected, setSelected] = useState(null); // { type, image } 저장
   const [emojiCounts, setEmojiCounts] = useState({});
 
-  //  이모지 카운트 불러오기
+  // ✅ 이모지 카운트 불러오기
   useEffect(() => {
     const loadCounts = async () => {
       try {
-        const type = boardId ? "board" : "comment";
+        const targetType = boardId ? "board" : "comment";
         const id = boardId || commentId;
-        const counts = await getEmojiCounts(id, type);
+        const counts = await getEmojiCounts(id, targetType);
         setEmojiCounts(counts);
       } catch (err) {
         console.error("이모지 카운트 로드 실패:", err);
@@ -26,19 +26,19 @@ const EmojiSelector = ({ boardId, commentId }) => {
     loadCounts();
   }, [boardId, commentId]);
 
-  // 이모지 클릭 핸들러
+  // ✅ 이모지 클릭 핸들러
   const handleSelectEmoji = async (emoji) => {
-    const name = emoji.name;
+    const type = emoji.type;
     setOpen(false);
 
-    // 낙관적 UI 업데이트
+    // 낙관적 UI 업데이트 (먼저 +1)
     setEmojiCounts((prev) => ({
       ...prev,
-      [name]: (prev[name] || 0) + 1,
+      [type]: (prev[type] || 0) + 1,
     }));
 
     try {
-      const data = { name };
+      const data = { type, imageUrl: emoji.image };
       if (boardId) await toggleBoardEmoji(boardId, data);
       if (commentId) await toggleCommentEmoji(commentId, data);
 
@@ -50,28 +50,30 @@ const EmojiSelector = ({ boardId, commentId }) => {
       // 실패 시 되돌림
       setEmojiCounts((prev) => ({
         ...prev,
-        [name]: Math.max((prev[name] || 1) - 1, 0),
+        [type]: Math.max((prev[type] || 1) - 1, 0),
       }));
     }
   };
 
   return (
     <div>
+      {/* 선택된 이모지 or 기본표시 */}
       <button onClick={() => setOpen(!open)}>
         {selected ? (
-          <img src={selected.image} alt={selected.name} width="20" />
+          <img src={selected.image} alt={selected.type} width="20" />
         ) : (
           "😊"
         )}
       </button>
 
+      {/* 이모지 목록 */}
       {open && (
         <div>
           {emojiList.map((emoji) => (
             <button key={emoji.id} onClick={() => handleSelectEmoji(emoji)}>
-              <img src={emoji.image} alt={emoji.name} width="20" />
-              {emojiCounts[emoji.name] > 0 && (
-                <span> {emojiCounts[emoji.name]}</span>
+              <img src={emoji.image} alt={emoji.type} width="20" />
+              {emojiCounts[emoji.type] > 0 && (
+                <span> {emojiCounts[emoji.type]}</span>
               )}
             </button>
           ))}
