@@ -7,7 +7,7 @@ const Fortune = () => {
 
   const todayLuck = async () => {
     try {
-      const res = await api.post("/ai/fortune", { content: birth });
+      const res = await api.post("/api/user/fortune");
       if (res.data) {
         console.log(res.data);
         setFortune(res.data.aicomment);
