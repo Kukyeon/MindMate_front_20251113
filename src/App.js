@@ -1,5 +1,3 @@
-
-
 import "./App.css";
 import BoardListPage from "./pages/BoardListPage";
 import BoardDetailPage from "./pages/BoardDetailPage";
