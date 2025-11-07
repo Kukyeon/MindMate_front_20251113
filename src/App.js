@@ -1,4 +1,5 @@
-
+import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import "./App.css";
 import BoardListPage from "./pages/BoardListPage";
@@ -7,16 +8,18 @@ import BoardEditPage from "./pages/BoardEditPage";
 import BoardWritePage from "./pages/BoardWritePage";
 import CommentEditForm from "./components/comment/CommentEditForm";
 
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import DiaryDetail from "./pages/DiaryDetail";
 import DiaryWrite from "./pages/DiaryWrite";
 import Calendar from "./pages/Calendar";
 import DiaryEditor from "./pages/DiaryEditor";
+
+import SignupPage from "./pages/SignupPage.js";
 import FakeLogin from "./pages/FakeLogin";
 
 import Fortune from "./component/Fortune.js";
 import DailyTest from "./component/DailyTest.js";
 import Daily from "./pages/Daily.js";
+import LoginPage from "./pages/LoginPage.js";
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("accessToken");
@@ -24,14 +27,24 @@ function PrivateRoute({ children }) {
 }
 
 export default function App() {
+  const [accessToken, setAccessToken] = useState(
+    "" || localStorage.getItem("accessToken")
+  );
+
+  const [refreshToken, setRefreshToken] = useState(
+    "" || localStorage.getItem("refreshToken")
+  );
+
   return (
-    <BrowserRouter>
+    <>
+      {/* <BrowserRouter> */}
       <Routes>
         <Route path="/fortune" element={<Fortune />}></Route>
         <Route path="/dailyTest" element={<DailyTest />}></Route>
         <Route path="/daily" element={<Daily />}></Route>
         {/* 기본 루트 → 게시판 목록 */}
-        <Route path="/" element={<Navigate to="/boards" />} />
+        {/* <Route path="/" element={<Navigate to="/boards" />} /> */}
+        <Route path="/" element={<Navigate to="/diary" />} />
 
         {/* 게시판 목록 */}
         <Route path="/boards" element={<BoardListPage />} />
@@ -51,7 +64,11 @@ export default function App() {
         {/* 잘못된 경로 → 목록으로 리다이렉트 */}
         <Route path="*" element={<Navigate to="/boards" />} />
         <Route path="/" element={<Navigate to="/login" />} />
-         <Route path="/login" element={<FakeLogin />} />
+
+
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+
         <Route
           path="/diary"
           element={
@@ -97,6 +114,7 @@ export default function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+      {/* </BrowserRouter> */}
+    </>
   );
 }
