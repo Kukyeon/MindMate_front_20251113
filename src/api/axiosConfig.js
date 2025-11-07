@@ -86,7 +86,9 @@ api.interceptors.response.use(
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
 
+
         window.location.href = LOGIN_PATH; // 로그인 페이지로 이동
+
 
         return Promise.reject(err);
       } finally {

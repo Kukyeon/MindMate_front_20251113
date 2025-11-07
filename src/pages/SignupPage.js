@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
+
 import { isDisabled } from "@testing-library/user-event/dist/utils";
+
 const SignupPage = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
@@ -43,7 +45,9 @@ const SignupPage = () => {
     e.preventDefault();
     setErrors({});
     try {
+
       const res = await api.post("/api/auth/signup", { ...state });
+
       localStorage.setItem("accessToken", res.data.accessToken);
       localStorage.setItem("refreshToken", res.data.refreshToken);
       navigate("/");
@@ -86,9 +90,11 @@ const SignupPage = () => {
         <button type="button">인증번호 전송</button>
         <input type="text" name="code" placeholder="인증번호 입력" />
         <hr />
+
         <button type="submit" disabled={isUsername ? true : false}>
           회원가입
         </button>
+
       </form>
     </div>
   );

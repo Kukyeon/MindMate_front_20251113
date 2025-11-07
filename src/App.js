@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import {
   useNavigate,
@@ -6,6 +7,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+
 
 import "./App.css";
 import BoardListPage from "./pages/BoardListPage";
@@ -25,10 +27,14 @@ import FakeLogin from "./pages/FakeLogin";
 import Fortune from "./component/Fortune.js";
 import DailyTest from "./component/DailyTest.js";
 import Daily from "./pages/Daily.js";
+
 import LoginPage from "./pages/LoginPage.js";
 import api from "./api/axiosConfig.js";
 
 import { usePingOnNavigate, checkAuth } from "./api/pingApi.js";
+
+//import StatsPage from './pages/StatsPage'; // ⬅️ [추가]
+
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("accessToken");
