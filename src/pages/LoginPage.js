@@ -27,8 +27,8 @@ const LoginPage = () => {
       if (err.response && err.response.status === 400) {
         // setErrors(err.response.data);
       } else {
-        console.error("회원가입 실패");
-        alert("회원가입 실패");
+        console.error("로그인 실패");
+        alert("로그인 실패");
       }
     }
   };

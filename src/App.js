@@ -37,84 +37,83 @@ export default function App() {
 
   return (
     <>
-      {/* <BrowserRouter> */}
-      <Routes>
-        <Route path="/fortune" element={<Fortune />}></Route>
-        <Route path="/dailyTest" element={<DailyTest />}></Route>
-        <Route path="/daily" element={<Daily />}></Route>
-        {/* 기본 루트 → 게시판 목록 */}
-        {/* <Route path="/" element={<Navigate to="/boards" />} /> */}
-        <Route path="/" element={<Navigate to="/diary" />} />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/fortune" element={<Fortune />}></Route>
+          <Route path="/dailyTest" element={<DailyTest />}></Route>
+          <Route path="/daily" element={<Daily />}></Route>
+          {/* 기본 루트 → 게시판 목록 */}
+          {/* <Route path="/" element={<Navigate to="/boards" />} /> */}
+          <Route path="/" element={<Navigate to="/diary" />} />
 
-        {/* 게시판 목록 */}
-        <Route path="/boards" element={<BoardListPage />} />
+          {/* 게시판 목록 */}
+          <Route path="/boards" element={<BoardListPage />} />
 
-        {/* 게시글 작성 */}
-        <Route path="/board/write" element={<BoardWritePage />} />
+          {/* 게시글 작성 */}
+          <Route path="/board/write" element={<BoardWritePage />} />
 
-        {/* 게시글 상세 */}
-        <Route path="/board/:id" element={<BoardDetailPage />} />
+          {/* 게시글 상세 */}
+          <Route path="/board/:id" element={<BoardDetailPage />} />
 
-        {/* 게시글 수정 */}
-        <Route path="/board/edit/:id" element={<BoardEditPage />} />
+          {/* 게시글 수정 */}
+          <Route path="/board/edit/:id" element={<BoardEditPage />} />
 
-        {/* 댓글 수정 (분리된 수정 페이지) */}
-        <Route path="/comment/edit/:id" element={<CommentEditForm />} />
+          {/* 댓글 수정 (분리된 수정 페이지) */}
+          <Route path="/comment/edit/:id" element={<CommentEditForm />} />
 
-        {/* 잘못된 경로 → 목록으로 리다이렉트 */}
-        <Route path="*" element={<Navigate to="/boards" />} />
-        <Route path="/" element={<Navigate to="/login" />} />
+          {/* 잘못된 경로 → 목록으로 리다이렉트 */}
+          <Route path="*" element={<Navigate to="/boards" />} />
+          <Route path="/" element={<Navigate to="/login" />} />
 
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
 
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+          <Route
+            path="/diary"
+            element={
+              <PrivateRoute>
+                <Calendar />
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/diary"
-          element={
-            <PrivateRoute>
-              <Calendar />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/diary/calendar"
+            element={
+              <PrivateRoute>
+                <Calendar />
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/diary/calendar"
-          element={
-            <PrivateRoute>
-              <Calendar />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/diary/date/:date"
+            element={
+              <PrivateRoute>
+                <DiaryDetail />
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/diary/date/:date"
-          element={
-            <PrivateRoute>
-              <DiaryDetail />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/diary/edit/:date"
+            element={
+              <PrivateRoute>
+                <DiaryEditor />
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/diary/edit/:date"
-          element={
-            <PrivateRoute>
-              <DiaryEditor />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/diary/write"
-          element={
-            <PrivateRoute>
-              <DiaryWrite />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
-      {/* </BrowserRouter> */}
+          <Route
+            path="/diary/write"
+            element={
+              <PrivateRoute>
+                <DiaryWrite />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
