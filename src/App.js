@@ -8,7 +8,7 @@ function App() {
   const endDate = "2025-11-02";
   return (
     <div className="App">
-      <Graph startDate={startDate} endDate={endDate} />
+      {/* <Graph startDate={startDate} endDate={endDate} /> */}
       <Routes>
         <Route path="/daily" element={<Daily />}></Route>
       </Routes>

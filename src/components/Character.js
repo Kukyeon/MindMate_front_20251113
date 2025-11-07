@@ -22,19 +22,24 @@ const Character = () => {
 
   useEffect(() => {
     fetchCharacter();
-  }, []);
+  }, [character?.points]);
   const handleCheer = async () => {
-    if (cheeredToday) return alert("오늘은 이미 응원했어요 💖");
     try {
       const res = await api.put("/ai/cheer", null, {
         params: { profileId, addPoints: 2, moodChange: 5 },
       });
-      setCharacter(res.data);
+      setCharacter({ ...res.data });
       setCheeredToday(true);
       setMessage("응원 성공 ! 🌟");
     } catch (err) {
-      if (err.response && err.response.data.message) {
+      if (err.response?.data?.message) {
         setMessage(err.response.data.message);
+        // 서버에서 이미 응원했다고 하면 UI도 비활성화
+        if (err.response.data.message.includes("오늘은 이미 응원")) {
+          setCheeredToday(true);
+        }
+      } else {
+        setMessage("응원 중 오류가 발생했습니다.");
       }
       console.error("업데이트 실패:", err);
     }
