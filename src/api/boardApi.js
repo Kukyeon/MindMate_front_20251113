@@ -24,9 +24,10 @@ export const createBoard = async ({ title, content, accountId }) => {
 
 // 게시글 수정
 export const updateBoard = async (id, { title, content, accountId }) => {
-  const res = await api.put(`/boards/${id}?accountId=${accountId}`, {
+  const res = await api.put(`/boards/${id}`, {
     title,
     content,
+    accountId,
   });
   return res.data;
 };

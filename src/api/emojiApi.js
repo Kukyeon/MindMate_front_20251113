@@ -18,36 +18,50 @@ export const emojiList = [
   { id: 15, type: "anger", image: "/emojis/anger.png" },
 ];
 
-//  게시글 이모지 토글
+// ✅ accountId 자동 처리 (로그인 or 테스트모드)
+const getAccountId = () => {
+  const stored = localStorage.getItem("accountId");
+  return stored ? parseInt(stored, 10) : 1; // 로그인 안 됐으면 기본 1번
+};
+
+// ✅ 게시글 이모지 토글
 export const toggleBoardEmoji = async (boardId, data) => {
   return await api.post(`/emoji/toggle`, {
+    accountId: data?.accountId ?? getAccountId(),
     boardId,
-
     type: data.type,
     imageUrl: data.imageUrl,
   });
 };
 
-//  댓글 이모지 토글
+// ✅ 댓글 이모지 토글
 export const toggleCommentEmoji = async (commentId, data) => {
   return await api.post(`/emoji/toggle`, {
+    accountId: data?.accountId ?? getAccountId(),
     commentId,
-
     type: data.type,
     imageUrl: data.imageUrl,
   });
 };
 
-//  게시글/댓글 이모지 카운트 조회
+// ✅ 게시글/댓글 이모지 카운트 조회 (+ 내 선택 포함)
 export const getEmojiCounts = async (id, targetType = "board") => {
+  const accountId = getAccountId();
   const endpoint =
-    targetType === "board" ? `/emoji/board/${id}` : `/emoji/comment/${id}`;
+    targetType === "board"
+      ? `/emoji/board/${id}?accountId=${accountId}`
+      : `/emoji/comment/${id}?accountId=${accountId}`;
+
   const res = await api.get(endpoint);
 
-  // 백엔드 리스트 형태를 { type: count } 구조로 변환
+  // 백엔드에서 반환된 리스트 구조를 가공
   const counts = {};
   res.data.forEach((emoji) => {
-    counts[emoji.type] = emoji.count;
+    counts[emoji.type] = {
+      count: emoji.count,
+      selected: emoji.selected, // ✅ 내가 누른 이모지 표시 가능
+      imageUrl: emoji.imageUrl,
+    };
   });
 
   return counts;
