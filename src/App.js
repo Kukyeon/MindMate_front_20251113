@@ -65,6 +65,7 @@ export default function App() {
         <Route path="*" element={<Navigate to="/boards" />} />
         <Route path="/" element={<Navigate to="/login" />} />
 
+
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
@@ -87,10 +88,19 @@ export default function App() {
         />
 
         <Route
-          path="/diary/:id"
+          path="/diary/date/:date"
           element={
             <PrivateRoute>
               <DiaryDetail />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/diary/edit/:date"
+          element={
+            <PrivateRoute>
+              <DiaryEditor />
             </PrivateRoute>
           }
         />
@@ -103,7 +113,6 @@ export default function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/diary/edit/:id" element={<DiaryEditor />} />
       </Routes>
       {/* </BrowserRouter> */}
     </>

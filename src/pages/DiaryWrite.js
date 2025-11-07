@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { createDiary, fetchDiaryByDate } from "../api/diaryService";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { createDiary, fetchDiaryByDate } from "../api/diaryService";
 
 export default function DiaryWritePage() {
   const location = useLocation();
@@ -10,6 +10,22 @@ export default function DiaryWritePage() {
   const [content, setContent] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const loadDiary = async () => {
+      if (!date) return;
+      try {
+        const res = await fetchDiaryByDate(date);
+        if (res?.data) {
+          setTitle(res.data.title);
+          setContent(res.data.content);
+        }
+      } catch (err) {
+        // 일기 없는 경우는 그냥 빈 상태 유지
+      }
+    };
+    loadDiary();
+  }, [date]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!date) return alert("날짜를 선택하세요.");
@@ -17,20 +33,9 @@ export default function DiaryWritePage() {
     const username = localStorage.getItem("username");
 
     try {
-      // 날짜 중복 체크
-      const existing = await fetchDiaryByDate(date);
-      if (existing.data) {
-        alert("이미 이 날짜에 작성된 일기가 있습니다.");
-        return;
-      }
-    } catch (_) {
-      // 없는 경우엔 그대로 진행
-    }
-
-    try {
-      await createDiary({ title, content, username, createdate: date });
+      await createDiary({ title, content, username, date });
       alert("일기가 저장되었습니다.");
-      navigate("/diary/calendar");
+     navigate(`/diary/date/${date}`);
     } catch (err) {
       console.error(err);
       alert("저장 실패");
