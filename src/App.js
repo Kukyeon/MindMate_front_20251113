@@ -17,6 +17,7 @@ import FakeLogin from "./pages/FakeLogin";
 import Fortune from "./component/Fortune.js";
 import DailyTest from "./component/DailyTest.js";
 import Daily from "./pages/Daily.js";
+//import StatsPage from './pages/StatsPage'; // ⬅️ [추가]
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("accessToken");
@@ -31,7 +32,7 @@ export default function App() {
         <Route path="/dailyTest" element={<DailyTest />}></Route>
         <Route path="/daily" element={<Daily />}></Route>
         {/* 기본 루트 → 게시판 목록 */}
-        <Route path="/" element={<Navigate to="/boards" />} />
+        {/* <Route path="/" element={<Navigate to="/boards" />} /> */}
 
         {/* 게시판 목록 */}
         <Route path="/boards" element={<BoardListPage />} />
@@ -49,7 +50,7 @@ export default function App() {
         <Route path="/comment/edit/:id" element={<CommentEditForm />} />
 
         {/* 잘못된 경로 → 목록으로 리다이렉트 */}
-        <Route path="*" element={<Navigate to="/boards" />} />
+        {/* <Route path="*" element={<Navigate to="/boards" />} /> */}
         <Route path="/" element={<Navigate to="/login" />} />
          <Route path="/login" element={<FakeLogin />} />
         <Route
