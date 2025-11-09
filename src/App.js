@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import {
   useNavigate,
@@ -7,7 +6,6 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-
 
 import "./App.css";
 import BoardListPage from "./pages/BoardListPage";
@@ -24,8 +22,8 @@ import DiaryEditor from "./pages/DiaryEditor";
 import SignupPage from "./pages/SignupPage.js";
 import FakeLogin from "./pages/FakeLogin";
 
-import Fortune from "./component/Fortune.js";
-import DailyTest from "./component/DailyTest.js";
+import Fortune from "./components/Fortune.js";
+import DailyTest from "./components/DailyTest.js";
 import Daily from "./pages/Daily.js";
 import Graph from "./components/Graph.js";
 
@@ -35,7 +33,6 @@ import api from "./api/axiosConfig.js";
 import { usePingOnNavigate, checkAuth } from "./api/pingApi.js";
 
 //import StatsPage from './pages/StatsPage'; // ⬅️ [추가]
-
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("accessToken");
@@ -132,6 +129,14 @@ export default function App() {
           }
         />
 
+        <Route
+          path="/diary/write"
+          element={
+            <PrivateRoute>
+              <DiaryWrite />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/diary/write"
           element={

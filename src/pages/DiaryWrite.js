@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createDiary, fetchDiaryByDate } from "../api/diaryService";
-import DiaryEmojiPicker from "../component/DiaryEmojiPicker"; // 이모지 피커 (이전 단계에서 추가)
+import DiaryEmojiPicker from "../components/DiaryEmojiPicker"; // 이모지 피커 (이전 단계에서 추가)
 
 export default function DiaryWritePage() {
   const location = useLocation();
   const navigate = useNavigate();
 
   // ⭐️ 1. setDate 제거, location.state에서 날짜를 상수로 받음
-  const date = location.state?.date; 
+  const date = location.state?.date;
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [emoji, setEmoji] = useState(null); 
+  const [emoji, setEmoji] = useState(null);
 
   useEffect(() => {
     // ⭐️ 2. 날짜가 없으면(잘못된 접근) 캘린더 페이지로 돌려보냄
@@ -40,7 +40,7 @@ export default function DiaryWritePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!date) return alert("날짜를 선택하세요.");
-    if (!emoji) return alert("감정을 선택해 주세요")
+    if (!emoji) return alert("감정을 선택해 주세요");
     const username = localStorage.getItem("username");
 
     try {
@@ -62,7 +62,7 @@ export default function DiaryWritePage() {
       <button type="button" onClick={() => navigate(-1)}>
         &larr; 뒤로가기
       </button>
-      
+
       {/* ⬇️ 4. 날짜를 input 대신 텍스트로 표시 */}
       <h2>{date} 일기 작성</h2>
 
@@ -81,10 +81,7 @@ export default function DiaryWritePage() {
           onChange={(e) => setContent(e.target.value)}
         />
 
-        <DiaryEmojiPicker 
-          selectedEmoji={emoji} 
-          onSelectEmoji={setEmoji} 
-        />
+        <DiaryEmojiPicker selectedEmoji={emoji} onSelectEmoji={setEmoji} />
 
         <button type="submit">저장</button>
       </form>
