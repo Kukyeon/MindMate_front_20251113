@@ -1,13 +1,5 @@
-
 import { useEffect } from "react";
-import {
-  useNavigate,
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-
+import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 
 import "./App.css";
 import BoardListPage from "./pages/BoardListPage";
@@ -22,19 +14,14 @@ import Calendar from "./pages/Calendar";
 import DiaryEditor from "./pages/DiaryEditor";
 
 import SignupPage from "./pages/SignupPage.js";
-import FakeLogin from "./pages/FakeLogin";
-
-import Fortune from "./component/Fortune.js";
-import DailyTest from "./component/DailyTest.js";
 import Daily from "./pages/Daily.js";
+import Graph from "./components/Graph.js";
 
 import LoginPage from "./pages/LoginPage.js";
-import api from "./api/axiosConfig.js";
 
 import { usePingOnNavigate, checkAuth } from "./api/pingApi.js";
 
 //import StatsPage from './pages/StatsPage'; // ⬅️ [추가]
-
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("accessToken");
@@ -63,9 +50,8 @@ export default function App() {
     <>
       {/* <BrowserRouter> */}
       <Routes>
-        <Route path="/fortune" element={<Fortune />}></Route>
-        <Route path="/dailyTest" element={<DailyTest />}></Route>
         <Route path="/daily" element={<Daily />}></Route>
+        <Route path="/graph" element={<Graph />}></Route>
 
         {/* 기본 루트 → 게시판 목록 */}
         <Route path="/" element={<Navigate to="/boards" />} />
@@ -133,6 +119,14 @@ export default function App() {
           }
         />
 
+        <Route
+          path="/diary/write"
+          element={
+            <PrivateRoute>
+              <DiaryWrite />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/diary/write"
           element={

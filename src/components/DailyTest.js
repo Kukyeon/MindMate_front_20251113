@@ -46,7 +46,14 @@ function DailyTest() {
   };
   const copyToClipboard = () => {
     navigator.clipboard
-      .writeText(result + "\n" + "localhost:3000/daily")
+      .writeText(
+        "💬 오늘의 심리 결과" +
+          "\n" +
+          result +
+          "\n" +
+          "\n" +
+          "MindMate - 감정 일기 \n http://localhost:3000/daily"
+      )
       .then(() => alert("결과가 복사되었습니다!"))
       .catch(() => alert("복사 실패"));
   };
@@ -69,7 +76,7 @@ function DailyTest() {
   };
   return (
     <div className="daily-test-content">
-      <div className="daily-test-card">
+      <div ref={resultRef} className="daily-test-card">
         <h2 className="daily-test-title">🧠 오늘의 심리테스트</h2>
 
         {loading && (
@@ -111,7 +118,7 @@ function DailyTest() {
         )}
 
         {result && (
-          <div ref={resultRef} className="daily-test-result-section">
+          <div className="daily-test-result-section">
             <h3 className="daily-test-result-title">💬 오늘의 심리 결과</h3>
             <p className="daily-test-result-text">{result}</p>
             <div className="share-buttons" style={{ marginTop: "10px" }}>
