@@ -148,7 +148,7 @@ const Graph = ({ startDate, endDate }) => {
               }}
             >
               <img
-                src={e.Image}
+                src={e.image}
                 alt={e.name}
                 style={{
                   width: "min(7vw, 32px)",
@@ -189,7 +189,7 @@ const Graph = ({ startDate, endDate }) => {
               }}
             >
               <img
-                src={emo.Image}
+                src={emo.image}
                 alt={emo.name}
                 style={{ width: 20, height: 20, marginRight: 5 }}
               />

@@ -3,8 +3,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import api from "./axiosConfig";
 
-const SKIP_PATHS = ["/login", "/signup", "/", "/boards"];
-const SKIP_PREFIXES = ["/boards"]; // board/** 과 같은 역할
+const SKIP_PATHS = [
+  "/login",
+  "/signup",
+  "/",
+  "/boards",
+  "/daily",
+  "/graph",
+  "/diary",
+];
+const SKIP_PREFIXES = ["/boards", "/daily", "/graph", "/diary"]; // board/** 과 같은 역할
 
 let isAuthChecking = false;
 

@@ -5,13 +5,28 @@ import { motion, AnimatePresence } from "framer-motion";
 const Character = () => {
   const profileId = 1;
   const [character, setCharacter] = useState(null);
+  const [name, setName] = useState("");
+
   const [message, setMessage] = useState("");
   const [cheeredToday, setCheeredToday] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = { profileId, name };
+      const res = await api.post("/ai/create", payload);
+      setCharacter(res.data);
+      setName("");
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+    }
+  };
 
   const fetchCharacter = async () => {
     try {
       const res = await api.get(`/ai/${profileId}`);
       setCharacter(res.data);
+      console.log(res.data);
     } catch (err) {
       if (err.response?.data?.message) {
         setMessage(err.response.data.message);
@@ -22,7 +37,7 @@ const Character = () => {
 
   useEffect(() => {
     fetchCharacter();
-  }, [character?.points]);
+  }, []);
   const handleCheer = async () => {
     try {
       const res = await api.put("/ai/cheer", null, {
@@ -44,7 +59,21 @@ const Character = () => {
       console.error("업데이트 실패:", err);
     }
   };
-
+  const getForMood = (moodscore, level) => {
+    if (level >= 10) {
+      if (moodscore <= 20) return "/character/sad10.png";
+      else if (moodscore <= 35) return "/character/worried10.png";
+      else if (moodscore <= 50) return "/character/natural10.png";
+      else if (moodscore <= 75) return "/character/glad10.png";
+      else return "/character/happy10.png";
+    } else {
+      if (moodscore <= 20) return "/character/sad.png";
+      else if (moodscore <= 35) return "/character/worried.png";
+      else if (moodscore <= 50) return "/character/natural.png";
+      else if (moodscore <= 75) return "/character/glad.png";
+      else return "/character/happy.png";
+    }
+  };
   return (
     <div className="flex flex-col items-center mt-10">
       {character ? (
@@ -61,8 +90,8 @@ const Character = () => {
             <div className="w-28 h-28 mx-auto mb-3 flex items-center justify-center bg-gray-50 rounded-full">
               <AnimatePresence mode="wait">
                 <motion.img
-                  key={character.type} // 이미지 변경 시 애니메이션
-                  src={`http://localhost:8888${character.type}`}
+                  key={character.moodscore} // 이미지 변경 시 애니메이션
+                  src={getForMood(character.moodscore, character.level)}
                   alt="캐릭터 상태"
                   className="max-w-full max-h-full object-contain"
                   initial={{ opacity: 0, y: -20 }}
@@ -108,7 +137,19 @@ const Character = () => {
           {message && <p style={{ color: "purple" }}>{message}</p>}
         </>
       ) : (
-        <p>캐릭터 정보를 불러오는 중...</p>
+        <div>
+          <p>캐릭터를 생성해주세요!</p>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="캐릭터 이름 입력"
+              required
+            />
+            <button type="submit">캐릭터 생성</button>
+          </form>
+        </div>
       )}
     </div>
   );

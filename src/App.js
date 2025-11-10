@@ -1,11 +1,5 @@
 import { useEffect } from "react";
-import {
-  useNavigate,
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 
 import "./App.css";
 import BoardListPage from "./pages/BoardListPage";
@@ -20,15 +14,10 @@ import Calendar from "./pages/Calendar";
 import DiaryEditor from "./pages/DiaryEditor";
 
 import SignupPage from "./pages/SignupPage.js";
-import FakeLogin from "./pages/FakeLogin";
-
-import Fortune from "./components/Fortune.js";
-import DailyTest from "./components/DailyTest.js";
 import Daily from "./pages/Daily.js";
 import Graph from "./components/Graph.js";
 
 import LoginPage from "./pages/LoginPage.js";
-import api from "./api/axiosConfig.js";
 
 import { usePingOnNavigate, checkAuth } from "./api/pingApi.js";
 
@@ -62,6 +51,7 @@ export default function App() {
       {/* <BrowserRouter> */}
       <Routes>
         <Route path="/daily" element={<Daily />}></Route>
+        <Route path="/graph" element={<Graph />}></Route>
 
         {/* 기본 루트 → 게시판 목록 */}
         <Route path="/" element={<Navigate to="/boards" />} />
