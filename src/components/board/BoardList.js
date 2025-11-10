@@ -1,7 +1,6 @@
 import BoardItem from "./BoardItem";
-import React from "react";
 
-const BoardList = ({ boards }) => {
+const BoardList = ({ boards, page, size, totalElements }) => {
   return (
     <table>
       <thead>
@@ -14,9 +13,16 @@ const BoardList = ({ boards }) => {
         </tr>
       </thead>
       <tbody>
-        {boards.map((board, idx) => (
-          <BoardItem key={board.id} board={board} index={idx + 1} />
-        ))}
+        {boards.map((board, idx) => {
+          const reverseIndex = totalElements - (page * size + idx);
+          return (
+            <BoardItem
+              key={board.id}
+              board={board}
+              index={reverseIndex} //  최신순 번호
+            />
+          );
+        })}
       </tbody>
     </table>
   );

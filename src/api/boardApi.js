@@ -1,8 +1,19 @@
 import api from "./axiosConfig";
 
 //게시글 목록
-export const fetchBoards = async (page = 0, size = 10, keyword = "") => {
-  const res = await api.get(`/boards`, { params: { page, size, keyword } });
+
+export const fetchBoards = async (page = 0, size = 10, search = {}) => {
+  const params = new URLSearchParams({
+    page,
+    size,
+  });
+
+  if (search.keyword) {
+    params.append("field", search.field);
+    params.append("keyword", search.keyword);
+  }
+
+  const res = await api.get(`/boards?${params.toString()}`);
   return res.data;
 };
 
