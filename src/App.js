@@ -86,53 +86,53 @@ export default function App() {
         <Route
           path="/diary"
           element={
-            <PrivateRoute>
+            
               <Calendar />
-            </PrivateRoute>
+            
           }
         />
 
         <Route
           path="/diary/calendar"
           element={
-            <PrivateRoute>
+           
               <Calendar />
-            </PrivateRoute>
+            
           }
         />
 
         <Route
           path="/diary/date/:date"
           element={
-            <PrivateRoute>
+            
               <DiaryDetail />
-            </PrivateRoute>
+          
           }
         />
 
         <Route
           path="/diary/edit/:date"
           element={
-            <PrivateRoute>
+            
               <DiaryEditor />
-            </PrivateRoute>
+           
           }
         />
 
         <Route
           path="/diary/write"
           element={
-            <PrivateRoute>
+           
               <DiaryWrite />
-            </PrivateRoute>
+           
           }
         />
         <Route
           path="/diary/write"
           element={
-            <PrivateRoute>
+           
               <DiaryWrite />
-            </PrivateRoute>
+           
           }
         />
         {/* 잘못된 경로시 보드로 이동 */}
