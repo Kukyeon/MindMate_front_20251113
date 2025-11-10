@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import EmojiSelector from "./EmojiSelector";
 import HashtagList from "./HashtagList";
-import { generateHashtags } from "../../api/aiApi"; // ✅ AI 해시태그 함수 import
+import { generateHashtags } from "../../api/aiApi"; //  AI 해시태그 함수 import
 const BoardContent = ({ board }) => {
   const [hashtags, setHashtags] = useState(board?.hashtags || []);
 

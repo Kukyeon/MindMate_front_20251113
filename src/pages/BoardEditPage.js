@@ -42,6 +42,11 @@ const BoardEditPage = () => {
     }
   };
 
+  // 수정 취소시 상세보기로 이동
+  const handleCancel = () => {
+    navigate(`/board/${id}`);
+  };
+
   return (
     <div>
       <h2>✏️ 게시글 수정</h2>
@@ -58,6 +63,9 @@ const BoardEditPage = () => {
           onChange={(e) => setContent(e.target.value)}
         />
         <button type="submit">수정 완료</button>
+        <button type="button" onClick={handleCancel}>
+          수정 취소
+        </button>
       </form>
     </div>
   );

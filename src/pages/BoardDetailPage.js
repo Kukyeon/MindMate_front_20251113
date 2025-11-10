@@ -105,6 +105,8 @@ const BoardDetailPage = () => {
         onCommentAdded={fetchBoard}
       />
       <CommentList boardId={board.id} />
+
+      <button onClick={() => navigate("/boards")}>목록으로</button>
     </div>
   );
 };
