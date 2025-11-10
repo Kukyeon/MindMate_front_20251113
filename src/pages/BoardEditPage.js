@@ -3,18 +3,28 @@ import { useNavigate, useParams } from "react-router-dom";
 import { fetchBoardDetail, updateBoard } from "../api/boardApi";
 import { generateHashtags } from "../api/aiApi";
 
-const BoardEditPage = ({ accountId }) => {
+const BoardEditPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
+  const accountId = (() => {
+    const stored = localStorage.getItem("accountId");
+    return stored ? parseInt(stored, 10) : 1;
+  })();
+
   useEffect(() => {
     const loadBoard = async () => {
-      const board = await fetchBoardDetail(id);
-      setTitle(board.title);
-      setContent(board.content);
+      try {
+        const board = await fetchBoardDetail(id);
+        if (board) {
+          setTitle(board.title);
+          setContent(board.content);
+        }
+      } catch (err) {
+        console.error("게시글 불러오기 실패:", err);
+      }
     };
     loadBoard();
   }, [id]);
@@ -25,8 +35,7 @@ const BoardEditPage = ({ accountId }) => {
       await updateBoard(id, { title, content, accountId });
       await generateHashtags(id);
       alert("게시글이 수정되었습니다!");
-
-      navigate(`/board/${id}`);
+      navigate(`/board/${id}`); // 수정 후 상세 페이지로 이동
     } catch (err) {
       console.error("게시글 수정 실패:", err);
       alert("수정 중 오류가 발생했습니다.");

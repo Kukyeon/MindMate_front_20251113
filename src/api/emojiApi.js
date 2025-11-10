@@ -18,13 +18,13 @@ export const emojiList = [
   { id: 15, type: "anger", image: "/emojis/anger.png" },
 ];
 
-// ✅ accountId 자동 처리 (로그인 or 테스트모드)
+//  accountId 자동 처리 (로그인 or 테스트모드)
 const getAccountId = () => {
   const stored = localStorage.getItem("accountId");
   return stored ? parseInt(stored, 10) : 1; // 로그인 안 됐으면 기본 1번
 };
 
-// ✅ 게시글 이모지 토글
+//  게시글 이모지 토글
 export const toggleBoardEmoji = async (boardId, data) => {
   return await api.post(`/emoji/toggle`, {
     accountId: data?.accountId ?? getAccountId(),
@@ -34,7 +34,7 @@ export const toggleBoardEmoji = async (boardId, data) => {
   });
 };
 
-// ✅ 댓글 이모지 토글
+//  댓글 이모지 토글
 export const toggleCommentEmoji = async (commentId, data) => {
   return await api.post(`/emoji/toggle`, {
     accountId: data?.accountId ?? getAccountId(),
@@ -44,7 +44,7 @@ export const toggleCommentEmoji = async (commentId, data) => {
   });
 };
 
-// ✅ 게시글/댓글 이모지 카운트 조회 (+ 내 선택 포함)
+//  게시글/댓글 이모지 카운트 조회 (+ 내 선택 포함)
 export const getEmojiCounts = async (id, targetType = "board") => {
   const accountId = getAccountId();
   const endpoint =
@@ -59,7 +59,7 @@ export const getEmojiCounts = async (id, targetType = "board") => {
   res.data.forEach((emoji) => {
     counts[emoji.type] = {
       count: emoji.count,
-      selected: emoji.selected, // ✅ 내가 누른 이모지 표시 가능
+      selected: emoji.selected, //  내가 누른 이모지 표시 가능
       imageUrl: emoji.imageUrl,
     };
   });
