@@ -203,6 +203,4 @@ const Graph = ({ startDate, endDate }) => {
   );
 };
 
-export default function App() {
-  return <Graph startDate="2025-10-27" endDate="2025-11-02" />;
-}
+export default Graph;
