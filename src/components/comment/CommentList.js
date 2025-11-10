@@ -1,14 +1,22 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { fetchComments } from "../../api/commentApi";
 import CommentItem from "./CommentItem";
 
-const CommentList = ({ boardId }) => {
+const CommentList = forwardRef(({ boardId }, ref) => {
   const [comments, setComments] = useState([]);
 
   const loadComments = async () => {
-    const data = await fetchComments(boardId);
-    setComments(data);
+    try {
+      const data = await fetchComments(boardId);
+      setComments(data);
+    } catch (err) {
+      console.error("댓글 불러오기 실패:", err);
+    }
   };
+
+  useImperativeHandle(ref, () => ({
+    loadComments, // 부모가 호출 가능하게 등록
+  }));
 
   useEffect(() => {
     loadComments();
@@ -17,10 +25,18 @@ const CommentList = ({ boardId }) => {
   return (
     <div>
       <h3>댓글</h3>
-      {comments.map((c) => (
-        <CommentItem key={c.id} comment={c} onUpdated={loadComments} />
-      ))}
+      {comments.length === 0 ? (
+        <p>댓글이 없습니다.</p>
+      ) : (
+        comments.map((comment) => (
+          <CommentItem
+            key={comment.id}
+            comment={comment}
+            onUpdated={loadComments}
+          />
+        ))
+      )}
     </div>
   );
-};
+});
 export default CommentList;

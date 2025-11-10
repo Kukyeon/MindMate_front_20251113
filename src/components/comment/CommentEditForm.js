@@ -6,7 +6,7 @@ const CommentEditForm = ({ comment, onUpdateSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await updateComment(comment.id, content);
+    await updateComment(comment.id, { content });
     onUpdateSuccess();
   };
 

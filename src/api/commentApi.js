@@ -3,7 +3,7 @@ import api from "./axiosConfig";
 // 댓글 목록
 export const fetchComments = async (boardId) => {
   const res = await api.get(`/comments/boards/${boardId}`);
-  return res.data;
+  return Array.isArray(res.data) ? res.data : [];
 };
 
 // 댓글 작성

@@ -2,17 +2,19 @@ import { useEffect } from "react";
 import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 
 import "./App.css";
+
+// 🧩 게시판 관련
 import BoardListPage from "./pages/BoardListPage";
 import BoardDetailPage from "./pages/BoardDetailPage";
 import BoardEditPage from "./pages/BoardEditPage";
 import BoardWritePage from "./pages/BoardWritePage";
 import CommentEditForm from "./components/comment/CommentEditForm";
 
+// 📘 일기 / 캘린더 관련
+import Calendar from "./pages/Calendar";
 import DiaryDetail from "./pages/DiaryDetail";
 import DiaryWrite from "./pages/DiaryWrite";
-import Calendar from "./pages/Calendar";
 import DiaryEditor from "./pages/DiaryEditor";
-
 import SignupPage from "./pages/SignupPage.js";
 import Daily from "./pages/Daily.js";
 import Graph from "./components/Graph.js";
@@ -23,6 +25,12 @@ import { usePingOnNavigate, checkAuth } from "./api/pingApi.js";
 
 //import StatsPage from './pages/StatsPage'; // ⬅️ [추가]
 
+// 💫 기타 기능
+import FakeLogin from "./pages/FakeLogin";
+import Fortune from "./components/Fortune";
+import DailyTest from "./components/DailyTest";
+
+// ✅ 로그인 여부 확인용 PrivateRoute
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("accessToken");
   return token ? children : <Navigate to="/login" replace />;
@@ -59,15 +67,62 @@ export default function App() {
 
         {/* 기본 루트 로그인 여부(token체크)에 따라 분기 */}
         {/* <Route path="/" element={<RootRedirect />} /> */}
+        <Route path="/" element={<Navigate to="/boards" replace />} />
+        <Route path="/login" element={<FakeLogin />} />
 
-        {/* 게시판 목록 */}
+        {/* 게시판 */}
         <Route path="/boards" element={<BoardListPage />} />
-
-        {/* 게시글 작성 */}
         <Route path="/board/write" element={<BoardWritePage />} />
-
-        {/* 게시글 상세 */}
         <Route path="/board/:id" element={<BoardDetailPage />} />
+        <Route path="/board/edit/:id" element={<BoardEditPage />} />
+        <Route path="/comment/edit/:id" element={<CommentEditForm />} />
+
+        {/* 다이어리 */}
+        <Route
+          path="/diary"
+          element={
+            <PrivateRoute>
+              <Calendar />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/diary/calendar"
+          element={
+            <PrivateRoute>
+              <Calendar />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/diary/:id"
+          element={
+            <PrivateRoute>
+              <DiaryDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/diary/write"
+          element={
+            <PrivateRoute>
+              <DiaryWrite />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/diary/edit/:id"
+          element={
+            <PrivateRoute>
+              <DiaryEditor />
+            </PrivateRoute>
+          }
+        />
+
+        {/* 기타 */}
+        <Route path="/fortune" element={<Fortune />} />
+        <Route path="/dailyTest" element={<DailyTest />} />
+        <Route path="/daily" element={<Daily />} />
 
         {/* 게시글 수정 */}
         <Route path="/board/edit/:id" element={<BoardEditPage />} />
@@ -137,8 +192,10 @@ export default function App() {
         />
         {/* 잘못된 경로시 보드로 이동 */}
         <Route path="*" element={<Navigate to="/boards" replace />} />
+        {/* </BrowserRouter> */}
+        {/* 잘못된 경로 처리 */}
+        <Route path="*" element={<Navigate to="/boards" replace />} />
       </Routes>
-      {/* </BrowserRouter> */}
     </>
   );
 }
