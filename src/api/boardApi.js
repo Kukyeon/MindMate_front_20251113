@@ -1,6 +1,5 @@
 import api from "./axiosConfig";
 
-
 //게시글 목록
 export const fetchBoards = async (page = 0, size = 10, keyword = "") => {
   const res = await api.get(`/boards`, { params: { page, size, keyword } });
@@ -18,15 +17,17 @@ export const createBoard = async ({ title, content, accountId }) => {
   const res = await api.post(`/boards?accountId=${accountId}`, {
     title,
     content,
+    accountId,
   });
   return res.data;
 };
 
 // 게시글 수정
 export const updateBoard = async (id, { title, content, accountId }) => {
-  const res = await api.put(`/boards/${id}?accountId=${accountId}`, {
+  const res = await api.put(`/boards/${id}`, {
     title,
     content,
+    accountId,
   });
   return res.data;
 };
