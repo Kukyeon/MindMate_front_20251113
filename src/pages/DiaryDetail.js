@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 // 1. [필수] useLocation 대신 useParams를 import
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchDiaryByDate } from "../api/diaryService";
+import { fetchDiaryByDate } from "../api/diaryApi";
 
 export default function DiaryDetail() {
   // 2. [필수] useParams()를 사용하여 URL에서 date 값을 가져옴

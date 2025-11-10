@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // 캘린더 기본 스타일
 import { useNavigate } from 'react-router-dom';
-import { fetchDiariesByMonth } from '../api/diaryService'; // 월별 조회 API 함수
+import { fetchDiariesByMonth } from '../api/diaryApi'; // 월별 조회 API 함수
 
 export default function CalendarPage() {
   const navigate = useNavigate();
