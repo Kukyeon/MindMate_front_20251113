@@ -18,7 +18,7 @@ const EmojiSelector = ({ boardId, commentId }) => {
     return stored ? parseInt(stored, 10) : 1;
   })();
 
-  // ✅ 이모지 카운트 초기화
+  //  이모지 카운트 초기화
   const loadCounts = async () => {
     const targetType = boardId ? "board" : "comment";
     const id = boardId || commentId;
@@ -54,7 +54,7 @@ const EmojiSelector = ({ boardId, commentId }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardId, commentId]);
 
-  // ✅ 이모지 선택
+  //  이모지 선택
   const handleSelectEmoji = async (emoji) => {
     if (loading) return;
     setLoading(true);
@@ -103,7 +103,7 @@ const EmojiSelector = ({ boardId, commentId }) => {
 
   return (
     <div className="emoji-selector">
-      {/* ✅ 선택된 이모지 */}
+      {/*  선택된 이모지 */}
       {selectedEmoji && (
         <div
           className="selected-emoji"
@@ -114,7 +114,7 @@ const EmojiSelector = ({ boardId, commentId }) => {
         </div>
       )}
 
-      {/* ✅ 선택창 열기 버튼 */}
+      {/* 선택창 열기 버튼 */}
       <button
         className="emoji-toggle"
         onClick={() => setOpen((prev) => !prev)}
@@ -123,7 +123,7 @@ const EmojiSelector = ({ boardId, commentId }) => {
         😊
       </button>
 
-      {/* ✅ 이모지 선택 목록 */}
+      {/*  이모지 선택 목록 */}
       {open && (
         <div className="emoji-popup">
           {emojiList.map((emoji) => {
