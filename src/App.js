@@ -26,7 +26,6 @@ import { usePingOnNavigate, checkAuth } from "./api/pingApi.js";
 //import StatsPage from './pages/StatsPage'; // ⬅️ [추가]
 
 // 💫 기타 기능
-import FakeLogin from "./pages/FakeLogin";
 import Fortune from "./components/Fortune";
 import DailyTest from "./components/DailyTest";
 
@@ -68,7 +67,7 @@ export default function App() {
         {/* 기본 루트 로그인 여부(token체크)에 따라 분기 */}
         {/* <Route path="/" element={<RootRedirect />} /> */}
         <Route path="/" element={<Navigate to="/boards" replace />} />
-        <Route path="/login" element={<FakeLogin />} />
+       
 
         {/* 게시판 */}
         <Route path="/boards" element={<BoardListPage />} />
@@ -77,47 +76,6 @@ export default function App() {
         <Route path="/board/edit/:id" element={<BoardEditPage />} />
         <Route path="/comment/edit/:id" element={<CommentEditForm />} />
 
-        {/* 다이어리 */}
-        <Route
-          path="/diary"
-          element={
-            <PrivateRoute>
-              <Calendar />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/diary/calendar"
-          element={
-            <PrivateRoute>
-              <Calendar />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/diary/:id"
-          element={
-            <PrivateRoute>
-              <DiaryDetail />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/diary/write"
-          element={
-            <PrivateRoute>
-              <DiaryWrite />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/diary/edit/:id"
-          element={
-            <PrivateRoute>
-              <DiaryEditor />
-            </PrivateRoute>
-          }
-        />
 
         {/* 기타 */}
         <Route path="/fortune" element={<Fortune />} />
@@ -138,58 +96,26 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
+        {/* 다이어리 */}
         <Route
           path="/diary"
-          element={
-            
-              <Calendar />
-            
-          }
-        />
-
+          element={<Calendar />}/>
         <Route
           path="/diary/calendar"
-          element={
-           
-              <Calendar />
-            
-          }
-        />
+          element={<Calendar />}/>
 
         <Route
           path="/diary/date/:date"
-          element={
-            
-              <DiaryDetail />
-          
-          }
-        />
+          element={<DiaryDetail />}/>
 
         <Route
           path="/diary/edit/:date"
-          element={
-            
-              <DiaryEditor />
-           
-          }
-        />
+          element={<DiaryEditor />}/>
 
         <Route
           path="/diary/write"
-          element={
-           
-              <DiaryWrite />
-           
-          }
-        />
-        <Route
-          path="/diary/write"
-          element={
-           
-              <DiaryWrite />
-           
-          }
-        />
+          element={<DiaryWrite />}/>
+
         {/* 잘못된 경로시 보드로 이동 */}
         <Route path="*" element={<Navigate to="/boards" replace />} />
         {/* </BrowserRouter> */}
