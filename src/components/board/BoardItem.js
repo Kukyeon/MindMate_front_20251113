@@ -2,15 +2,15 @@ import { useNavigate } from "react-router-dom";
 
 const BoardItem = ({ board, index }) => {
   const navigate = useNavigate();
+
   return (
-    <tr
-      onClick={() => navigate(`/board/${board.id}`)}
-      style={{ cursor: "pointer" }}
-    >
+    <tr className="board-item" onClick={() => navigate(`/board/${board.id}`)}>
       <td>{index}</td>
-      <td>
+      <td className="board-title">
         {board.title}
-        {board.commentCount > 0 && <span>[{board.commentCount}]</span>}
+        {board.commentCount > 0 && (
+          <span className="board-comment">[{board.commentCount}]</span>
+        )}
       </td>
       <td>{board.writer}</td>
       <td>{board.viewCount}</td>
@@ -18,4 +18,5 @@ const BoardItem = ({ board, index }) => {
     </tr>
   );
 };
+
 export default BoardItem;

@@ -28,6 +28,9 @@ import { usePingOnNavigate, checkAuth } from "./api/pingApi.js";
 // 💫 기타 기능
 import Fortune from "./components/Fortune";
 import DailyTest from "./components/DailyTest";
+import Home from "./pages/Home.js";
+import Header from "./components/Header.js";
+import Footer from "./components/Footer.js";
 
 // ✅ 로그인 여부 확인용 PrivateRoute
 function PrivateRoute({ children }) {
@@ -55,19 +58,20 @@ export default function App() {
 
   return (
     <>
+      <Header></Header>
       {/* <BrowserRouter> */}
       <Routes>
         <Route path="/daily" element={<Daily />}></Route>
         <Route path="/graph" element={<Graph />}></Route>
+        <Route path="/" element={<Home />}></Route>
 
         {/* 기본 루트 → 게시판 목록 */}
-        <Route path="/" element={<Navigate to="/boards" />} />
+        {/* <Route path="/" element={<Navigate to="/boards" />} /> */}
         {/* <Route path="/" element={<Navigate to="/diary" />} /> */}
 
         {/* 기본 루트 로그인 여부(token체크)에 따라 분기 */}
         {/* <Route path="/" element={<RootRedirect />} /> */}
-        <Route path="/" element={<Navigate to="/boards" replace />} />
-       
+        {/* <Route path="/" element={<Navigate to="/boards" replace />} /> */}
 
         {/* 게시판 */}
         <Route path="/boards" element={<BoardListPage />} />
@@ -75,7 +79,6 @@ export default function App() {
         <Route path="/board/:id" element={<BoardDetailPage />} />
         <Route path="/board/edit/:id" element={<BoardEditPage />} />
         <Route path="/comment/edit/:id" element={<CommentEditForm />} />
-
 
         {/* 기타 */}
         <Route path="/fortune" element={<Fortune />} />
@@ -97,31 +100,22 @@ export default function App() {
         <Route path="/signup" element={<SignupPage />} />
 
         {/* 다이어리 */}
-        <Route
-          path="/diary"
-          element={<Calendar />}/>
-        <Route
-          path="/diary/calendar"
-          element={<Calendar />}/>
+        <Route path="/diary" element={<Calendar />} />
+        <Route path="/diary/calendar" element={<Calendar />} />
 
-        <Route
-          path="/diary/date/:date"
-          element={<DiaryDetail />}/>
+        <Route path="/diary/date/:date" element={<DiaryDetail />} />
 
-        <Route
-          path="/diary/edit/:date"
-          element={<DiaryEditor />}/>
+        <Route path="/diary/edit/:date" element={<DiaryEditor />} />
 
-        <Route
-          path="/diary/write"
-          element={<DiaryWrite />}/>
+        <Route path="/diary/write" element={<DiaryWrite />} />
 
         {/* 잘못된 경로시 보드로 이동 */}
-        <Route path="*" element={<Navigate to="/boards" replace />} />
+        {/* <Route path="*" element={<Navigate to="/boards" replace />} /> */}
         {/* </BrowserRouter> */}
         {/* 잘못된 경로 처리 */}
-        <Route path="*" element={<Navigate to="/boards" replace />} />
+        {/* <Route path="*" element={<Navigate to="/boards" replace />} /> */}
       </Routes>
+      <Footer></Footer>
     </>
   );
 }

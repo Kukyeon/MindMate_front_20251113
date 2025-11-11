@@ -13,13 +13,11 @@ const BoardDetailPage = () => {
   const [board, setBoard] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  //  임시 로그인 (accountId 기본값 1)
   const accountId = (() => {
     const stored = localStorage.getItem("accountId");
     return stored ? parseInt(stored, 10) : 1;
   })();
 
-  // 게시글 조회
   const fetchBoard = async () => {
     try {
       setLoading(true);
@@ -32,12 +30,7 @@ const BoardDetailPage = () => {
     }
   };
 
-  //  수정 버튼
-  const handleEdit = () => {
-    navigate(`/board/edit/${id}`);
-  };
-
-  //  삭제 버튼
+  const handleEdit = () => navigate(`/board/edit/${id}`);
   const handleDelete = async () => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
@@ -54,17 +47,13 @@ const BoardDetailPage = () => {
     fetchBoard();
   }, [id]);
 
-  if (loading) return <div>불러오는 중...</div>;
-  if (!board) return <div>게시글 정보를 찾을 수 없습니다.</div>;
-
-  //const isMyPost = board.accountId === accountId;
+  if (loading) return <div className="loading">불러오는 중...</div>;
+  if (!board)
+    return <div className="not-found">게시글 정보를 찾을 수 없습니다.</div>;
 
   const isMyPost =
-    board.accountId === accountId ||
-    board.writer === "익명" || // 익명 글 테스트 시
-    true;
+    board.accountId === accountId || board.writer === "익명" || true;
 
-  //  해시태그 자동 처리 (문자열 / 배열 모두 대응)
   let tagData = board.hashtags;
   if (typeof tagData === "string") {
     tagData = tagData
@@ -74,39 +63,55 @@ const BoardDetailPage = () => {
   }
 
   return (
-    <div>
-      <h2>{board.title}</h2>
-      <p>{board.content}</p>
-      <p>작성자: {board.authorName || "익명"}</p>
+    <div className="board-detail-page">
+      {/* 상단 카드: 제목 + 작성자 + 작성일 + 수정/삭제 */}
+      <div className="board-header-card">
+        <div className="board-header-top">
+          <h2 className="board-title">{board.title}</h2>
+          {isMyPost && (
+            <div className="board-actions">
+              <button className="board-btn edit" onClick={handleEdit}>
+                수정
+              </button>
+              <button className="board-btn delete" onClick={handleDelete}>
+                삭제
+              </button>
+            </div>
+          )}
+        </div>
+        <div className="board-meta">
+          <span>작성자: {board.authorName || "익명"}</span>
+          <span>{new Date(board.createdAt).toLocaleDateString()}</span>
+        </div>
+      </div>
 
-      {/*  해시태그 표시 */}
-      {tagData && tagData.length > 0 && (
-        <div style={{ marginBottom: "10px" }}>
-          <strong>해시태그 : </strong>
-          <HashtagList hashtags={tagData} />
+      {/* 본문 카드 */}
+      <div className="board-content-card">
+        <p>{board.content}</p>
+      </div>
+
+      {/* 해시태그 + 이모지 */}
+      {(tagData.length > 0 || true) && (
+        <div className="board-hashtag-emoji-card">
+          {tagData.length > 0 && <HashtagList hashtags={tagData} />}
         </div>
       )}
-
-      {/*  이모지 선택 */}
       <EmojiSelector boardId={board.id} />
 
-      {/*  본인 글일 때만 수정/삭제 표시 */}
-      {isMyPost && (
-        <div>
-          <button onClick={handleEdit}>수정</button>
-          <button onClick={handleDelete}>삭제</button>
-        </div>
-      )}
+      {/* 댓글 영역 */}
+      <div className="board-comment-section">
+        <CommentForm
+          accountId={accountId}
+          boardId={board.id}
+          onCommentAdded={fetchBoard}
+        />
+        <CommentList boardId={board.id} />
+      </div>
 
-      {/*  댓글 */}
-      <CommentForm
-        accountId={accountId}
-        boardId={board.id}
-        onCommentAdded={fetchBoard}
-      />
-      <CommentList boardId={board.id} />
-
-      <button onClick={() => navigate("/boards")}>목록으로</button>
+      {/* 하단 목록 버튼 */}
+      <button className="board-btn back" onClick={() => navigate("/boards")}>
+        목록으로
+      </button>
     </div>
   );
 };

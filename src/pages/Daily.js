@@ -1,41 +1,36 @@
 import { useState } from "react";
 import DailyTest from "../components/DailyTest";
 import Fortune from "../components/Fortune";
-import "./Daily.css";
 import Character from "../components/Character";
+import "./Daily.css";
 
 export default function Daily() {
   const [activeTab, setActiveTab] = useState("Character");
 
+  const tabs = [
+    { name: "Character", icon: "🧸" },
+    { name: "MBTI 심리테스트", icon: "📝" },
+    { name: "오늘의 별자리 운세", icon: "🔮" },
+  ];
+
   return (
     <div className="daily-page">
-      <header className="daily-header">MindMate Daily</header>
-
       <div className="tabs">
-        <button
-          className={activeTab === "Character" ? "tab active" : "tab"}
-          onClick={() => setActiveTab("Character")}
-        >
-          Character
-        </button>
-        <button
-          className={activeTab === "DailyTest" ? "tab active" : "tab"}
-          onClick={() => setActiveTab("DailyTest")}
-        >
-          Daily Test
-        </button>
-        <button
-          className={activeTab === "Fortune" ? "tab active" : "tab"}
-          onClick={() => setActiveTab("Fortune")}
-        >
-          Fortune
-        </button>
+        {tabs.map((tab) => (
+          <button
+            key={tab.name}
+            className={activeTab === tab.name ? "tab active" : "tab"}
+            onClick={() => setActiveTab(tab.name)}
+          >
+            <span className="tab-icon">{tab.icon}</span> {tab.name}
+          </button>
+        ))}
       </div>
 
-      <div className="tab-content">
+      <div className={`tab-content fade-in`}>
         {activeTab === "Character" && <Character />}
-        {activeTab === "DailyTest" && <DailyTest />}
-        {activeTab === "Fortune" && <Fortune />}
+        {activeTab === "MBTI 심리테스트" && <DailyTest />}
+        {activeTab === "오늘의 별자리 운세" && <Fortune />}
       </div>
     </div>
   );

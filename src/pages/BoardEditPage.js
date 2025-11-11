@@ -35,38 +35,53 @@ const BoardEditPage = () => {
       await updateBoard(id, { title, content, accountId });
       await generateHashtags(id);
       alert("게시글이 수정되었습니다!");
-      navigate(`/board/${id}`); // 수정 후 상세 페이지로 이동
+      navigate(`/board/${id}`);
     } catch (err) {
       console.error("게시글 수정 실패:", err);
       alert("수정 중 오류가 발생했습니다.");
     }
   };
 
-  // 수정 취소시 상세보기로 이동
   const handleCancel = () => {
     navigate(`/board/${id}`);
   };
 
   return (
-    <div>
-      <h2>✏️ 게시글 수정</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="제목을 수정하세요"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <textarea
-          placeholder="내용을 수정하세요"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-        <button type="submit">수정 완료</button>
-        <button type="button" onClick={handleCancel}>
-          수정 취소
-        </button>
-      </form>
+    <div className="board-edit-page">
+      <div className="board-header-card">
+        <h2 className="board-title">✏️ 게시글 수정</h2>
+      </div>
+
+      <div className="board-content-card">
+        <form className="board-edit-form" onSubmit={handleSubmit}>
+          <input
+            className="board-edit-input"
+            type="text"
+            placeholder="제목을 수정하세요"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <textarea
+            className="board-edit-textarea"
+            placeholder="내용을 수정하세요"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+
+          <div className="board-edit-buttons">
+            <button className="board-btn submit" type="submit">
+              수정 완료
+            </button>
+            <button
+              className="board-btn cancel"
+              type="button"
+              onClick={handleCancel}
+            >
+              취소
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

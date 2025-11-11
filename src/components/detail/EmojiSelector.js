@@ -104,24 +104,22 @@ const EmojiSelector = ({ boardId, commentId }) => {
   return (
     <div className="emoji-selector">
       {/*  선택된 이모지 */}
-      {selectedEmoji && (
-        <div
-          className="selected-emoji"
-          onClick={() => handleSelectEmoji(selectedData)}
-        >
-          <img src={selectedData.image} alt={selectedData.type} width="30" />
-          <span>{emojiCounts[selectedEmoji]?.count || 0}⚡</span>
-        </div>
-      )}
 
       {/* 선택창 열기 버튼 */}
       <button
         className="emoji-toggle"
         onClick={() => setOpen((prev) => !prev)}
         disabled={loading}
-      >
-        😊
-      </button>
+      ></button>
+      {selectedEmoji && (
+        <div
+          className="selected-emoji"
+          onClick={() => handleSelectEmoji(selectedData)}
+        >
+          <img src={selectedData.image} alt={selectedData.type} width="30" />
+          <span>{emojiCounts[selectedEmoji]?.count || 0}</span>
+        </div>
+      )}
 
       {/*  이모지 선택 목록 */}
       {open && (
@@ -142,7 +140,7 @@ const EmojiSelector = ({ boardId, commentId }) => {
                 {count > 0 && (
                   <span>
                     {count}
-                    {isSelected ? "⚡" : ""}
+                    {/* {isSelected ? "⚡" : ""} */}
                   </span>
                 )}
               </button>

@@ -1,0 +1,128 @@
+.graph-container {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.graph-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
+  position: relative;
+}
+
+.graph-title::before {
+  content: "📊 ";
+}
+
+.graph-subtitle {
+  margin-top: 4rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.graph-subtitle::before {
+  content: "💖 ";
+  margin-right: 0.5rem;
+}
+
+.emotion-bar-wrapper {
+  display: flex;
+  height: 40px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  background: #f0f0f0;
+  gap: 2px;
+}
+
+.emotion-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.9rem;
+  position: relative;
+  border-radius: 6px;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: growBar 1s forwards;
+}
+
+.emotion-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 4px;
+}
+
+.emotion-percent {
+  position: absolute;
+  right: 6px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.ai-comment-card {
+  margin-top: 1rem;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #ffe5b4, #ffd2a6);
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  font-style: italic;
+  color: #333;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  animation: fadeIn 0.8s ease;
+}
+
+/* 말풍선 꼬리 */
+.ai-comment-card::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 20px;
+  border-width: 10px 10px 0 0;
+  border-style: solid;
+  border-color: #ffd2a6 transparent transparent transparent;
+  transform: rotate(45deg);
+}
+
+/* AI 이모지 애니메이션 */
+.ai-comment-card::before {
+  content: "🤖";
+  font-size: 1.5rem;
+  animation: bounce 1.2s infinite;
+  margin-right: 8px;
+}
+
+/* 에니메이션 키프레임 */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

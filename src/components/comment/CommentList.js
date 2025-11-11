@@ -9,14 +9,13 @@ const CommentList = forwardRef(({ boardId }, ref) => {
     try {
       const data = await fetchComments(boardId);
       setComments(data);
-      console.log(data.data);
     } catch (err) {
       console.error("댓글 불러오기 실패:", err);
     }
   };
 
   useImperativeHandle(ref, () => ({
-    loadComments, // 부모가 호출 가능하게 등록
+    loadComments,
   }));
 
   useEffect(() => {
@@ -24,20 +23,23 @@ const CommentList = forwardRef(({ boardId }, ref) => {
   }, [boardId]);
 
   return (
-    <div>
-      <h3>댓글</h3>
+    <div className="comment-list-container">
+      <h3 className="comment-list-title">💬 댓글</h3>
       {comments.length === 0 ? (
-        <p>댓글이 없습니다.</p>
+        <p className="comment-empty">아직 댓글이 없습니다.</p>
       ) : (
-        comments.map((comment) => (
-          <CommentItem
-            key={comment.id}
-            comment={comment}
-            onUpdated={loadComments}
-          />
-        ))
+        <div className="comment-list">
+          {comments.map((comment) => (
+            <CommentItem
+              key={comment.id}
+              comment={comment}
+              onUpdated={loadComments}
+            />
+          ))}
+        </div>
       )}
     </div>
   );
 });
+
 export default CommentList;
