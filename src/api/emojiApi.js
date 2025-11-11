@@ -26,7 +26,7 @@ const getAccountId = () => {
 
 //  게시글 이모지 토글
 export const toggleBoardEmoji = async (boardId, data) => {
-  return await api.post(`/emoji/toggle`, {
+  return await api.post(`/api/emoji/toggle`, {
     accountId: data?.accountId ?? getAccountId(),
     boardId,
     type: data.type,
@@ -36,7 +36,7 @@ export const toggleBoardEmoji = async (boardId, data) => {
 
 //  댓글 이모지 토글
 export const toggleCommentEmoji = async (commentId, data) => {
-  return await api.post(`/emoji/toggle`, {
+  return await api.post(`/api/emoji/toggle`, {
     accountId: data?.accountId ?? getAccountId(),
     commentId,
     type: data.type,
@@ -49,8 +49,8 @@ export const getEmojiCounts = async (id, targetType = "board") => {
   const accountId = getAccountId();
   const endpoint =
     targetType === "board"
-      ? `/emoji/board/${id}?accountId=${accountId}`
-      : `/emoji/comment/${id}?accountId=${accountId}`;
+      ? `/api/emoji/board/${id}?accountId=${accountId}`
+      : `/api/emoji/comment/${id}?accountId=${accountId}`;
 
   const res = await api.get(endpoint);
 

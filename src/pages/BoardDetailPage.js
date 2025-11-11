@@ -23,7 +23,7 @@ const BoardDetailPage = () => {
   const fetchBoard = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`/boards/${id}`);
+      const response = await api.get(`/api/boards/${id}`);
       if (response.data) setBoard(response.data);
     } catch (err) {
       console.error("게시글 불러오기 실패:", err);
