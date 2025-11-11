@@ -5,6 +5,7 @@ import {
   toggleCommentEmoji,
   getEmojiCounts,
 } from "../../api/emojiApi";
+import "./EmojiSelector.css";
 
 const EmojiSelector = ({ boardId, commentId }) => {
   const [open, setOpen] = useState(false);
@@ -17,6 +18,7 @@ const EmojiSelector = ({ boardId, commentId }) => {
     return stored ? parseInt(stored, 10) : 1;
   })();
 
+  //  이모지 카운트 초기화
   const loadCounts = async () => {
     const targetType = boardId ? "board" : "comment";
     const id = boardId || commentId;
@@ -24,13 +26,24 @@ const EmojiSelector = ({ boardId, commentId }) => {
 
     try {
       const counts = await getEmojiCounts(id, targetType);
-      if (typeof counts === "object" && !Array.isArray(counts)) {
-        setEmojiCounts(counts);
-        const selected = Object.keys(counts).find(
-          (key) => counts[key].selected === true
-        );
-        setSelectedEmoji(selected || null);
-      }
+
+      // 서버에서 받은 counts 객체 기반으로 완전 덮어쓰기
+      const updatedCounts = {};
+      emojiList.forEach((e) => {
+        const info = counts?.[e.type];
+        updatedCounts[e.type] = {
+          count: info?.count || 0,
+          selected: info?.selected || false,
+        };
+      });
+
+      setEmojiCounts(updatedCounts);
+
+      // 선택된 이모지 찾기
+      const selected = Object.keys(updatedCounts).find(
+        (key) => updatedCounts[key].selected
+      );
+      setSelectedEmoji(selected || null);
     } catch (err) {
       console.error("이모지 카운트 로드 실패:", err);
     }
@@ -41,6 +54,7 @@ const EmojiSelector = ({ boardId, commentId }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardId, commentId]);
 
+  //  이모지 선택
   const handleSelectEmoji = async (emoji) => {
     if (loading) return;
     setLoading(true);
@@ -55,8 +69,26 @@ const EmojiSelector = ({ boardId, commentId }) => {
       if (boardId) await toggleBoardEmoji(boardId, data);
       if (commentId) await toggleCommentEmoji(commentId, data);
 
-      setSelectedEmoji((prev) => (prev === emoji.type ? null : emoji.type));
-      await loadCounts();
+      // 선택 토글
+      const newSelected = selectedEmoji === emoji.type ? null : emoji.type;
+
+      // ⚡ 한 번에 하나만 선택 가능 — 나머지 초기화
+      const newCounts = Object.fromEntries(
+        Object.entries(emojiCounts).map(([key, val]) => [
+          key,
+          {
+            count:
+              key === newSelected
+                ? (val.count || 0) + (selectedEmoji === emoji.type ? -1 : 1)
+                : 0,
+            selected: key === newSelected,
+          },
+        ])
+      );
+
+      setEmojiCounts(newCounts);
+      setSelectedEmoji(newSelected);
+      setOpen(false);
     } catch (err) {
       console.error("이모지 토글 실패:", err);
     } finally {
@@ -65,32 +97,35 @@ const EmojiSelector = ({ boardId, commentId }) => {
     }
   };
 
+  const selectedData = selectedEmoji
+    ? emojiList.find((e) => e.type === selectedEmoji)
+    : null;
+
   return (
-    <div>
+    <div className="emoji-selector">
+      {/*  선택된 이모지 */}
       {selectedEmoji && (
         <div
-          onClick={() =>
-            handleSelectEmoji({
-              type: selectedEmoji,
-              image: emojiList.find((e) => e.type === selectedEmoji)?.image,
-            })
-          }
+          className="selected-emoji"
+          onClick={() => handleSelectEmoji(selectedData)}
         >
-          <img
-            src={emojiList.find((e) => e.type === selectedEmoji)?.image}
-            alt={selectedEmoji}
-            width="30"
-          />
-          <span>
-            {emojiCounts[selectedEmoji] ? emojiCounts[selectedEmoji].count : 1}
-          </span>
+          <img src={selectedData.image} alt={selectedData.type} width="30" />
+          <span>{emojiCounts[selectedEmoji]?.count || 0}⚡</span>
         </div>
       )}
 
-      <button onClick={() => setOpen(!open)}>😊</button>
+      {/* 선택창 열기 버튼 */}
+      <button
+        className="emoji-toggle"
+        onClick={() => setOpen((prev) => !prev)}
+        disabled={loading}
+      >
+        😊
+      </button>
 
+      {/*  이모지 선택 목록 */}
       {open && (
-        <div>
+        <div className="emoji-popup">
           {emojiList.map((emoji) => {
             const info = emojiCounts[emoji.type];
             const count = info?.count || 0;
@@ -99,6 +134,7 @@ const EmojiSelector = ({ boardId, commentId }) => {
             return (
               <button
                 key={emoji.id}
+                className={`emoji-button ${isSelected ? "emoji-selected" : ""}`}
                 onClick={() => handleSelectEmoji(emoji)}
                 disabled={loading}
               >

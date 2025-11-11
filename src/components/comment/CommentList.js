@@ -9,6 +9,7 @@ const CommentList = forwardRef(({ boardId }, ref) => {
     try {
       const data = await fetchComments(boardId);
       setComments(data);
+      console.log(data.data);
     } catch (err) {
       console.error("댓글 불러오기 실패:", err);
     }

@@ -9,7 +9,7 @@ export const fetchDiaryDetail = (id) => api.get(`/api/diary/${id}`);
 
 // 날짜별 조회 (YYYY-MM-DD)
 export const fetchDiaryByDate = (date) =>
-  api.get(`/api/diary/date`, { params: { date } });
+  api.get(`/api/diary`, { params: { date } });
 
 // 일기 작성
 export const createDiary = (data) => api.post(`/api/diary`, data);
@@ -17,7 +17,7 @@ export const createDiary = (data) => api.post(`/api/diary`, data);
 // ⬇️ [추가] 월별 일기 조회 (캘린더용)
 export const fetchDiariesByMonth = (year, month) => {
   return api.get(`/api/diary/month`, {
-    params: { year, month } // 쿼리 파라미터로 year와 month 전달
+    params: { year, month }, // 쿼리 파라미터로 year와 month 전달
   });
 };
 
