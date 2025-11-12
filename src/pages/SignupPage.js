@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { replace, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import "./SignupPage.css";
 
@@ -49,7 +49,7 @@ const SignupPage = () => {
       const res = await api.post("/api/auth/signup", { ...state });
       localStorage.setItem("accessToken", res.data.accessToken);
       localStorage.setItem("refreshToken", res.data.refreshToken);
-      navigate("/profile/set");
+      navigate("/profile/set", replace);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrors(err.response.data);
@@ -87,7 +87,7 @@ const SignupPage = () => {
               type="text"
               name="username"
               value={state.username}
-              placeholder="이메일"
+              placeholder="아이디"
               onChange={handleOnChange}
               className="signup-input"
             />

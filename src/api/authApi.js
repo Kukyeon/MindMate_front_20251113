@@ -27,6 +27,10 @@ const refreshAccessToken = async () => {
     return null;
   }
 };
+// export const getAccessToken = () => {
+//   const accessToken = localStorage.getItem(ACCESS_KEY);
+//   return accessToken;
+// };
 
 export const getUser = async () => {
   const accessToken = localStorage.getItem(ACCESS_KEY);

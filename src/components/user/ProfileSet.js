@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ProfileSet.css";
+import api from "../../api/axiosConfig";
+import { getAccessToken } from "../../api/authApi";
 const mbtiOptions = [
   "INTJ",
   "INTP",
@@ -21,11 +23,11 @@ const mbtiOptions = [
   "ESFP",
 ];
 
-const ProfileSetupPage = () => {
+const ProfileSetupPage = ({ setUser, user }) => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState({
     nickname: "",
-    birthday: "",
+    birth_date: "",
     mbti: "",
   });
 
@@ -33,12 +35,29 @@ const ProfileSetupPage = () => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 서버에 프로필 저장 API 호출 가능
-    // await api.post("/api/user/profile", profile);
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      return;
+    }
+    try {
+      const res = await api.post(
+        "/api/user",
+        { ...profile },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
 
-    navigate("/");
+      const user = res.data;
+      if (setUser && user) {
+        setUser(user);
+      }
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -55,6 +74,7 @@ const ProfileSetupPage = () => {
               placeholder="닉네임"
               onChange={handleOnChange}
               className="signup-input"
+              required
             />
             <button type="button" className="signup-check-btn">
               중복확인
@@ -63,10 +83,11 @@ const ProfileSetupPage = () => {
 
           <input
             type="date"
-            name="birthday"
-            value={profile.birthday}
+            name="birth_date"
+            value={profile.birth_date}
             onChange={handleOnChange}
             className="signup-input"
+            required
           />
 
           <select
@@ -74,6 +95,7 @@ const ProfileSetupPage = () => {
             value={profile.mbti}
             onChange={handleOnChange}
             className="signup-input"
+            required
           >
             <option value="">MBTI 선택</option>
             {mbtiOptions.map((type) => (
