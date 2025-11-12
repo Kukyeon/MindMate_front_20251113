@@ -1,0 +1,74 @@
+/* ProfilePage.css */
+.profile-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.profile-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.profile-tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  flex-wrap: wrap; /* 반응형 대응 */
+}
+
+.tab {
+  padding: 10px 20px;
+  border: none;
+  background: #eee;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.tab.active {
+  background-color: #d18b60;
+  color: white;
+}
+/* ProfileForm */
+/* EditProfile.css */
+.edit-profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-group {
+  display: flex;
+  gap: 5px;
+}
+
+.input-group input,
+.input-group textarea {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.save-button {
+  background-color: #d18b60;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.save-button:hover {
+  background-color: #b36b49;
+}
+
+.save-message {
+  font-size: 0.9rem;
+  color: #6b4226;
+}

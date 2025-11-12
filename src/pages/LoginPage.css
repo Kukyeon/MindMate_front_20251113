@@ -1,0 +1,108 @@
+/* LoginPage.css */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* 세로 중앙 정렬 */
+  min-height: 100vh;
+  background-color: #fff8f0; /* 기존 보드 색감과 맞춤 */
+}
+
+.login-card {
+  background-color: white;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #6b4226;
+}
+
+.login-subtitle {
+  font-size: 1rem;
+  margin-bottom: 24px;
+  color: #8b5e3c;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-input {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.login-button {
+  background-color: #d18b60;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.login-button:hover {
+  background-color: #b36b49;
+}
+
+/* 소셜 로그인 */
+.social-login {
+  margin-top: 24px;
+}
+
+.social-buttons {
+  /* display: flex; */
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.social-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 auto;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  width: 100%; /* 버튼 가로 */
+  height: 60%; /* 버튼 세로 */
+  transition: 0.2s;
+  margin-bottom: 8px;
+}
+
+.social-icon {
+  width: 40%; /* 로고 크기 */
+  height: 50%;
+}
+
+/* 호버 효과 */
+.social-button:hover {
+  transform: scale(1.1);
+}
+
+/* 각 플랫폼 색상 */
+.social-button.google {
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.social-button.kakao {
+  background-color: #fee500;
+}
+
+.social-button.naver {
+  background-color: #03c75a;
+}

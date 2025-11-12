@@ -20,12 +20,12 @@ const Footer = () => {
         <span className="text">통계</span>
       </Link>
       <Link to="/daily">
-        <span className="icon">⚙️</span>
+        <span className="icon">🔮</span>
         <span className="text">테스트</span>
       </Link>
       <Link to="/profile">
         <span className="icon">⚙️</span>
-        <span className="text">설정</span>
+        <span className="text">프로필</span>
       </Link>
     </footer>
   );

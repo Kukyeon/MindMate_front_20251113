@@ -3,10 +3,12 @@ import api from "../api/axiosConfig";
 
 const Fortune = () => {
   const [fortune, setFortune] = useState("");
-  const birth = "2월 22일";
+  const birth = "1월 22일";
+  const [loading, setLoading] = useState(false);
 
   const todayLuck = async () => {
     try {
+      setLoading(true);
       const res = await api.post("/ai/fortune", { content: birth });
       if (res.data) {
         console.log(res.data);
@@ -14,6 +16,8 @@ const Fortune = () => {
       }
     } catch (error) {
       console.error("운세 가져오기 실패:", error);
+    } finally {
+      setLoading(false);
     }
   };
   // 텍스트 줄바꿈 + 강조 처리
@@ -52,11 +56,12 @@ const Fortune = () => {
         );
       }
       if (line.includes("행운의 색상")) {
+        const color = line.split(":")[1]?.trim() || "검정";
         return (
           <div key={idx} className="fortune-line">
             🎨 오늘의 색상은{" "}
-            <span className="color-highlight">
-              {line.split(":")[1]?.trim()}
+            <span style={{ color: color.toLowerCase(), fontWeight: "bold" }}>
+              {color}
             </span>{" "}
             입니다.
           </div>
@@ -77,9 +82,18 @@ const Fortune = () => {
       <div className="fortune-card">
         <h2 className="fortune-title">오늘의 운세</h2>
         <p className="fortune-birth">생년월일: {birth}</p>
-        <button className="fortune-button" onClick={todayLuck}>
-          {fortune ? "한 번 더 확인!" : "확인하기!"}
+        <button
+          className="fortune-button"
+          onClick={todayLuck}
+          disabled={loading}
+        >
+          {loading
+            ? "🤖 AI가 운세를 준비 중..."
+            : fortune
+            ? "한 번 더 확인!"
+            : "확인하기!"}
         </button>
+
         {fortune && (
           <div className="fortune-text">{renderFortune(fortune)}</div>
         )}

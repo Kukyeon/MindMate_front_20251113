@@ -1,5 +1,4 @@
-/* BoardList */
-.board-table {
+BoardList .board-table {
   width: 100%;
   border-collapse: collapse;
   background-color: #fff8f0; /* 부드러운 웜톤 배경 */
