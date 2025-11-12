@@ -51,8 +51,7 @@ const EmojiSelector = ({ boardId, commentId }) => {
   };
 
   useEffect(() => {
-    loadCounts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (boardId || commentId) loadCounts();
   }, [boardId, commentId]);
 
   //  이모지 선택
@@ -111,7 +110,9 @@ const EmojiSelector = ({ boardId, commentId }) => {
         className="emoji-toggle"
         onClick={() => setOpen((prev) => !prev)}
         disabled={loading}
-      ></button>
+      >
+        👍
+      </button>
       {selectedEmoji && (
         <div
           className="selected-emoji"
