@@ -2,8 +2,12 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { useState } from "react";
 import "./LoginPage.css"; // 스타일 따로 분리
+import { getUser, saveAuth } from "../api/authApi";
 
-const LoginPage = () => {
+const KAKAO_REST_API_KEY = "d032aea47f7cde0d9d176389f15a4053"; // 프론트에 노출돼도 되는 키
+const KAKAO_REDIRECT_URI = "http://localhost:3000/auth/kakao/callback"; // 카카오 콘솔 + 백엔드 설정과 맞출 것
+
+const LoginPage = ({ setUser }) => {
   const navigate = useNavigate();
   const [state, setState] = useState({
     username: "",
@@ -21,8 +25,22 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const res = await api.post("/api/auth/login", { ...state });
-      localStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
+      const accessToken = res.data.accessToken;
+      const refreshToken = res.data.refreshToken;
+
+      saveAuth({ accessToken, refreshToken });
+
+      const user = await getUser();
+      if (setUser && user) {
+        setUser(user);
+      }
+      // if (!user.nickname) {
+      //   // 닉네임이 없으면 프로필이 설정 되지 않음으로 정의
+      //   navigate("/profile"); // 로그인시, 프로필설정이 안되면 이동
+      // } else {
+      //   navigate("/");
+      // }
+
       navigate("/");
     } catch (err) {
       if (err.response && err.response.status === 400) {
@@ -37,6 +55,17 @@ const LoginPage = () => {
     alert(`${provider} 로그인 구현 필요`);
     // 실제로는 OAuth API 호출
   };
+
+  const handleKakaoLogin = () => {
+    const kakaoAuthUrl =
+      "https://kauth.kakao.com/oauth/authorize" +
+      `?response_type=code` +
+      `&client_id=${encodeURIComponent(KAKAO_REST_API_KEY)}` +
+      `&redirect_uri=${encodeURIComponent(KAKAO_REDIRECT_URI)}`;
+
+    window.location.href = kakaoAuthUrl;
+  };
+
   return (
     <div className="login-page">
       <div className="login-card">
@@ -44,10 +73,10 @@ const LoginPage = () => {
         <p className="login-subtitle">오늘의 마음을 기록해보세요 💖</p>
         <form onSubmit={handleSubmit} className="login-form">
           <input
-            type="email"
-            name="email"
+            type="username"
+            name="username"
             value={state.username}
-            placeholder="이메일"
+            placeholder="아이디"
             onChange={handleOnChange}
             className="login-input"
           />
@@ -68,7 +97,7 @@ const LoginPage = () => {
           <div className="social-buttons">
             <button
               className="social-button google"
-              onClick={() => handleSocialLogin("Google")}
+              // onClick={() => handleSocialLogin("Google")}
             >
               <img
                 src="/logo/googleIn.png"
@@ -76,15 +105,12 @@ const LoginPage = () => {
                 className="social-icon"
               />
             </button>
-            <button
-              className="social-button kakao"
-              onClick={() => handleSocialLogin("Kakao")}
-            >
+            <button className="social-button kakao" onClick={handleKakaoLogin}>
               <img src="/logo/kakao.png" alt="Kakao" className="social-icon" />
             </button>
             <button
               className="social-button naver"
-              onClick={() => handleSocialLogin("Naver")}
+              // onClick={() => handleSocialLogin("Naver")}
             >
               <img src="/logo/naver.png" alt="Naver" className="social-icon" />
             </button>
