@@ -73,10 +73,12 @@ const LoginPage = ({ setUser }) => {
         <p className="login-subtitle">오늘의 마음을 기록해보세요 💖</p>
         <form onSubmit={handleSubmit} className="login-form">
           <input
+
             type="username"
             name="username"
             value={state.username}
             placeholder="아이디"
+
             onChange={handleOnChange}
             className="login-input"
           />
