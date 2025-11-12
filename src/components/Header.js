@@ -6,7 +6,10 @@ const Header = () => {
   return (
     <header className="header">
       <div className="logo">
-        <img src="logo/logo.png" alt="logo" width={70} height={60} />
+        <Link to={"/"}>
+          {" "}
+          <img src="/logo/logo.png" alt="logo" width={70} height={60} />
+        </Link>
       </div>
       <div className="hamburger" onClick={() => setOpen(!open)}>
         ☰

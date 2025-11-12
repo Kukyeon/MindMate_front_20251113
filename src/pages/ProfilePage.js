@@ -13,16 +13,16 @@ const ProfilePage = () => {
 
       <div className="profile-tabs">
         <button
-          className={activeTab === "ProfilForm" ? "tab active" : "tab"}
+          className={activeTab === "ProfileForm" ? "tab active" : "tab"}
           onClick={() => setActiveTab("ProfileForm")}
         >
-          수정
+          프로필 수정
         </button>
         <button
           className={activeTab === "Character" ? "tab active" : "tab"}
           onClick={() => setActiveTab("Character")}
         >
-          캐릭터
+          내 캐릭터
         </button>
         <button
           className={activeTab === "Settings" ? "tab active" : "tab"}

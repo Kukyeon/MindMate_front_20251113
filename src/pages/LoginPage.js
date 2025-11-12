@@ -46,7 +46,7 @@ const LoginPage = () => {
           <input
             type="email"
             name="email"
-            value={state.username}
+            value={state.email}
             placeholder="이메일"
             onChange={handleOnChange}
             className="login-input"

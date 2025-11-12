@@ -32,7 +32,7 @@ import Home from "./pages/Home.js";
 import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
 import ProfilePage from "./pages/ProfilePage.js";
-import ProfileSetup from "./components/user/ProfileSet.js";
+import ProfileSet from "./components/user/ProfileSet.js";
 
 // ✅ 로그인 여부 확인용 PrivateRoute
 function PrivateRoute({ children }) {
@@ -101,7 +101,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/profile/set" element={<ProfileSetup />} />
+        <Route path="/profile/set" element={<ProfileSet />} />
         {/* 다이어리 */}
         <Route path="/diary" element={<Calendar />} />
         <Route path="/diary/calendar" element={<Calendar />} />
