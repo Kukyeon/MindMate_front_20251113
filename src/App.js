@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 
 import "./App.css";
@@ -21,8 +21,6 @@ import Graph from "./components/Graph.js";
 
 import LoginPage from "./pages/LoginPage.js";
 
-import { usePingOnNavigate, checkAuth } from "./api/pingApi.js";
-
 //import StatsPage from './pages/StatsPage'; // ⬅️ [추가]
 
 // 💫 기타 기능
@@ -32,35 +30,50 @@ import Home from "./pages/Home.js";
 import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
 import ProfilePage from "./pages/ProfilePage.js";
+
+import ProfileSetup from "./components/user/ProfileSet.js";
+import { getUser, clearAuth } from "./api/authApi.js";
+import KakaoCallback from "./pages/KaKaoCallBack.js";
+import { div, small } from "framer-motion/client";
+
 import ProfileSet from "./components/user/ProfileSet.js";
 
-// ✅ 로그인 여부 확인용 PrivateRoute
-function PrivateRoute({ children }) {
-  const token = localStorage.getItem("accessToken");
-  return token ? children : <Navigate to="/login" replace />;
-}
 
-// function RootRedirect() {
-//   // 시작시 로그인 여부에 따라 이동하는 페이지
-//   const token = localStorage.getItem("accessToken");
-//   return token ? (
-//     <Navigate to="/boards" replace />
-//   ) : (
-//     <Navigate to="/login" replace />
-//   );
-// }
 
 export default function App() {
-  usePingOnNavigate(); // 경로가 바뀔떄 실행 (page 이동) // 사용자 체크
-  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    checkAuth(window.location.pathname, navigate); // 앱 처음 로드(새로고침) 시 1회 실행
-  }, [navigate]);
+    (async () => {
+      const me = await getUser(); // user 객체 or null
+      setUser(me);
+      setInitialized(true);
+    })();
+  }, []);
 
+  function PrivateRoute({ children }) {
+    return user ? children : <Navigate to="/login" replace />;
+  }
+
+  if (!initialized) {
+    return <div>로딩 중...</div>;
+  }
+
+  const ClickOnLogout = () => {
+    clearAuth();
+    setUser(null);
+  };
   return (
     <>
       <Header></Header>
+
+      {user && (
+        <>
+          {/* 로그아웃 기능 임시로 넣은것 */}
+          <div>로그인중</div> <button onClick={ClickOnLogout}>로그아웃</button>
+        </>
+      )}
       {/* <BrowserRouter> */}
       <Routes>
         <Route path="/daily" element={<Daily />}></Route>
@@ -98,8 +111,23 @@ export default function App() {
         {/* <Route path="*" element={<Navigate to="/boards" />} />
           <Route path="/" element={<Navigate to="/login" />} /> */}
 
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route
+          path="/login"
+          element={user ? <Navigate to="/" /> : <LoginPage setUser={setUser} />}
+        />
+        <Route
+          path="/signup"
+          element={
+            user ? <Navigate to="/" /> : <SignupPage setUser={setUser} />
+          }
+        />
+        <Route
+          path="/auth/kakao/callback"
+          element={
+            user ? <Navigate to="/" /> : <KakaoCallback setUser={setUser} />
+          }
+        />
+
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/set" element={<ProfileSet />} />
         {/* 다이어리 */}
