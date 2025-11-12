@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 // 1. [필수] useLocation 대신 useParams를 import
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchDiaryByDate } from "../api/diaryApi";
 
-export default function DiaryDetail() {
+export default function DiaryDetail({ dateFromCalendar, onDelete}) {
   // 2. [필수] useParams()를 사용하여 URL에서 date 값을 가져옴
-  const { date } = useParams(); 
+ 
   const [diary, setDiary] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const params = useParams(); // 항상 호출
+  const date = dateFromCalendar || params.date; // 나중에 선택
 
   useEffect(() => {
     // 3. date 변수에 URL에서 가져온 날짜가 정상적으로 들어옴
     if (!date) {
-      alert("날짜 정보가 올바르지 않습니다.");
+    
       navigate("/diary/calendar");
       return;
     }
@@ -52,22 +54,23 @@ export default function DiaryDetail() {
             {
                 method: "DELETE",
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                      "Content-Type": "application/json", // JSON 형식이면 추가
                 },
             }
         );
 
-        if (response.status === 200 || response.status === 204) {
-            alert("일기가 삭제되었습니다.");
-            navigate("/diary/calendar"); // 캘린더 메인 페이지로 이동
-        } else {
-            throw new Error(`삭제 실패: ${response.status}`);
-        }
-    } catch (error) {
-        console.error("❌ handleDelete 오류:", error);
-        alert("삭제 중 오류가 발생했습니다.");
-    }
-  };
+       if (response.ok) {
+        alert("일기가 삭제되었습니다.");
+        setDiary(null); // 현재 DiaryDetail에서는 일기 삭제 처리
+        if (onDelete) onDelete(date); // 상위 상태 갱신
+      } else {
+        throw new Error(`삭제 실패: ${response.status}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
 
 
 
@@ -109,7 +112,7 @@ export default function DiaryDetail() {
       )}
 
       <button onClick={() => navigate(`/diary/edit/${date}`)}>수정</button>
-      <button onClick={() => navigate("/diary/calendar")}>캘린더로</button>
+      
        {/* ⬇️ 6. 삭제 버튼은 폼 밖으로 분리 ⬇️ */}
      
         <button  onClick={handleDelete} >

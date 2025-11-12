@@ -46,7 +46,7 @@ export default function DiaryWritePage() {
     try {
       await createDiary({ title, content, username, date, emoji});
       alert("일기가 저장되었습니다.");
-      navigate(`/diary/date/${date}`);
+      navigate(`/diary/calendar`);
     } catch (err) {
       console.error(err);
       alert("저장 실패");
