@@ -18,16 +18,15 @@ export const emojiList = [
   { id: 15, type: "anger", image: "/emojis/anger.png" },
 ];
 
-//  accountId 자동 처리 (로그인 or 테스트모드)
-const getAccountId = () => {
-  const stored = localStorage.getItem("accountId");
-  return stored ? parseInt(stored, 10) : 1; // 로그인 안 됐으면 기본 1번
-};
+// 임시 로그인용
+const getUserId = () => parseInt(localStorage.getItem("userId") || 1, 10);
+// 실제 로그인 적용 시:
+// const getUserId = () => currentUser.id;
 
 //  게시글 이모지 토글
 export const toggleBoardEmoji = async (boardId, data) => {
   return await api.post(`/api/emoji/toggle`, {
-    accountId: data?.accountId ?? getAccountId(),
+    userId: data?.userId ?? getUserId(),
     boardId,
     type: data.type,
     imageUrl: data.imageUrl,
@@ -37,7 +36,7 @@ export const toggleBoardEmoji = async (boardId, data) => {
 //  댓글 이모지 토글
 export const toggleCommentEmoji = async (commentId, data) => {
   return await api.post(`/api/emoji/toggle`, {
-    accountId: data?.accountId ?? getAccountId(),
+    userId: data?.userId ?? getUserId(),
     commentId,
     type: data.type,
     imageUrl: data.imageUrl,
@@ -46,11 +45,11 @@ export const toggleCommentEmoji = async (commentId, data) => {
 
 //  게시글/댓글 이모지 카운트 조회 (+ 내 선택 포함)
 export const getEmojiCounts = async (id, targetType = "board") => {
-  const accountId = getAccountId();
+  const userId = getUserId();
   const endpoint =
     targetType === "board"
-      ? `/api/emoji/board/${id}?accountId=${accountId}`
-      : `/api/emoji/comment/${id}?accountId=${accountId}`;
+      ? `/api/emoji/board/${id}?userId=${userId}`
+      : `/api/emoji/comment/${id}?userId=${userId}`;
 
   const res = await api.get(endpoint);
 

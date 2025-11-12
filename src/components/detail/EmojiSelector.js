@@ -13,10 +13,11 @@ const EmojiSelector = ({ boardId, commentId }) => {
   const [emojiCounts, setEmojiCounts] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const accountId = (() => {
-    const stored = localStorage.getItem("accountId");
-    return stored ? parseInt(stored, 10) : 1;
-  })();
+  // ⚡ 임시 로그인
+  const userId = parseInt(localStorage.getItem("userId") || 1, 10);
+
+  // ⚡ 실제 로그인 적용 시
+  // const userId = 현재 로그인 유저 ID;
 
   //  이모지 카운트 초기화
   const loadCounts = async () => {
@@ -60,7 +61,7 @@ const EmojiSelector = ({ boardId, commentId }) => {
     setLoading(true);
 
     const data = {
-      accountId,
+      userId,
       type: emoji.type,
       imageUrl: emoji.image,
     };

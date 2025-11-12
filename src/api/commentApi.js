@@ -8,14 +8,17 @@ export const fetchComments = async (boardId) => {
 };
 
 // 댓글 작성
-export const postComment = async ({ boardId, content, accountId }) => {
-  const res = await api.post(`/api/comments`, { boardId, content, accountId });
+export const postComment = async ({ boardId, content, userId }) => {
+  const res = await api.post(`/api/comments`, { boardId, content, userId });
   return res.data;
 };
 
 // 댓글 수정
-export const updateComment = async (id, data) => {
-  const res = await api.put(`/api/comments/${id}`, data);
+export const updateComment = async (id, { content, userId }) => {
+  const res = await api.put(`/api/comments/${id}`, {
+    content,
+    userId,
+  });
   return res.data;
 };
 

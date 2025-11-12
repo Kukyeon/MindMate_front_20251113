@@ -6,6 +6,12 @@ import CommentEditForm from "./CommentEditForm";
 const CommentItem = ({ comment, onUpdated }) => {
   const [editing, setEditing] = useState(false);
 
+  // ⚡ 임시 로그인
+  const userId = parseInt(localStorage.getItem("userId") || 1, 10);
+
+  // ⚡ 실제 로그인 적용 시
+  // const userId = comment.userId ||현재 로그인 유저 ID;
+
   const handleDelete = async () => {
     if (window.confirm("댓글을 삭제하시겠습니까?")) {
       await deleteComment(comment.id);
@@ -16,7 +22,7 @@ const CommentItem = ({ comment, onUpdated }) => {
   return (
     <div className="comment-item-card">
       <div className="comment-header">
-        <span className="comment-writer">{comment.account.id}</span>
+        <span className="comment-writer">{comment.writer}</span>
         <span className="comment-date">
           {new Date(comment.createdate).toLocaleDateString()}
         </span>

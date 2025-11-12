@@ -9,15 +9,19 @@ const BoardWritePage = () => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // ⚡ 임시 로그인
+  const userId = parseInt(localStorage.getItem("userId") || 1, 10);
+
+  // ⚡ 실제 로그인 적용 시
+  // const userId = 현재 로그인 유저 ID;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const accountId = localStorage.getItem("accountId") || 1;
-
     try {
       // 1️ 게시글 저장
-      const savedBoard = await createBoard({ title, content, accountId });
+      const savedBoard = await createBoard({ title, content, userId });
       const boardId = savedBoard.id || savedBoard.data?.id;
       if (!boardId) throw new Error("게시글 ID를 가져오지 못했습니다.");
 
@@ -29,7 +33,7 @@ const BoardWritePage = () => {
         await updateBoard(boardId, {
           title,
           content,
-          accountId,
+          userId,
           hashtags: aiTags.join(" "),
         });
       }

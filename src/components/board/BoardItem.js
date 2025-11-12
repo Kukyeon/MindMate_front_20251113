@@ -12,7 +12,7 @@ const BoardItem = ({ board, index }) => {
           <span className="board-comment">[{board.commentCount}]</span>
         )}
       </td>
-      <td>{board.writer}</td>
+      <td>{board.writer}</td> {/* writer 사용 또는 board.nickname */}
       <td>{board.viewCount}</td>
       <td>{new Date(board.createdAt).toLocaleDateString()}</td>
     </tr>

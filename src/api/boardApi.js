@@ -24,21 +24,22 @@ export const fetchBoardDetail = async (id) => {
 };
 
 // 게시글 작성
-export const createBoard = async ({ title, content, accountId }) => {
-  const res = await api.post(`/api/boards?accountId=${accountId}`, {
+export const createBoard = async ({ title, content, userId }) => {
+  const res = await api.post(`/api/boards?userId=${userId}`, {
     title,
     content,
-    accountId,
+    userId,
   });
   return res.data;
 };
 
 // 게시글 수정
-export const updateBoard = async (id, { title, content, accountId }) => {
+export const updateBoard = async (id, { title, content, userId, hashtags }) => {
   const res = await api.put(`/api/boards/${id}`, {
     title,
     content,
-    accountId,
+    userId,
+    hashtags,
   });
   return res.data;
 };

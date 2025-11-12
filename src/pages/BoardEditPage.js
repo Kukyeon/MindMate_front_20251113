@@ -9,10 +9,11 @@ const BoardEditPage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
-  const accountId = (() => {
-    const stored = localStorage.getItem("accountId");
-    return stored ? parseInt(stored, 10) : 1;
-  })();
+  // ⚡ 임시 로그인
+  const userId = parseInt(localStorage.getItem("userId") || 1, 10);
+
+  // ⚡ 실제 로그인 적용 시
+  // const userId = 현재 로그인 유저 ID;
 
   useEffect(() => {
     const loadBoard = async () => {
@@ -32,7 +33,7 @@ const BoardEditPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await updateBoard(id, { title, content, accountId });
+      await updateBoard(id, { title, content, userId });
       await generateHashtags(id);
       alert("게시글이 수정되었습니다!");
       navigate(`/board/${id}`);

@@ -13,10 +13,10 @@ const BoardDetailPage = () => {
   const [board, setBoard] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const accountId = (() => {
-    const stored = localStorage.getItem("accountId");
-    return stored ? parseInt(stored, 10) : 1;
-  })();
+  // ⚡ 임시 로그인
+  const userId = parseInt(localStorage.getItem("userId") || 1, 10);
+  // ⚡ 실제 로그인 적용 시
+  // const userId = 현재 로그인 유저 ID;
 
   const fetchBoard = async () => {
     try {
@@ -51,8 +51,8 @@ const BoardDetailPage = () => {
   if (!board)
     return <div className="not-found">게시글 정보를 찾을 수 없습니다.</div>;
 
-  const isMyPost =
-    board.accountId === accountId || board.writer === "익명" || true;
+  const isMyPost = board.userId === userId || board.writer === "익명" || true;
+  // const isMyPost = board.userId === userId; // 본인 글 여부
 
   let tagData = board.hashtags;
   if (typeof tagData === "string") {
@@ -80,7 +80,7 @@ const BoardDetailPage = () => {
           )}
         </div>
         <div className="board-meta">
-          <span>작성자: {board.authorName || "익명"}</span>
+          <span>작성자: {board.writer || "익명"}</span>
           <span>{new Date(board.createdAt).toLocaleDateString()}</span>
         </div>
       </div>
@@ -101,7 +101,7 @@ const BoardDetailPage = () => {
       {/* 댓글 영역 */}
       <div className="board-comment-section">
         <CommentForm
-          accountId={accountId}
+          userId={userId}
           boardId={board.id}
           onCommentAdded={fetchBoard}
         />
