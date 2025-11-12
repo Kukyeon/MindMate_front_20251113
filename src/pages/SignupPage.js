@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import "./SignupPage.css";
 
+const KAKAO_REST_API_KEY = "d032aea47f7cde0d9d176389f15a4053"; // 프론트에 노출돼도 되는 키
+const KAKAO_REDIRECT_URI = "http://localhost:3000/auth/kakao/callback"; // 카카오 콘솔 + 백엔드 설정과 맞출 것
+
 const SignupPage = () => {
   const navigate = useNavigate();
   const [state, setState] = useState({
@@ -60,7 +63,15 @@ const SignupPage = () => {
     alert(`${provider} 회원가입 구현 필요`);
     // 실제 구현 시 OAuth API 호출
   };
+  const handleKakaoLogin = () => {
+    const kakaoAuthUrl =
+      "https://kauth.kakao.com/oauth/authorize" +
+      `?response_type=code` +
+      `&client_id=${encodeURIComponent(KAKAO_REST_API_KEY)}` +
+      `&redirect_uri=${encodeURIComponent(KAKAO_REDIRECT_URI)}`;
 
+    window.location.href = kakaoAuthUrl;
+  };
   return (
     <div className="signup-page">
       <div className="signup-card">
@@ -112,7 +123,7 @@ const SignupPage = () => {
           <div className="social-buttons">
             <button
               className="social-button google"
-              onClick={() => handleSocialSignup("Google")}
+              // onClick={() => handleSocialSignup("Google")}
             >
               <img
                 src="/logo/googleUp.png"
@@ -120,15 +131,12 @@ const SignupPage = () => {
                 className="social-icon"
               />
             </button>
-            <button
-              className="social-button kakao"
-              onClick={() => handleSocialSignup("Kakao")}
-            >
+            <button className="social-button kakao" onClick={handleKakaoLogin}>
               <img src="/logo/kakao.png" alt="Kakao" className="social-icon" />
             </button>
             <button
               className="social-button naver"
-              onClick={() => handleSocialSignup("Naver")}
+              // onClick={() => handleSocialSignup("Naver")}
             >
               <img src="/logo/naver.png" alt="Naver" className="social-icon" />
             </button>

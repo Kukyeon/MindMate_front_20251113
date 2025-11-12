@@ -31,8 +31,9 @@ import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
 import ProfilePage from "./pages/ProfilePage.js";
 import ProfileSetup from "./components/user/ProfileSet.js";
-import { getUser } from "./api/authApi.js";
+import { getUser, clearAuth } from "./api/authApi.js";
 import KakaoCallback from "./pages/KaKaoCallBack.js";
+import { div, small } from "framer-motion/client";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -54,9 +55,20 @@ export default function App() {
     return <div>로딩 중...</div>;
   }
 
+  const ClickOnLogout = () => {
+    clearAuth();
+    setUser(null);
+  };
   return (
     <>
       <Header></Header>
+
+      {user && (
+        <>
+          {/* 로그아웃 기능 임시로 넣은것 */}
+          <div>로그인중</div> <button onClick={ClickOnLogout}>로그아웃</button>
+        </>
+      )}
       {/* <BrowserRouter> */}
       <Routes>
         <Route path="/daily" element={<Daily />}></Route>
