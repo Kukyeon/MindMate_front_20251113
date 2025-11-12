@@ -13,10 +13,15 @@ const BoardDetailPage = () => {
   const [board, setBoard] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // ⚡ 임시 로그인
+  // ⚡ 임시 로그인 (임시로 userId 1번 유저로 처리)
   const userId = parseInt(localStorage.getItem("userId") || 1, 10);
-  // ⚡ 실제 로그인 적용 시
-  // const userId = 현재 로그인 유저 ID;
+
+  // ⚡ 실제 로그인 적용 시 (예: JWT 기반 로그인)
+  /*
+  import { useAuth } from "../context/AuthContext"; 
+  const { user } = useAuth(); 
+  const userId = user?.id; // 로그인된 유저의 id를 받아옴
+  */
 
   const fetchBoard = async () => {
     try {
@@ -31,10 +36,11 @@ const BoardDetailPage = () => {
   };
 
   const handleEdit = () => navigate(`/board/edit/${id}`);
+
   const handleDelete = async () => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
-      await api.delete(`/boards/${id}`);
+      await api.delete(`/api/boards/${id}`);
       alert("삭제되었습니다.");
       navigate("/boards");
     } catch (err) {
@@ -51,15 +57,18 @@ const BoardDetailPage = () => {
   if (!board)
     return <div className="not-found">게시글 정보를 찾을 수 없습니다.</div>;
 
-  const isMyPost = board.userId === userId || board.writer === "익명" || true;
-  // const isMyPost = board.userId === userId; // 본인 글 여부
+  // ✅ 본인 게시글 여부 판단 (writer가 User.nickname과 연동될 경우)
+  const isMyPost = board.userId === userId;
 
-  let tagData = board.hashtags;
-  if (typeof tagData === "string") {
-    tagData = tagData
+  // ✅ 해시태그 안전 처리
+  let tagData = [];
+  if (typeof board?.hashtags === "string") {
+    tagData = board.hashtags
       .split(/[,\s]+/)
       .map((t) => t.trim())
       .filter((t) => t.startsWith("#"));
+  } else if (Array.isArray(board?.hashtags)) {
+    tagData = board.hashtags;
   }
 
   return (
@@ -80,20 +89,22 @@ const BoardDetailPage = () => {
           )}
         </div>
         <div className="board-meta">
-          <span>작성자: {board.writer || "익명"}</span>
+          <span>
+            작성자: {board?.writer || board?.user?.nickname || "익명"}
+          </span>
           <span>{new Date(board.createdAt).toLocaleDateString()}</span>
         </div>
       </div>
 
       {/* 본문 카드 */}
       <div className="board-content-card">
-        <p>{board.content}</p>
+        <p>{board?.content || "내용이 없습니다."}</p>
       </div>
 
       {/* 해시태그 + 이모지 */}
-      {(tagData.length > 0 || true) && (
+      {(tagData?.length > 0 || true) && (
         <div className="board-hashtag-emoji-card">
-          {tagData.length > 0 && <HashtagList hashtags={tagData} />}
+          {tagData?.length > 0 && <HashtagList hashtags={tagData} />}
         </div>
       )}
       <EmojiSelector boardId={board.id} />
