@@ -58,7 +58,7 @@ const BoardDetailPage = () => {
     return <div className="not-found">게시글 정보를 찾을 수 없습니다.</div>;
 
   // ✅ 본인 게시글 여부 판단 (writer가 User.nickname과 연동될 경우)
-  const isMyPost = board.userId === userId;
+  const isMyPost = board.writerId === userId;
 
   // ✅ 해시태그 안전 처리
   let tagData = [];
@@ -102,12 +102,12 @@ const BoardDetailPage = () => {
       </div>
 
       {/* 해시태그 + 이모지 */}
-      {(tagData?.length > 0 || true) && (
+      {board?.id && (
         <div className="board-hashtag-emoji-card">
           {tagData?.length > 0 && <HashtagList hashtags={tagData} />}
+          <EmojiSelector boardId={board.id} />
         </div>
       )}
-      <EmojiSelector boardId={board.id} />
 
       {/* 댓글 영역 */}
       <div className="board-comment-section">

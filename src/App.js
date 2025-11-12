@@ -38,8 +38,6 @@ import { div, small } from "framer-motion/client";
 
 import ProfileSet from "./components/user/ProfileSet.js";
 
-
-
 export default function App() {
   const [user, setUser] = useState(null);
   const [initialized, setInitialized] = useState(false);
