@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { replace, useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { getUser, saveAuth } from "../api/authApi";
 
@@ -38,13 +38,12 @@ const KakaoCallback = ({ setUser }) => {
           setUser(user);
         }
 
-        // if (!user.nickname) {
-        //   // 닉네임이 없으면 프로필이 설정 되지 않음으로 정의
-        //   navigate("/profile"); // 소셜로 첫 회원가입 후 프로필설정
-        // } else {
-        //   navigate("/");
-        // }
-        navigate("/");
+        if (!user.nickname) {
+          // 닉네임이 없으면 프로필이 설정 되지 않음으로 정의
+          navigate("/profile", replace); // 소셜로 첫 회원가입 후 프로필설정
+        } else {
+          navigate("/", replace);
+        }
       } catch (err) {
         console.error("카카오 로그인 실패:", err);
         alert("카카오 로그인 실패");

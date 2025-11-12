@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { replace, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { useState } from "react";
 import "./LoginPage.css"; // 스타일 따로 분리
@@ -34,14 +34,12 @@ const LoginPage = ({ setUser }) => {
       if (setUser && user) {
         setUser(user);
       }
-      // if (!user.nickname) {
-      //   // 닉네임이 없으면 프로필이 설정 되지 않음으로 정의
-      //   navigate("/profile"); // 로그인시, 프로필설정이 안되면 이동
-      // } else {
-      //   navigate("/");
-      // }
-
-      navigate("/");
+      if (!user.nickname) {
+        // 닉네임이 없으면 프로필이 설정 되지 않음으로 정의
+        navigate("/profile", replace); // 로그인시, 프로필설정이 안되면 이동
+      } else {
+        navigate("/", replace);
+      }
     } catch (err) {
       if (err.response && err.response.status === 400) {
         alert("아이디 또는 비밀번호를 확인해주세요.");
@@ -73,12 +71,10 @@ const LoginPage = ({ setUser }) => {
         <p className="login-subtitle">오늘의 마음을 기록해보세요 💖</p>
         <form onSubmit={handleSubmit} className="login-form">
           <input
-
             type="username"
             name="username"
             value={state.username}
             placeholder="아이디"
-
             onChange={handleOnChange}
             className="login-input"
           />
