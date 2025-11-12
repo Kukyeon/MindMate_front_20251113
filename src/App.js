@@ -51,7 +51,15 @@ export default function App() {
   }, []);
 
   function PrivateRoute({ children }) {
-    return user ? children : <Navigate to="/login" replace />;
+    return user ? (
+      user.nickname ? (
+        children
+      ) : (
+        <Navigate to="/profile/set" replace />
+      )
+    ) : (
+      <Navigate to="/login" replace />
+    );
   }
 
   if (!initialized) {
@@ -69,7 +77,8 @@ export default function App() {
       {user && (
         <>
           {/* 로그아웃 기능 임시로 넣은것 */}
-          <div>로그인중</div> <button onClick={ClickOnLogout}>로그아웃</button>
+          <div> {user.nickname}님 로그인중</div>{" "}
+          <button onClick={ClickOnLogout}>로그아웃</button>
         </>
       )}
       {/* <BrowserRouter> */}
@@ -111,23 +120,49 @@ export default function App() {
 
         <Route
           path="/login"
-          element={user ? <Navigate to="/" /> : <LoginPage setUser={setUser} />}
+          element={
+            user ? (
+              user.nickname ? (
+                <Navigate to="/" />
+              ) : (
+                <Navigate to="/profile/set" />
+              )
+            ) : (
+              <LoginPage setUser={setUser} />
+            )
+          }
         />
         <Route
           path="/signup"
           element={
-            user ? <Navigate to="/" /> : <SignupPage setUser={setUser} />
+            user ? (
+              user.nickname ? (
+                <Navigate to="/" />
+              ) : (
+                <Navigate to="/profile/set" />
+              )
+            ) : (
+              <SignupPage setUser={setUser} />
+            )
           }
         />
         <Route
           path="/auth/kakao/callback"
           element={
-            user ? <Navigate to="/" /> : <KakaoCallback setUser={setUser} />
+            user ? (
+              user.nickname ? (
+                <Navigate to="/" />
+              ) : (
+                <Navigate to="/profile/set" />
+              )
+            ) : (
+              <KakaoCallback setUser={setUser} />
+            )
           }
         />
 
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/profile/set" element={<ProfileSet />} />
+        <Route path="/profile" element={<ProfilePage setUser={setUser} />} />
+        <Route path="/profile/set" element={<ProfileSet setUser={setUser} />} />
         {/* 다이어리 */}
         <Route path="/diary" element={<Calendar />} />
         <Route path="/diary/calendar" element={<Calendar />} />

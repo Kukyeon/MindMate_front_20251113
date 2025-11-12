@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createDiary, fetchDiaryByDate } from "../api/diaryService";
-import DiaryEmojiPicker from "../components/DiaryEmojiPicker"; // 이모지 피커 (이전 단계에서 추가)
+import { createDiary, fetchDiaryByDate } from "../api/diaryApi";
+import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
 
 export default function DiaryWritePage() {
   const location = useLocation();
@@ -46,7 +46,7 @@ export default function DiaryWritePage() {
     try {
       await createDiary({ title, content, username, date, emoji });
       alert("일기가 저장되었습니다.");
-      navigate(`/diary/date/${date}`);
+      navigate("/diary/calendar", { state: { selectedDate: date } });
     } catch (err) {
       console.error(err);
       alert("저장 실패");
@@ -57,18 +57,14 @@ export default function DiaryWritePage() {
   if (!date) return <div>날짜 정보 확인 중...</div>;
 
   return (
-    <div>
-      {/* ⬇️ 3. 뒤로가기 버튼 추가 (navigate(-1)은 브라우저의 '뒤로가기'와 동일) */}
+    <div className="diary-write-card">
       <button type="button" onClick={() => navigate(-1)}>
         &larr; 뒤로가기
       </button>
 
-      {/* ⬇️ 4. 날짜를 input 대신 텍스트로 표시 */}
-      <h2>{date} 일기 작성</h2>
+      <h2>✍️ {date} 일기 작성</h2>
 
       <form onSubmit={handleSubmit}>
-        {/* ❌ <input type="date" ... /> 태그 삭제됨 */}
-
         <input
           type="text"
           placeholder="제목을 입력하세요"
@@ -80,10 +76,19 @@ export default function DiaryWritePage() {
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
-
         <DiaryEmojiPicker selectedEmoji={emoji} onSelectEmoji={setEmoji} />
 
-        <button type="submit">저장</button>
+        <div className="diary-write-buttons">
+          <button type="submit">저장</button>
+          <button
+            type="button"
+            onClick={() =>
+              navigate("/diary/calendar", { state: { selectedDate: date } })
+            }
+          >
+            취소
+          </button>
+        </div>
       </form>
     </div>
   );
