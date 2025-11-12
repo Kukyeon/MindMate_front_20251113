@@ -3,10 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
 
 export default function DiaryEditor() {
-  const { date } = useParams(); 
+  const { date } = useParams();
   const navigate = useNavigate();
 
-  const [emoji, setEmoji] = useState(null); 
+  const [emoji, setEmoji] = useState(null);
   const [diary, setDiary] = useState({
     title: "",
     content: "",
@@ -19,7 +19,9 @@ export default function DiaryEditor() {
 
     const fetchDiary = async () => {
       try {
-        const response = await fetch( `http://localhost:8888/api/diary/date?date=${date}`);
+        const response = await fetch(
+          `http://localhost:8888/api/diary/date?date=${date}`
+        );
         if (!response.ok) throw new Error("일기 조회 실패");
         const data = await response.json();
 
@@ -44,20 +46,21 @@ export default function DiaryEditor() {
     const dataToSend = {
       title: diary.title,
       content: diary.content,
-      emoji: { id, type, imageUrl},
+      emoji: { id, type, imageUrl },
     };
-console.log("PUT URL:", `http://localhost:8888/api/diary/date/${date}`);
-console.log("Request Body:", JSON.stringify(dataToSend));
+    console.log("PUT URL:", `http://localhost:8888/api/diary/date/${date}`);
+    console.log("Request Body:", JSON.stringify(dataToSend));
     try {
-      const response = await fetch(`http://localhost:8888/api/diary/date/${date}`, {
-        
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSend),
-        
-      });
+      const response = await fetch(
+        `http://localhost:8888/api/diary/date/${date}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataToSend),
+        }
+      );
 
       if (!response.ok) throw new Error("수정 실패");
 
@@ -76,32 +79,36 @@ console.log("Request Body:", JSON.stringify(dataToSend));
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="diary-editor-card">
       <h2>{date} 일기 수정</h2>
       <form onSubmit={handleSave}>
-        <div>
-          <label>제목</label>
-          <input
-            type="text"
-            name="title"
-            value={diary.title}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>내용</label>
-          <textarea
-            name="content"
-            value={diary.content}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <label>제목</label>
+        <input
+          type="text"
+          name="title"
+          value={diary.title}
+          onChange={handleChange}
+          required
+        />
+
+        <label>내용</label>
+        <textarea
+          name="content"
+          value={diary.content}
+          onChange={handleChange}
+          required
+        />
+
         <DiaryEmojiPicker selectedEmoji={emoji} onSelectEmoji={setEmoji} />
-        <div style={{ marginTop: "10px" }}>
+
+        <div className="diary-editor-buttons">
           <button type="submit">저장</button>
-          <button type="button" onClick={() => navigate("/diary/calendar", { state: { selectedDate: date } })}>
+          <button
+            type="button"
+            onClick={() =>
+              navigate("/diary/calendar", { state: { selectedDate: date } })
+            }
+          >
             취소
           </button>
         </div>

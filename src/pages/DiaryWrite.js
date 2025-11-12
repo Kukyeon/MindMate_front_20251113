@@ -8,11 +8,11 @@ export default function DiaryWritePage() {
   const navigate = useNavigate();
 
   // ⭐️ 1. setDate 제거, location.state에서 날짜를 상수로 받음
-  const date = location.state?.date; 
+  const date = location.state?.date;
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [emoji, setEmoji] = useState(null); 
+  const [emoji, setEmoji] = useState(null);
 
   useEffect(() => {
     // ⭐️ 2. 날짜가 없으면(잘못된 접근) 캘린더 페이지로 돌려보냄
@@ -40,11 +40,11 @@ export default function DiaryWritePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!date) return alert("날짜를 선택하세요.");
-    if (!emoji) return alert("감정을 선택해 주세요")
+    if (!emoji) return alert("감정을 선택해 주세요");
     const username = localStorage.getItem("username");
 
     try {
-      await createDiary({ title, content, username, date, emoji});
+      await createDiary({ title, content, username, date, emoji });
       alert("일기가 저장되었습니다.");
       navigate("/diary/calendar", { state: { selectedDate: date } });
     } catch (err) {
@@ -57,18 +57,14 @@ export default function DiaryWritePage() {
   if (!date) return <div>날짜 정보 확인 중...</div>;
 
   return (
-    <div>
-      {/* ⬇️ 3. 뒤로가기 버튼 추가 (navigate(-1)은 브라우저의 '뒤로가기'와 동일) */}
+    <div className="diary-write-card">
       <button type="button" onClick={() => navigate(-1)}>
         &larr; 뒤로가기
       </button>
-      
-      {/* ⬇️ 4. 날짜를 input 대신 텍스트로 표시 */}
-      <h2>{date} 일기 작성</h2>
+
+      <h2>✍️ {date} 일기 작성</h2>
 
       <form onSubmit={handleSubmit}>
-        {/* ❌ <input type="date" ... /> 태그 삭제됨 */}
-
         <input
           type="text"
           placeholder="제목을 입력하세요"
@@ -80,13 +76,19 @@ export default function DiaryWritePage() {
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
+        <DiaryEmojiPicker selectedEmoji={emoji} onSelectEmoji={setEmoji} />
 
-        <DiaryEmojiPicker 
-          selectedEmoji={emoji} 
-          onSelectEmoji={setEmoji} 
-        />
-
-        <button type="submit">저장</button>
+        <div className="diary-write-buttons">
+          <button type="submit">저장</button>
+          <button
+            type="button"
+            onClick={() =>
+              navigate("/diary/calendar", { state: { selectedDate: date } })
+            }
+          >
+            취소
+          </button>
+        </div>
       </form>
     </div>
   );
