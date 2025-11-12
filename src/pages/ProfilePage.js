@@ -1,10 +1,10 @@
 // ProfilePage.jsx
-import { useState } from "react";
+import { use, useState } from "react";
 import Character from "../components/Character";
 import ProfileForm from "../components/user/ProfileForm";
 import "./ProfilePage.css";
 
-const ProfilePage = () => {
+const ProfilePage = ({ user }) => {
   const [activeTab, setActiveTab] = useState("Edit");
 
   return (
@@ -34,7 +34,7 @@ const ProfilePage = () => {
 
       <div className="tab-content">
         {activeTab === "ProfileForm" && <ProfileForm />}
-        {activeTab === "Character" && <Character />}
+        {activeTab === "Character" && <Character user={user} />}
         {activeTab === "Settings" && <div>⚙️ 기타 설정 영역</div>}
       </div>
     </div>

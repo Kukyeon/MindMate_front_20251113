@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createBoard, updateBoard } from "../api/boardApi";
 import { generateHashtags } from "../api/aiApi";
 import "./BoardWritePage.css";
+import api from "../api/axiosConfig";
 
 const BoardWritePage = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const BoardWritePage = () => {
   const [aiTags, setAiTags] = useState([]);
 
   // 임시 로그인
-  const userId = parseInt(localStorage.getItem("userId") || 1, 10);
+  const userId = parseInt(localStorage.getItem("userId") || 2, 10);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,9 +38,36 @@ const BoardWritePage = () => {
           hashtags: hashtags.join(" "),
         });
       }
+      let charResData = null;
+      try {
+        const charRes = await api.get(`/ai/${userId}`);
+        charResData = charRes.data;
+      } catch (err) {
+        if (err.response?.status === 404) {
+          // 캐릭터 없음
+          charResData = null;
+        } else {
+          throw err; // 다른 오류는 그대로 throw
+        }
+      }
 
-      alert("게시글이 작성되었습니다!");
-      navigate(`/board/${boardId}`);
+      if (charResData) {
+        // 캐릭터 존재 → 성장 처리
+        await api.put("/ai/update", null, {
+          params: { userId, addPoints: 10, moodChange: 5 },
+        });
+        alert("게시글이 작성되었습니다! 캐릭터가 성장했어요!");
+      } else {
+        // 캐릭터 없음 → 생성 여부 확인
+        const createChar = window.confirm(
+          "게시글이 작성되었습니다!\n 캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?"
+        );
+        if (createChar) {
+          navigate("/profile"); // 캐릭터 생성 페이지로 이동
+        } else {
+          navigate(`/board/${boardId}`); // 그냥 상세페이지로 이동
+        }
+      }
     } catch (err) {
       console.error("게시글 작성 실패:", err);
       alert("게시글 작성에 실패했습니다.");

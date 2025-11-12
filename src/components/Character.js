@@ -2,18 +2,18 @@ import { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Character = () => {
-  const profileId = 1;
+const Character = ({ user }) => {
+  const userId = 1;
   const [character, setCharacter] = useState(null);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [cheeredToday, setCheeredToday] = useState(false);
-
+  console.log(user);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const payload = { profileId, name };
-      const res = await api.post("/ai/create", payload);
+      const payload = { userId, name };
+      const res = await api.post(`/ai/create?userId=${userId}`, payload);
       setCharacter(res.data);
       setName("");
     } catch (err) {
@@ -23,7 +23,7 @@ const Character = () => {
 
   const fetchCharacter = async () => {
     try {
-      const res = await api.get(`/ai/${profileId}`);
+      const res = await api.get(`/ai/${userId}`);
       setCharacter(res.data);
     } catch (err) {
       if (err.response?.data?.message) setMessage(err.response.data.message);
@@ -38,7 +38,7 @@ const Character = () => {
   const handleCheer = async () => {
     try {
       const res = await api.put("/ai/cheer", null, {
-        params: { profileId, addPoints: 2, moodChange: 5 },
+        params: { userId, addPoints: 2, moodChange: 5 },
       });
       setCharacter({ ...res.data });
       setCheeredToday(true);
@@ -50,7 +50,21 @@ const Character = () => {
       console.error("업데이트 실패:", err);
     }
   };
-
+  const handleMood = async () => {
+    try {
+      const res = await api.put("/ai/update", null, {
+        params: { userId, addPoints: 4, moodChange: 5 },
+      });
+      setCharacter({ ...res.data });
+      setCheeredToday(true);
+      setMessage("무드 업데이트 성공! 🌟");
+    } catch (err) {
+      const msg = err.response?.data?.message || "응원 중 오류가 발생했습니다.";
+      setMessage(msg);
+      if (msg.includes("오늘은 이미 응원")) setCheeredToday(true);
+      console.error("업데이트 실패:", err);
+    }
+  };
   const getForMood = (moodscore, level) => {
     if (level >= 10) {
       if (moodscore <= 20) return "/character/sad10.png";
@@ -115,6 +129,9 @@ const Character = () => {
             className="character-cheer-btn"
           >
             응원하기 💖
+          </button>
+          <button onClick={handleMood} className="character-cheer-btn">
+            무드 업데이트하기 💖
           </button>
 
           {message && <p className="character-message">{message}</p>}
