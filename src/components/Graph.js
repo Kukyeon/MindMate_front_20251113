@@ -11,6 +11,7 @@ import {
 } from "chart.js";
 import api from "../api/axiosConfig";
 import { emojiList } from "../api/emojiApi";
+import "./Graph.css";
 
 ChartJS.register(
   CategoryScale,
@@ -101,15 +102,8 @@ const Graph = ({ startDate, endDate }) => {
   };
 
   return (
-    <div
-      style={{
-        width: "100%",
-        maxWidth: 600,
-        margin: "0 auto",
-        textAlign: "center",
-      }}
-    >
-      <h2>
+    <div className="graph-container">
+      <h2 className="graph-title">
         {startDate} ~ {endDate} 주간 감정 요약
       </h2>
 
@@ -162,43 +156,33 @@ const Graph = ({ startDate, endDate }) => {
       </div>
 
       {/* 감정 비율 표시 */}
-      <h3 style={{ marginTop: "3rem" }}>감정 비율</h3>
-      <div
-        style={{
-          display: "flex",
-          height: 36,
-          background: "#eee",
-          borderRadius: 6,
-          overflow: "hidden",
-        }}
-      >
+      <h3 className="graph-subtitle">감정 비율</h3>
+      <div className="emotion-bar-wrapper">
         {Object.entries(weeklyPercent).map(([emotion, percent]) => {
           const emo = emojiList.find((e) => e.name === emotion);
           if (!emo) return null;
+
+          const gradient = `linear-gradient(135deg, ${emotionColors[emotion]} 0%, #fff 100%)`;
+
           return (
             <div
               key={emotion}
+              className="emotion-segment"
               style={{
                 width: `${percent}%`,
-                background: emotionColors[emotion] || "#a8d8ff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: "bold",
-                fontSize: 14,
+                background: gradient,
               }}
             >
-              <img
-                src={emo.image}
-                alt={emo.name}
-                style={{ width: 20, height: 20, marginRight: 5 }}
-              />
-              {percent.toFixed(1)}%
+              <img src={emo.image} alt={emo.name} className="emotion-icon" />
+              <span className="emotion-percent">{percent.toFixed(1)}%</span>
             </div>
           );
         })}
       </div>
-      <div style={{ marginTop: "1rem", fontStyle: "italic" }}>{aiComment}</div>
+
+      {/* AI 감정 요약 */}
+      <div className="ai-comment-card">AI 코멘트 출력 예정</div>
+      {/* <div className="ai-comment-card">{aiComment}</div> */}
     </div>
   );
 };

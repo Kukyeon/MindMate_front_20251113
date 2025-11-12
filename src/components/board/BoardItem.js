@@ -2,20 +2,21 @@ import { useNavigate } from "react-router-dom";
 
 const BoardItem = ({ board, index }) => {
   const navigate = useNavigate();
+
   return (
-    <tr
-      onClick={() => navigate(`/board/${board.id}`)}
-      style={{ cursor: "pointer" }}
-    >
+    <tr className="board-item" onClick={() => navigate(`/board/${board.id}`)}>
       <td>{index}</td>
-      <td>
+      <td className="board-title">
         {board.title}
-        {board.commentCount > 0 && <span>[{board.commentCount}]</span>}
+        {board.commentCount > 0 && (
+          <span className="board-comment">[{board.commentCount}]</span>
+        )}
       </td>
-      <td>{board.writer}</td>
+      <td>{board.writer}</td> {/* writer 사용 또는 board.nickname */}
       <td>{board.viewCount}</td>
       <td>{new Date(board.createdAt).toLocaleDateString()}</td>
     </tr>
   );
 };
+
 export default BoardItem;

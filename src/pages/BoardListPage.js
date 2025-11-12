@@ -4,48 +4,69 @@ import { fetchBoards } from "../api/boardApi";
 import BoardSearchBar from "../components/board/BoardSearchBar";
 import BoardPagination from "../components/board/BoardPagination";
 import BoardList from "../components/board/BoardList";
+import "./BoardListPage.css";
 
 const BoardListPage = () => {
   const [boards, setBoards] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [keyword, setKeyword] = useState("");
+  const [totalElements, setTotalElements] = useState(0);
+  const [search, setSearch] = useState({ field: "title", keyword: "" });
   const navigate = useNavigate();
 
   const loadBoards = useCallback(async () => {
     try {
-      const data = await fetchBoards(page, 10, keyword);
+      const data = await fetchBoards(page, 10, search);
       if (data && data.content) {
         setBoards(data.content);
         setTotalPages(data.totalPages);
+        setTotalElements(data.totalElements);
       }
     } catch (err) {
       console.error("게시글 목록 불러오기 실패:", err);
     }
-  }, [page, keyword]);
+  }, [page, search]);
 
   useEffect(() => {
     loadBoards();
   }, [loadBoards]);
 
   return (
-    <div>
-      <h2>📝 게시판</h2>
-      <BoardSearchBar keyword={keyword} onSearch={setKeyword} />
-      <button onClick={() => navigate("/board/write")}>글쓰기</button>
+    <div className="board-page">
+      <h2 className="board-page-title">📝 게시판</h2>
 
-      {/* ✅ 게시글이 존재하지 않아도 에러 없이 렌더링 */}
+      <div className="board-top-bar">
+        <BoardSearchBar
+          keyword={search.keyword}
+          condition={search.field}
+          onSearch={setSearch}
+        />
+        <button
+          className="board-write-button"
+          onClick={() => navigate("/board/write")}
+        >
+          글쓰기
+        </button>
+      </div>
       {Array.isArray(boards) && boards.length > 0 ? (
-        <BoardList boards={boards} />
+        <BoardList
+          className="board-list"
+          boards={boards}
+          page={page}
+          size={10}
+          totalElements={totalElements}
+        />
       ) : (
-        <p>게시글이 없습니다.</p>
+        <p className="board-empty">게시글이 없습니다.</p>
       )}
 
-      <BoardPagination
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+      <div className="board-pagination-wrapper">
+        <BoardPagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+      </div>
     </div>
   );
 };

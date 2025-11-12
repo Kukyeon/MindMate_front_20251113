@@ -2,19 +2,18 @@ import { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Character = () => {
-  const profileId = 1;
+const Character = ({ user }) => {
+  const userId = 1;
   const [character, setCharacter] = useState(null);
   const [name, setName] = useState("");
-
   const [message, setMessage] = useState("");
   const [cheeredToday, setCheeredToday] = useState(false);
-
+  console.log(user);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const payload = { profileId, name };
-      const res = await api.post("/ai/create", payload);
+      const payload = { userId, name };
+      const res = await api.post(`/ai/create?userId=${userId}`, payload);
       setCharacter(res.data);
       setName("");
     } catch (err) {
@@ -24,13 +23,10 @@ const Character = () => {
 
   const fetchCharacter = async () => {
     try {
-      const res = await api.get(`/ai/${profileId}`);
+      const res = await api.get(`/ai/${userId}`);
       setCharacter(res.data);
-      console.log(res.data);
     } catch (err) {
-      if (err.response?.data?.message) {
-        setMessage(err.response.data.message);
-      }
+      if (err.response?.data?.message) setMessage(err.response.data.message);
       console.error("캐릭터 불러오기 실패", err);
     }
   };
@@ -38,24 +34,34 @@ const Character = () => {
   useEffect(() => {
     fetchCharacter();
   }, []);
+
   const handleCheer = async () => {
     try {
       const res = await api.put("/ai/cheer", null, {
-        params: { profileId, addPoints: 2, moodChange: 5 },
+        params: { userId, addPoints: 2, moodChange: 5 },
       });
       setCharacter({ ...res.data });
       setCheeredToday(true);
-      setMessage("응원 성공 ! 🌟");
+      setMessage("응원 성공! 🌟");
     } catch (err) {
-      if (err.response?.data?.message) {
-        setMessage(err.response.data.message);
-        // 서버에서 이미 응원했다고 하면 UI도 비활성화
-        if (err.response.data.message.includes("오늘은 이미 응원")) {
-          setCheeredToday(true);
-        }
-      } else {
-        setMessage("응원 중 오류가 발생했습니다.");
-      }
+      const msg = err.response?.data?.message || "응원 중 오류가 발생했습니다.";
+      setMessage(msg);
+      if (msg.includes("오늘은 이미 응원")) setCheeredToday(true);
+      console.error("업데이트 실패:", err);
+    }
+  };
+  const handleMood = async () => {
+    try {
+      const res = await api.put("/ai/update", null, {
+        params: { userId, addPoints: 4, moodChange: 5 },
+      });
+      setCharacter({ ...res.data });
+      setCheeredToday(true);
+      setMessage("무드 업데이트 성공! 🌟");
+    } catch (err) {
+      const msg = err.response?.data?.message || "응원 중 오류가 발생했습니다.";
+      setMessage(msg);
+      if (msg.includes("오늘은 이미 응원")) setCheeredToday(true);
       console.error("업데이트 실패:", err);
     }
   };
@@ -74,49 +80,42 @@ const Character = () => {
       else return "/character/happy.png";
     }
   };
+
   return (
     <div className="flex flex-col items-center mt-10">
       {character ? (
         <>
           <motion.div
             key={character.id}
-            className="bg-white shadow-md rounded-2xl p-6 w-80 text-center"
-            initial={{ scale: 0.9, opacity: 0 }}
+            className="character-card"
+            initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
           >
-            <h2 className="text-2xl font-bold mb-2">{character.name}</h2>
+            <h2 className="character-name">{character.name}</h2>
 
-            <div className="w-28 h-28 mx-auto mb-3 flex items-center justify-center bg-gray-50 rounded-full">
+            <div className="character-image-wrapper">
               <AnimatePresence mode="wait">
                 <motion.img
-                  key={character.moodscore} // 이미지 변경 시 애니메이션
+                  key={character.moodscore}
                   src={getForMood(character.moodscore, character.level)}
                   alt="캐릭터 상태"
-                  className="max-w-full max-h-full object-contain"
-                  initial={{ opacity: 0, y: -20 }}
+                  className="character-image"
+                  initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  transition={{ duration: 0.5 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.4 }}
                 />
               </AnimatePresence>
             </div>
 
-            <motion.p
-              key={character.level}
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              Lv. {character.level}
-            </motion.p>
+            <p className="character-level">Lv. {character.level}</p>
+            <p className="character-points">Points: {character.points}</p>
+            <p className="character-mood">Mood: {character.moodscore}/100</p>
 
-            <p>Points: {character.points}</p>
-            <p>Mood: {character.moodscore}/100</p>
-
-            <div className="w-full bg-gray-200 rounded-full h-3 mt-2">
+            <div className="character-mood-bar">
               <motion.div
-                className="bg-pink-400 h-3 rounded-full"
+                className="character-mood-fill"
                 style={{ width: `${character.moodscore}%` }}
                 animate={{ width: `${character.moodscore}%` }}
                 transition={{ duration: 0.5 }}
@@ -124,34 +123,39 @@ const Character = () => {
             </div>
           </motion.div>
 
-          {/* 응원하기 버튼 */}
           <button
             disabled={cheeredToday}
             onClick={handleCheer}
-            className="bg-pink-500 text-white px-4 py-2 rounded mt-4 hover:bg-pink-600 transition"
-            type="button"
+            className="character-cheer-btn"
           >
             응원하기 💖
           </button>
+          <button onClick={handleMood} className="character-cheer-btn">
+            무드 업데이트하기 💖
+          </button>
 
-          {message && <p style={{ color: "purple" }}>{message}</p>}
+          {message && <p className="character-message">{message}</p>}
         </>
       ) : (
-        <div>
+        <div className="character-create-wrapper">
           <p>캐릭터를 생성해주세요!</p>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="character-create-form">
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="캐릭터 이름 입력"
               required
+              className="character-create-input"
             />
-            <button type="submit">캐릭터 생성</button>
+            <button type="submit" className="character-create-btn">
+              생성
+            </button>
           </form>
         </div>
       )}
     </div>
   );
 };
+
 export default Character;

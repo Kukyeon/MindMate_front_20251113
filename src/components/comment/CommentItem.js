@@ -6,37 +6,58 @@ import CommentEditForm from "./CommentEditForm";
 const CommentItem = ({ comment, onUpdated }) => {
   const [editing, setEditing] = useState(false);
 
+  // ⚡ 임시 로그인
+  const userId = parseInt(localStorage.getItem("userId") || 1, 10);
+
+  // ⚡ 실제 로그인 적용 시
+  // const userId = comment.userId ||현재 로그인 유저 ID;
+
   const handleDelete = async () => {
-    if (window.confirm("삭제하시겠습니까?")) {
+    if (window.confirm("댓글을 삭제하시겠습니까?")) {
       await deleteComment(comment.id);
       onUpdated();
     }
   };
 
   return (
-    <div>
-      <p>
-        <strong>{comment.writer}</strong>
-      </p>
+    <div className="comment-item-card">
+      <div className="comment-header">
+        <span className="comment-writer">{comment.writer}</span>
+        <span className="comment-date">
+          {new Date(comment.createdate).toLocaleDateString()}
+        </span>
+      </div>
 
-      {editing ? (
-        <CommentEditForm
-          comment={comment}
-          onUpdateSuccess={() => {
-            setEditing(false);
-            onUpdated();
-          }}
-        />
-      ) : (
-        <p>{comment.content}</p>
-      )}
+      <div className="comment-body">
+        {editing ? (
+          <CommentEditForm
+            comment={comment}
+            onUpdateSuccess={() => {
+              setEditing(false);
+              onUpdated();
+            }}
+          />
+        ) : (
+          <p className="comment-content">{comment.content}</p>
+        )}
+      </div>
 
-      <EmojiSelector commentId={comment.id} />
-      <button onClick={() => setEditing(!editing)}>
-        {editing ? "취소" : "수정"}
-      </button>
-      <button onClick={handleDelete}>삭제</button>
+      <div className="comment-footer">
+        <EmojiSelector commentId={comment.id} />
+        <div className="comment-actions">
+          <button
+            className="comment-btn edit"
+            onClick={() => setEditing(!editing)}
+          >
+            {editing ? "취소" : "수정"}
+          </button>
+          <button className="comment-btn delete" onClick={handleDelete}>
+            삭제
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
+
 export default CommentItem;

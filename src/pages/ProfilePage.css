@@ -1,0 +1,252 @@
+/* 페이지 전체 */
+.profile-page {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 15px;
+}
+
+/* 제목 */
+.profile-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #6b4226;
+  margin-bottom: 20px;
+}
+
+/* 탭 버튼 */
+.profile-tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 10px 20px;
+  border: none;
+  background: #eee;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.tab.active {
+  background-color: #d18b60;
+  color: #fff;
+}
+
+/* 탭 콘텐츠 영역 */
+.tab-content {
+  margin-top: 20px;
+}
+
+/* 기타 설정 영역 */
+.settings-placeholder {
+  padding: 20px;
+  background-color: #fafafa;
+  border-radius: 12px;
+  text-align: center;
+  color: #555;
+}
+.edit-profile-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  margin: 0 auto; /* 부모 안에서 정확히 가운데 */
+  max-width: 400px; /* 카드 최대 너비 */
+}
+.edit-profile-title {
+  font-size: 1.6rem; /* 너무 크지 않게 조정 */
+  color: #6b4226; /* 기존 색상 유지 */
+  text-align: center; /* 카드 안에서 중앙 정렬 */
+  margin-bottom: 15px;
+}
+.edit-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-profile-input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  /* width: 80%; */
+  box-sizing: border-box;
+}
+
+.edit-input-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.edit-input-group input {
+  flex: 1; /* 버튼 제외 나머지 공간 채움 */
+}
+
+.edit-profile-check-btn {
+  width: 100px; /* 버튼 고정폭 */
+}
+
+.edit-profile-check-btn {
+  padding: 0 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #d18b60;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.edit-profile-check-btn:hover {
+  background-color: #b36b49;
+}
+
+.edit-profile-button {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #d18b60;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.edit-profile-button:hover {
+  background-color: #b36b49;
+}
+
+.edit-profile-message {
+  margin-top: 10px;
+  color: #6b4226;
+  font-weight: 500;
+  text-align: center;
+}
+
+@media (max-width: 500px) {
+  .edit-input-group {
+    flex-direction: column;
+  }
+
+  .edit-profile-check-btn {
+    width: 100%;
+  }
+}
+.character-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  /* width: 320px; */
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.character-name {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #6b4226;
+  margin-bottom: 10px;
+}
+
+.character-image-wrapper {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 12px;
+  background-color: #f5f5f5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.character-image {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.character-level,
+.character-points,
+.character-mood {
+  margin: 4px 0;
+  font-weight: 500;
+}
+
+.character-mood-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #eee;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.character-mood-fill {
+  height: 100%;
+  background-color: #f472b6; /* 핑크 계열 */
+  border-radius: 4px;
+}
+
+.character-cheer-btn {
+  margin-top: 12px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: #f472b6;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.character-cheer-btn:hover:not(:disabled) {
+  background-color: #ec4899;
+}
+
+.character-cheer-btn:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+.character-message {
+  margin-top: 8px;
+  color: #6b4226;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* 캐릭터 생성 폼 */
+.character-create-wrapper {
+  text-align: center;
+}
+
+.character-create-form {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.character-create-input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.character-create-btn {
+  border: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background-color: #d18b60;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.character-create-btn:hover {
+  background-color: #b36b49;
+}

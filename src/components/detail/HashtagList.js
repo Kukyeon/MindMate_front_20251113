@@ -1,11 +1,12 @@
 const HashtagList = ({ hashtags }) => {
-  if (!hashtags || hashtags.length === 0) return null;
+  if (!hashtags) return null;
 
   const tagArray = Array.isArray(hashtags)
     ? hashtags
-    : hashtags.split(",").map((tag) => tag.trim());
+    : hashtags.split(/[\s,]+/).filter((tag) => tag.startsWith("#"));
 
   if (tagArray.length === 0) return null;
+
   return (
     <div>
       {tagArray.map((tag, idx) => (
@@ -14,4 +15,5 @@ const HashtagList = ({ hashtags }) => {
     </div>
   );
 };
+
 export default HashtagList;
