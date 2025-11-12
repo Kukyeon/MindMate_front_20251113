@@ -7,14 +7,14 @@ import {
 } from "../../api/emojiApi";
 import "./EmojiSelector.css";
 
-const EmojiSelector = ({ boardId, commentId }) => {
+const EmojiSelector = ({ boardId, commentId, userId }) => {
   const [open, setOpen] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [emojiCounts, setEmojiCounts] = useState({});
   const [loading, setLoading] = useState(false);
 
   // ⚡ 임시 로그인
-  const userId = parseInt(localStorage.getItem("userId") || 1, 10);
+  //const userId = parseInt(localStorage.getItem("userId") || 1, 10);
 
   // ⚡ 실제 로그인 적용 시
   // const userId = 현재 로그인 유저 ID;
@@ -56,7 +56,10 @@ const EmojiSelector = ({ boardId, commentId }) => {
 
   //  이모지 선택
   const handleSelectEmoji = async (emoji) => {
-    if (loading) return;
+    if (!userId) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
     setLoading(true);
 
     const data = {

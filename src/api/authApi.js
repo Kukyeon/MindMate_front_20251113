@@ -28,6 +28,14 @@ const refreshAccessToken = async () => {
   }
 };
 
+// 요청 헤더용 accessToken 가져오기 (자동 갱신 포함)
+export const authHeader = async () => {
+  let accessToken = localStorage.getItem(ACCESS_KEY);
+  if (!accessToken) accessToken = await refreshAccessToken();
+  return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
+};
+// 요청 헤더용 accessToken 가져오기 (자동 갱신 포함)
+
 export const getUser = async () => {
   const accessToken = localStorage.getItem(ACCESS_KEY);
   const refreshToken = localStorage.getItem(REFRESH_KEY);

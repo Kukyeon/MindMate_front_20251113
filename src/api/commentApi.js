@@ -1,30 +1,45 @@
 import api from "./axiosConfig";
+import { authHeader as getAuthHeader } from "./authApi";
 
 // 댓글 목록
 export const fetchComments = async (boardId) => {
-  const res = await api.get(`/api/comments/boards/${boardId}`);
+  const headers = await getAuthHeader();
+  const res = await api.get(`/api/comments/boards/${boardId}`, {
+    headers,
+  });
   console.log(res.data);
   return Array.isArray(res.data) ? res.data : [];
 };
 
 // 댓글 작성
 export const postComment = async ({ boardId, content, userId }) => {
-  const res = await api.post(`/api/comments`, { boardId, content, userId });
+  const headers = await getAuthHeader();
+  const res = await api.post(
+    `/api/comments`,
+    { boardId, content, userId },
+    { headers }
+  );
   return res.data;
 };
 
 // 댓글 수정
 export const updateComment = async (id, { content, userId }) => {
-  const res = await api.put(`/api/comments/${id}`, {
-    content,
-    userId,
-  });
+  const headers = await getAuthHeader();
+  const res = await api.put(
+    `/api/comments/${id}`,
+    {
+      content,
+      userId,
+    },
+    { headers }
+  );
   return res.data;
 };
 
 // 댓글 삭제
 export const deleteComment = async (commentId) => {
-  await api.delete(`/api/comments/${commentId}`);
+  const headers = await getAuthHeader();
+  await api.delete(`/api/comments/${commentId}`, { headers });
 };
 
 // 댓글 이모지

@@ -1,23 +1,25 @@
 import { useState } from "react";
 import { postComment } from "../../api/commentApi";
+import { authHeader } from "../../api/authApi";
 
-const CommentForm = ({ boardId, onCommentAdded }) => {
+const CommentForm = ({ boardId, onCommentAdded, userId }) => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   // ⚡ 임시 로그인
-  const userId = parseInt(localStorage.getItem("userId") || 1, 10);
+  //const userId = parseInt(localStorage.getItem("userId") || 1, 10);
 
   // ⚡ 실제 로그인 적용 시 (주석 해제 후 사용)
   // const userId = comment.userId ||현재 로그인 유저 ID;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!content.trim() || loading) return;
-
+    if (!userId) return alert("로그인이 필요합니다.");
+    if (!content.trim()) return alert("댓글을 입력하세요.");
     setLoading(true);
 
     try {
-      await postComment({ boardId, content, userId });
+      const headers = await authHeader();
+      await postComment({ boardId, content, userId }, { headers });
       setContent("");
       if (onCommentAdded) {
         await onCommentAdded();

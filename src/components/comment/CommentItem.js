@@ -3,18 +3,13 @@ import { deleteComment } from "../../api/commentApi";
 import EmojiSelector from "../detail/EmojiSelector";
 import CommentEditForm from "./CommentEditForm";
 
-const CommentItem = ({ comment, onUpdated }) => {
+const CommentItem = ({ comment, onUpdated, userId }) => {
   const [editing, setEditing] = useState(false);
 
-  // ⚡ 임시 로그인
-  const userId = parseInt(localStorage.getItem("userId") || 1, 10);
-
-  // ⚡ 실제 로그인 적용 시
-  // const userId = comment.userId ||현재 로그인 유저 ID;
-
   const handleDelete = async () => {
+    if (!userId) return alert("로그인이 필요합니다.");
     if (window.confirm("댓글을 삭제하시겠습니까?")) {
-      await deleteComment(comment.id);
+      await deleteComment(comment.id, userId);
       onUpdated();
     }
   };
@@ -32,6 +27,7 @@ const CommentItem = ({ comment, onUpdated }) => {
         {editing ? (
           <CommentEditForm
             comment={comment}
+            userId={userId}
             onUpdateSuccess={() => {
               setEditing(false);
               onUpdated();
@@ -43,7 +39,7 @@ const CommentItem = ({ comment, onUpdated }) => {
       </div>
 
       <div className="comment-footer">
-        <EmojiSelector commentId={comment.id} />
+        <EmojiSelector commentId={comment.id} userId={userId} />
         <div className="comment-actions">
           <button
             className="comment-btn edit"

@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import EmojiSelector from "./EmojiSelector";
 import HashtagList from "./HashtagList";
 import { generateHashtags } from "../../api/aiApi"; //  AI 해시태그 함수 import
-const BoardContent = ({ board }) => {
+
+const BoardContent = ({ board, user }) => {
   const [hashtags, setHashtags] = useState(board?.hashtags || []);
+  const userId = user?.id;
 
   useEffect(() => {
     // 게시글 내용이 있고, 기존 해시태그가 비어 있을 때만 AI 호출
@@ -34,7 +36,7 @@ const BoardContent = ({ board }) => {
       <hr />
       <br />
       {/*이모지*/}
-      <EmojiSelector boardId={board.id} />
+      <EmojiSelector boardId={board.id} userId={userId} />
     </div>
   );
 };

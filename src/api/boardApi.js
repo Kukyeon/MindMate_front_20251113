@@ -1,8 +1,10 @@
 import api from "./axiosConfig";
+import { authHeader as getAuthHeader } from "./authApi";
 
 //게시글 목록
 
 export const fetchBoards = async (page = 0, size = 10, search = {}) => {
+  const headers = await getAuthHeader();
   const params = new URLSearchParams({
     page,
     size,
@@ -13,40 +15,54 @@ export const fetchBoards = async (page = 0, size = 10, search = {}) => {
     params.append("keyword", search.keyword);
   }
 
-  const res = await api.get(`/api/boards?${params.toString()}`);
+  const res = await api.get(`/api/boards?${params.toString()}`, {
+    headers,
+  });
   return res.data;
 };
 
 // 게시글 상세
 export const fetchBoardDetail = async (id) => {
-  const res = await api.get(`/api/boards/${id}`);
+  const headers = await getAuthHeader();
+  const res = await api.get(`/api/boards/${id}`, { headers });
   return res.data;
 };
 
 // 게시글 작성
 export const createBoard = async ({ title, content, userId }) => {
-  const res = await api.post(`/api/boards?userId=${userId}`, {
-    title,
-    content,
-    userId,
-  });
+  const headers = await getAuthHeader();
+  const res = await api.post(
+    `/api/boards`,
+    {
+      title,
+      content,
+      userId,
+    },
+    { headers }
+  );
   return res.data;
 };
 
 // 게시글 수정
 export const updateBoard = async (id, { title, content, userId, hashtags }) => {
-  const res = await api.put(`/api/boards/${id}`, {
-    title,
-    content,
-    userId,
-    hashtags,
-  });
+  const headers = await getAuthHeader();
+  const res = await api.put(
+    `/api/boards/${id}`,
+    {
+      title,
+      content,
+      userId,
+      hashtags,
+    },
+    { headers }
+  );
   return res.data;
 };
 
 // 게시글 삭제
 export const deleteBoard = async (id) => {
-  await api.delete(`/api/boards/${id}`);
+  const headers = await getAuthHeader();
+  await api.delete(`/api/boards/${id}`, { headers });
 };
 
 // // 게시글 이모지

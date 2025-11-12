@@ -2,45 +2,55 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createBoard, updateBoard } from "../api/boardApi";
 import { generateHashtags } from "../api/aiApi";
+import { authHeader } from "../api/authApi";
 import "./BoardWritePage.css";
 import api from "../api/axiosConfig";
 
-const BoardWritePage = () => {
+const BoardWritePage = ({ user }) => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [aiTags, setAiTags] = useState([]);
 
+  const userId = user?.id;
   // 임시 로그인
-  const userId = parseInt(localStorage.getItem("userId") || 2, 10);
+  //const userId = parseInt(localStorage.getItem("userId") || 2, 10);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!userId) return alert("로그인이 필요합니다.");
     setLoading(true);
 
     try {
       // 1. 게시글 생성
-      const savedBoard = await createBoard({ title, content, userId });
+      const headers = await authHeader();
+      const savedBoard = await createBoard({ title, content, userId }, headers);
       const boardId = savedBoard.id || savedBoard.data?.id;
       if (!boardId) throw new Error("게시글 ID를 가져오지 못했습니다.");
 
       // 2. AI 해시태그 생성
-      const { hashtags } = await generateHashtags(boardId);
+      const { hashtags } = await generateHashtags(boardId, headers);
       setAiTags(hashtags || []);
 
       // 3. 게시글에 해시태그 업데이트
       if (hashtags && hashtags.length > 0) {
-        await updateBoard(boardId, {
-          title,
-          content,
-          userId,
-          hashtags: hashtags.join(" "),
-        });
+        await updateBoard(
+          boardId,
+          {
+            title,
+            content,
+            userId,
+            hashtags: hashtags.join(" "),
+          },
+          headers
+        );
       }
+
+      //캐릭터 처리 관련
       let charResData = null;
       try {
-        const charRes = await api.get(`/ai/${userId}`);
+        const charRes = await api.get(`/ai/${userId}`, { headers });
         charResData = charRes.data;
       } catch (err) {
         if (err.response?.status === 404) {
@@ -55,6 +65,7 @@ const BoardWritePage = () => {
         // 캐릭터 존재 → 성장 처리
         await api.put("/ai/update", null, {
           params: { userId, addPoints: 10, moodChange: 5 },
+          headers,
         });
         alert("게시글이 작성되었습니다! 캐릭터가 성장했어요!");
       } else {

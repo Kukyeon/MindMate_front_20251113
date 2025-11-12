@@ -1,4 +1,5 @@
 import api from "./axiosConfig";
+import { authHeader as getAuthHeader } from "./authApi";
 
 export const emojiList = [
   { id: 1, type: "heart", image: "/emojis/heart.png" },
@@ -18,40 +19,43 @@ export const emojiList = [
   { id: 15, type: "anger", image: "/emojis/anger.png" },
 ];
 
-// 임시 로그인용
-const getUserId = () => parseInt(localStorage.getItem("userId") || 1, 10);
-// 실제 로그인 적용 시:
-// const getUserId = () => currentUser.id;
-
 //  게시글 이모지 토글
 export const toggleBoardEmoji = async (boardId, data) => {
-  return await api.post(`/api/emoji/toggle`, {
-    userId: data?.userId ?? getUserId(),
-    boardId,
-    type: data.type,
-    imageUrl: data.imageUrl,
-  });
+  const headers = await getAuthHeader();
+  return await api.post(
+    `/api/emoji/toggle`,
+    {
+      boardId,
+      type: data.type,
+      imageUrl: data.imageUrl,
+    },
+    { headers }
+  );
 };
 
 //  댓글 이모지 토글
 export const toggleCommentEmoji = async (commentId, data) => {
-  return await api.post(`/api/emoji/toggle`, {
-    userId: data?.userId ?? getUserId(),
-    commentId,
-    type: data.type,
-    imageUrl: data.imageUrl,
-  });
+  const headers = await getAuthHeader();
+  return await api.post(
+    `/api/emoji/toggle`,
+    {
+      commentId,
+      type: data.type,
+      imageUrl: data.imageUrl,
+    },
+    { headers }
+  );
 };
 
 //  게시글/댓글 이모지 카운트 조회 (+ 내 선택 포함)
 export const getEmojiCounts = async (id, targetType = "board") => {
-  const userId = getUserId();
+  const headers = await getAuthHeader();
   const endpoint =
     targetType === "board"
-      ? `/api/emoji/board/${id}?userId=${userId}`
-      : `/api/emoji/comment/${id}?userId=${userId}`;
+      ? `/api/emoji/board/${id}`
+      : `/api/emoji/comment/${id}`;
 
-  const res = await api.get(endpoint);
+  const res = await api.get(endpoint, { headers });
 
   // 백엔드에서 반환된 리스트 구조를 가공
   const counts = {};

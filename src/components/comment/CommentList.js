@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { fetchComments } from "../../api/commentApi";
 import CommentItem from "./CommentItem";
 
-const CommentList = forwardRef(({ boardId }, ref) => {
+const CommentList = forwardRef(({ boardId, userId }, ref) => {
   const [comments, setComments] = useState([]);
 
   const loadComments = async () => {
@@ -34,6 +34,7 @@ const CommentList = forwardRef(({ boardId }, ref) => {
               key={comment.id}
               comment={comment}
               onUpdated={loadComments}
+              userId={userId}
             />
           ))}
         </div>
