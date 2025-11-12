@@ -39,8 +39,10 @@ export default function CalendarPage() {
     loadMonthlyDiaries();
 
     // 월이 바뀌면 클릭 결과 초기화
+   if (!location.state?.selectedDate) {
     setClickResult({ date: null, exists: null, diary: null });
-  }, [currentDate]);
+  }
+}, [currentDate, location.state]);
 
   // 날짜 클릭
   const handleDateClick = (date) => {
