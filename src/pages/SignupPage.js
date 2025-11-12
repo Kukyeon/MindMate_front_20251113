@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import "./SignupPage.css";
 
+const KAKAO_REST_API_KEY = "d032aea47f7cde0d9d176389f15a4053"; // 프론트에 노출돼도 되는 키
+const KAKAO_REDIRECT_URI = "http://localhost:3000/auth/kakao/callback"; // 카카오 콘솔 + 백엔드 설정과 맞출 것
+
 const SignupPage = () => {
   const navigate = useNavigate();
   const [state, setState] = useState({
@@ -17,25 +20,31 @@ const SignupPage = () => {
   };
 
   const checkUsername = async () => {
+    setIsUsernameOk(false);
     try {
-      const res = await api.get("/api/auth/check_username", {
+      await api.get("/api/auth/check_username", {
         params: { username: state.username.trim() },
       });
-      if (res.data) {
-        setIsUsernameOk(true);
-        alert("사용 가능한 아이디입니다!");
-      } else {
-        setIsUsernameOk(false);
-        alert("이미 존재하는 아이디입니다.");
-      }
+
+      setIsUsernameOk(true);
+      alert("사용 가능한 아이디입니다!");
     } catch (err) {
-      alert("아이디 확인 중 오류가 발생했습니다.");
+      setIsUsernameOk(false);
+      if (err.response && err.response.status === 409) {
+        alert("사용중인 아이디입니다.");
+      } else {
+        alert("아이디 확인 중 오류가 발생했습니다.");
+      }
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
+    if (!isUsernameOk) {
+      alert("아이디 중복체크후 다시 시도해주세요");
+      return;
+    }
     try {
       const res = await api.post("/api/auth/signup", { ...state });
       localStorage.setItem("accessToken", res.data.accessToken);
@@ -54,7 +63,15 @@ const SignupPage = () => {
     alert(`${provider} 회원가입 구현 필요`);
     // 실제 구현 시 OAuth API 호출
   };
+  const handleKakaoLogin = () => {
+    const kakaoAuthUrl =
+      "https://kauth.kakao.com/oauth/authorize" +
+      `?response_type=code` +
+      `&client_id=${encodeURIComponent(KAKAO_REST_API_KEY)}` +
+      `&redirect_uri=${encodeURIComponent(KAKAO_REDIRECT_URI)}`;
 
+    window.location.href = kakaoAuthUrl;
+  };
   return (
     <div className="signup-page">
       <div className="signup-card">
@@ -67,7 +84,7 @@ const SignupPage = () => {
         <form onSubmit={handleSubmit} className="signup-form">
           <div className="input-group">
             <input
-              type="email"
+              type="text"
               name="username"
               value={state.username}
               placeholder="이메일"
@@ -82,6 +99,7 @@ const SignupPage = () => {
               중복확인
             </button>
           </div>
+
           <input
             type="password"
             name="password"
@@ -106,7 +124,7 @@ const SignupPage = () => {
           <div className="social-buttons">
             <button
               className="social-button google"
-              onClick={() => handleSocialSignup("Google")}
+              // onClick={() => handleSocialSignup("Google")}
             >
               <img
                 src="/logo/googleUp.png"
@@ -114,15 +132,12 @@ const SignupPage = () => {
                 className="social-icon"
               />
             </button>
-            <button
-              className="social-button kakao"
-              onClick={() => handleSocialSignup("Kakao")}
-            >
+            <button className="social-button kakao" onClick={handleKakaoLogin}>
               <img src="/logo/kakao.png" alt="Kakao" className="social-icon" />
             </button>
             <button
               className="social-button naver"
-              onClick={() => handleSocialSignup("Naver")}
+              // onClick={() => handleSocialSignup("Naver")}
             >
               <img src="/logo/naver.png" alt="Naver" className="social-icon" />
             </button>

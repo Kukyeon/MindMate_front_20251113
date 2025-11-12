@@ -1,0 +1,82 @@
+/* BoardWritePage.css */
+.board-page {
+  max-width: 700px;
+  width: 90%;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff8f0;
+  color: #6b4226;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  min-height: calc(100vh - 80px);
+  box-sizing: border-box;
+}
+
+.board-page-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  font-weight: bold;
+}
+
+.board-write-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.board-input,
+.board-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d18b60;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.board-textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.board-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #d18b60;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.board-button:hover:not(:disabled) {
+  background-color: #b36b49;
+}
+
+.board-button:disabled {
+  background-color: #e0b79e;
+  cursor: not-allowed;
+}
+
+.board-ai-tags {
+  margin-top: 20px;
+  font-size: 0.95rem;
+}
+
+.tags-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tag {
+  background-color: #ffd93d33;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  color: #6b4226;
+}
