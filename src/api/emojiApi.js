@@ -23,7 +23,7 @@ export const emojiList = [
 export const toggleBoardEmoji = async (boardId, data) => {
   const headers = await getAuthHeader();
   return await api.post(
-    `/api/emoji/toggle`,
+    `/api/boards/${boardId}/emoji`,
     {
       boardId,
       type: data.type,
@@ -37,7 +37,7 @@ export const toggleBoardEmoji = async (boardId, data) => {
 export const toggleCommentEmoji = async (commentId, data) => {
   const headers = await getAuthHeader();
   return await api.post(
-    `/api/emoji/toggle`,
+    `/api/comments/${commentId}/emoji`,
     {
       commentId,
       type: data.type,
@@ -52,8 +52,8 @@ export const getEmojiCounts = async (id, targetType = "board") => {
   const headers = await getAuthHeader();
   const endpoint =
     targetType === "board"
-      ? `/api/emoji/board/${id}`
-      : `/api/emoji/comment/${id}`;
+      ? `/api/boards/${id}/emoji`
+      : `/api/comments/${id}/emoji`;
 
   const res = await api.get(endpoint, { headers });
 
