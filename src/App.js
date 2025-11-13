@@ -66,25 +66,18 @@ export default function App() {
     return <div>로딩 중...</div>;
   }
 
-  const ClickOnLogout = () => {
-    clearAuth();
-    setUser(null);
-  };
   return (
     <>
-      <Header></Header>
+      <Header user={user} setUser={setUser} />
 
-      {user && (
-        <>
-          {/* 로그아웃 기능 임시로 넣은것 */}
-          <div> {user.nickname}님 로그인중</div>{" "}
-          <button onClick={ClickOnLogout}>로그아웃</button>
-        </>
-      )}
       {/* <BrowserRouter> */}
       <Routes>
         <Route path="/graph" element={<Graph2 user={user} />}></Route>
-        <Route path="/" element={<Home />}></Route>
+        {user ? (
+          <Route path="/" element={<Calendar />}></Route>
+        ) : (
+          <Route path="/" element={<Home />}></Route>
+        )}
 
         {/* 기본 루트 → 게시판 목록 */}
         {/* <Route path="/" element={<Navigate to="/boards" />} /> */}
@@ -219,7 +212,7 @@ export default function App() {
         {/* 잘못된 경로 처리 */}
         {/* <Route path="*" element={<Navigate to="/boards" replace />} /> */}
       </Routes>
-      <Footer></Footer>
+      <Footer user={user}></Footer>
     </>
   );
 }

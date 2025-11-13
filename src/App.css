@@ -42,6 +42,23 @@
 .nav a:hover {
   color: #d18b60;
 }
+/* 로그아웃 버튼 링크처럼 보이게 */
+.nav button.logout-btn {
+  background: none;
+  border: none;
+  font: inherit;
+  color: #6b4226;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav button.logout-btn:hover {
+  background-color: #f0e2d2;
+  color: #d18b60;
+}
 
 /* 햄버거 버튼 */
 .hamburger {
