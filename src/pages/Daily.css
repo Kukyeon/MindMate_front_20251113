@@ -67,7 +67,7 @@
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  min-height: 300px;
+  /* min-height: 300px; */
   transition: opacity 0.5s ease-in-out, transform 0.3s ease;
 }
 

@@ -1,12 +1,12 @@
 // src/pages/MyBoards.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchMyBoards } from "../api/boardApi"; // 백엔드에서 /api/boards/my-boards 만들었다고 가정
+import { fetchMyBoards } from "../api/boardApi";
 
 const MyBoards = ({ user }) => {
   const [boards, setBoards] = useState([]);
   const [page, setPage] = useState(0);
-  const [size] = useState(10);
+  const [size] = useState(5);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -31,53 +31,49 @@ const MyBoards = ({ user }) => {
     loadBoards();
   }, [user]);
 
-  const handleBoardClick = (boardId) => {
-    navigate(`/board/${boardId}`);
-  };
-
-  const handlePrev = () => {
-    if (page > 0) loadBoards(page - 1);
-  };
-
-  const handleNext = () => {
-    if (page < totalPages - 1) loadBoards(page + 1);
-  };
-
   if (!user) {
-    return <div>로그인이 필요합니다.</div>;
+    return <div className="my-boards-login">로그인이 필요합니다.</div>;
   }
 
   return (
     <div className="my-boards-page">
-      <h2>내 글 모아보기</h2>
+      <h2 className="my-boards-title">내 글 모아보기</h2>
+
       {loading ? (
-        <div>로딩 중...</div>
+        <div className="my-boards-loading">로딩 중...</div>
       ) : (
         <>
           <ul className="my-boards-list">
             {boards.map((board) => (
               <li
                 key={board.id}
-                className="my-board-item"
-                onClick={() => handleBoardClick(board.id)}
+                className="my-board-card"
+                onClick={() => navigate(`/board/${board.id}`)}
               >
-                <strong>{board.title}</strong>{" "}
-                <span>조회수: {board.viewCount}</span>
-                <div>
+                <div className="my-board-header">
+                  <strong className="my-board-title">{board.title}</strong>
+                  <span className="my-board-views">
+                    조회수: {board.viewCount}
+                  </span>
+                </div>
+                <div className="my-board-date">
                   작성일: {new Date(board.createdAt).toLocaleDateString()}
                 </div>
               </li>
             ))}
           </ul>
 
-          <div className="pagination">
-            <button onClick={handlePrev} disabled={page === 0}>
+          <div className="my-boards-pagination">
+            <button onClick={() => loadBoards(page - 1)} disabled={page === 0}>
               이전
             </button>
             <span>
               {page + 1} / {totalPages}
             </span>
-            <button onClick={handleNext} disabled={page >= totalPages - 1}>
+            <button
+              onClick={() => loadBoards(page + 1)}
+              disabled={page >= totalPages - 1}
+            >
               다음
             </button>
           </div>
