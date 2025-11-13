@@ -96,10 +96,19 @@ export default function App() {
         {/* <Route path="/" element={<Navigate to="/boards" replace />} /> */}
 
         {/* 게시판 */}
-        <Route path="/boards" element={<BoardListPage />} />
-        <Route path="/board/write" element={<BoardWritePage />} />
-        <Route path="/board/:id" element={<BoardDetailPage />} />
-        <Route path="/board/edit/:id" element={<BoardEditPage />} />
+        <Route path="/boards" element={<BoardListPage user={user} />} />
+        <Route
+          path="/board/write"
+          element={
+            user ? (
+              <BoardWritePage user={user} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route path="/board/:id" element={<BoardDetailPage user={user} />} />
+        <Route path="/board/edit/:id" element={<BoardEditPage user={user} />} />
         <Route path="/comment/edit/:id" element={<CommentEditForm />} />
 
         {/* 기타 */}

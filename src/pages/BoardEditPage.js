@@ -3,35 +3,36 @@ import { useNavigate, useParams } from "react-router-dom";
 import { fetchBoardDetail, updateBoard } from "../api/boardApi";
 import { generateHashtags } from "../api/aiApi";
 
-const BoardEditPage = () => {
+const BoardEditPage = ({ user }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  // ⚡ 임시 로그인
-  const userId = parseInt(localStorage.getItem("userId") || 1, 10);
-
-  // ⚡ 실제 로그인 적용 시
-  // const userId = 현재 로그인 유저 ID;
+  const userId = user?.id;
 
   useEffect(() => {
     const loadBoard = async () => {
+      if (!userId) return;
       try {
-        const board = await fetchBoardDetail(id);
+        const board = await fetchBoardDetail(id, user);
         if (board) {
           setTitle(board.title);
           setContent(board.content);
         }
       } catch (err) {
         console.error("게시글 불러오기 실패:", err);
+      } finally {
+        setLoading(false);
       }
     };
     loadBoard();
-  }, [id]);
+  }, [id, user, userId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!userId) return alert("로그인이 필요합니다.");
     try {
       await updateBoard(id, { title, content, userId });
       await generateHashtags(id);
@@ -46,6 +47,9 @@ const BoardEditPage = () => {
   const handleCancel = () => {
     navigate(`/board/${id}`);
   };
+
+  if (!userId) return <p>로그인이 필요합니다.</p>;
+  if (loading) return <p>불러오는 중...</p>;
 
   return (
     <div className="board-edit-page">
