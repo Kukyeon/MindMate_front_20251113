@@ -37,6 +37,8 @@ import KakaoCallback from "./pages/KaKaoCallBack.js";
 import { div, small } from "framer-motion/client";
 
 import ProfileSet from "./components/user/ProfileSet.js";
+import NaverCallback from "./pages/NaverCallBack.js";
+import GoogleCallback from "./pages/GoogleCallBack.js";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -97,7 +99,7 @@ export default function App() {
 
         {/* 게시판 */}
         <Route path="/boards" element={<BoardListPage />} />
-        <Route path="/board/write" element={<BoardWritePage />} />
+        <Route path="/board/write" element={<BoardWritePage user={user} />} />
         <Route path="/board/:id" element={<BoardDetailPage />} />
         <Route path="/board/edit/:id" element={<BoardEditPage />} />
         <Route path="/comment/edit/:id" element={<CommentEditForm />} />
@@ -157,6 +159,34 @@ export default function App() {
               )
             ) : (
               <KakaoCallback setUser={setUser} />
+            )
+          }
+        />
+        <Route
+          path="/auth/naver/callback"
+          element={
+            user ? (
+              user.nickname ? (
+                <Navigate to="/" />
+              ) : (
+                <Navigate to="/profile/set" />
+              )
+            ) : (
+              <NaverCallback setUser={setUser} />
+            )
+          }
+        />
+        <Route
+          path="/auth/google/callback"
+          element={
+            user ? (
+              user.nickname ? (
+                <Navigate to="/" />
+              ) : (
+                <Navigate to="/profile/set" />
+              )
+            ) : (
+              <GoogleCallback setUser={setUser} />
             )
           }
         />

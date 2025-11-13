@@ -3,23 +3,32 @@ import { replace, useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { getUser, saveAuth } from "../api/authApi";
 
-const KakaoCallback = ({ setUser }) => {
+const GoogleCallback = ({ setUser }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
     const code = query.get("code");
+    const stateFromGoogle = query.get("state");
+    const stateStored = sessionStorage.getItem("google_oauth_state");
 
     if (!code) {
-      alert("카카오 인가 코드가 없습니다.");
+      alert("구글 인가 코드가 없습니다.");
+      navigate("/login");
+      return;
+    }
+
+    // state 값 체크 (선택이지만, 네이버와 동일 패턴으로 검증)
+    if (stateStored && stateFromGoogle && stateStored !== stateFromGoogle) {
+      alert("올바르지 않은 구글 로그인 요청입니다.");
       navigate("/login");
       return;
     }
 
     (async () => {
       try {
-        const res = await api.get("/api/auth/kakao/login", {
+        const res = await api.get("/api/auth/google/login", {
           params: { code },
         });
 
@@ -27,7 +36,7 @@ const KakaoCallback = ({ setUser }) => {
         const refreshToken = res.data.refreshToken;
 
         saveAuth({ accessToken, refreshToken });
-        console.log("kakao res:", res.data);
+        console.log("google res:", res.data);
         console.log("after saveAuth:", {
           access: localStorage.getItem("accessToken"),
           refresh: localStorage.getItem("refreshToken"),
@@ -39,19 +48,20 @@ const KakaoCallback = ({ setUser }) => {
         }
 
         if (!user.nickname) {
-          navigate("/profile", replace); // 소셜 첫 가입 → 프로필 설정
+          // 닉네임이 없으면 프로필 미설정으로 간주
+          navigate("/profile", replace);
         } else {
           navigate("/", replace);
         }
       } catch (err) {
-        console.error("카카오 로그인 실패:", err);
-        alert("카카오 로그인 실패");
+        console.error("구글 로그인 실패:", err);
+        alert("구글 로그인 실패");
         navigate("/login");
       }
     })();
-  }, [location.search, navigate]);
+  }, [location.search, navigate, setUser]);
 
-  return <div>카카오 로그인 처리 중...</div>;
+  return <div>구글 로그인 처리 중...</div>;
 };
 
-export default KakaoCallback;
+export default GoogleCallback;

@@ -19,7 +19,7 @@ const BoardWritePage = ({ user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!userId) return alert("로그인이 필요합니다.");
+    if (!user) return alert("로그인이 필요합니다.");
     setLoading(true);
 
     try {
