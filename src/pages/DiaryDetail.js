@@ -77,7 +77,7 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
     <div className="diary-detail-wrapper">
       <h2>{diary.title}</h2>
       <p>
-        <strong>작성자:</strong> {diary.username}
+        <strong>작성자:</strong> {diary.nickname}
       </p>
       <p>
         <strong>작성일:</strong> {diary.date}
