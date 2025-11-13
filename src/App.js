@@ -9,6 +9,7 @@ import BoardDetailPage from "./pages/BoardDetailPage";
 import BoardEditPage from "./pages/BoardEditPage";
 import BoardWritePage from "./pages/BoardWritePage";
 import CommentEditForm from "./components/comment/CommentEditForm";
+import MyBoards from "./pages/MyBoards";
 
 // 📘 일기 / 캘린더 관련
 import Calendar from "./pages/Calendar";
@@ -100,6 +101,7 @@ export default function App() {
             )
           }
         />
+        <Route path="/my-boards" element={<MyBoards user={user} />} />
         <Route path="/board/:id" element={<BoardDetailPage user={user} />} />
         <Route path="/board/edit/:id" element={<BoardEditPage user={user} />} />
         <Route path="/comment/edit/:id" element={<CommentEditForm />} />

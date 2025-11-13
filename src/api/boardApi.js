@@ -1,5 +1,5 @@
 import api from "./axiosConfig";
-import { authHeader as getAuthHeader } from "./authApi";
+import { authHeader, authHeader as getAuthHeader } from "./authApi";
 
 //게시글 목록
 
@@ -66,6 +66,16 @@ export const updateBoard = async (id, { title, content, userId, hashtags }) => {
 export const deleteBoard = async (id) => {
   const headers = await getAuthHeader();
   await api.delete(`/api/boards/${id}`, { headers });
+};
+
+//내 글 모아보기
+export const fetchMyBoards = async (page = 0, size = 10) => {
+  const headers = await authHeader();
+  const params = new URLSearchParams({ page, size });
+  const res = await api.get(`/api/boards/my-boards?${params.toString()}`, {
+    headers,
+  });
+  return res.data;
 };
 
 // // 게시글 이모지
