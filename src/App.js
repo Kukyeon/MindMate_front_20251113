@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 
 import "./App.css";
@@ -41,7 +41,7 @@ import GoogleCallback from "./pages/GoogleCallBack.js";
 export default function App() {
   const [user, setUser] = useState(null);
   const [initialized, setInitialized] = useState(false);
-
+  console.log(user);
   useEffect(() => {
     (async () => {
       const me = await getUser(); // user 객체 or null
@@ -66,26 +66,18 @@ export default function App() {
     return <div>로딩 중...</div>;
   }
 
-  const ClickOnLogout = () => {
-    clearAuth();
-    setUser(null);
-  };
   return (
     <>
-      <Header></Header>
+      <Header user={user} setUser={setUser} />
 
-      {user && (
-        <>
-          {/* 로그아웃 기능 임시로 넣은것 */}
-          <div> {user.nickname}님 로그인중</div>{" "}
-          <button onClick={ClickOnLogout}>로그아웃</button>
-        </>
-      )}
       {/* <BrowserRouter> */}
       <Routes>
-        <Route path="/daily" element={<Daily />}></Route>
-        <Route path="/graph" element={<Graph2 />}></Route>
-        <Route path="/" element={<Home />}></Route>
+        <Route path="/graph" element={<Graph2 user={user} />}></Route>
+        {user ? (
+          <Route path="/" element={<Calendar />}></Route>
+        ) : (
+          <Route path="/" element={<Home />}></Route>
+        )}
 
         {/* 기본 루트 → 게시판 목록 */}
         {/* <Route path="/" element={<Navigate to="/boards" />} /> */}
@@ -113,9 +105,9 @@ export default function App() {
         <Route path="/comment/edit/:id" element={<CommentEditForm />} />
 
         {/* 기타 */}
-        <Route path="/fortune" element={<Fortune />} />
-        <Route path="/dailyTest" element={<DailyTest />} />
-        <Route path="/daily" element={<Daily />} />
+        <Route path="/fortune" element={<Fortune user={user} />} />
+        <Route path="/dailyTest" element={<DailyTest user={user} />} />
+        <Route path="/daily" element={<Daily user={user} />} />
 
         {/* 게시글 수정 */}
         <Route path="/board/edit/:id" element={<BoardEditPage />} />
@@ -199,7 +191,10 @@ export default function App() {
           }
         />
 
-        <Route path="/profile" element={<ProfilePage setUser={setUser} />} />
+        <Route
+          path="/profile"
+          element={<ProfilePage setUser={setUser} user={user} />}
+        />
         <Route path="/profile/set" element={<ProfileSet setUser={setUser} />} />
         {/* 다이어리 */}
         <Route path="/diary" element={<Calendar />} />
@@ -217,7 +212,7 @@ export default function App() {
         {/* 잘못된 경로 처리 */}
         {/* <Route path="*" element={<Navigate to="/boards" replace />} /> */}
       </Routes>
-      <Footer></Footer>
+      <Footer user={user}></Footer>
     </>
   );
 }

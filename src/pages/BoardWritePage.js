@@ -75,7 +75,7 @@ const BoardWritePage = ({ user }) => {
           "게시글이 작성되었습니다!\n 캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?"
         );
         if (createChar) {
-          navigate("/profile"); // 캐릭터 생성 페이지로 이동
+          navigate("/profile", { state: { tab: "Character" } }); // 캐릭터 생성 페이지로 이동
         } else {
           navigate(`/board/${boardId}`); // 그냥 상세페이지로 이동
         }
@@ -118,7 +118,7 @@ const BoardWritePage = ({ user }) => {
           <div className="tags-wrapper">
             {aiTags.map((tag, idx) => (
               <span key={idx} className="tag">
-                #{tag}
+                {tag}
               </span>
             ))}
           </div>
