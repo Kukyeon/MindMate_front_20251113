@@ -13,7 +13,7 @@ const BoardWritePage = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [aiTags, setAiTags] = useState([]);
 
-  const userId = user?.id;
+  const userId = user?.userId;
   if (!userId) return <p>로그인이 필요합니다.</p>;
   // 임시 로그인
   //const userId = parseInt(localStorage.getItem("userId") || 2, 10);

@@ -15,16 +15,7 @@ const BoardDetailPage = ({ user }) => {
   const [board, setBoard] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // ⚡ 임시 로그인 (임시로 userId 1번 유저로 처리)
-  //const userId = parseInt(localStorage.getItem("userId") || 1, 10);
-
-  // ⚡ 실제 로그인 적용 시 (예: JWT 기반 로그인)
-  /*
-  import { useAuth } from "../context/AuthContext"; 
-  const { user } = useAuth(); 
-  const userId = user?.id; // 로그인된 유저의 id를 받아옴
-  */
-  const userId = user?.id;
+  const userId = user.userId;
 
   const fetchBoard = async () => {
     try {
@@ -93,7 +84,7 @@ const BoardDetailPage = ({ user }) => {
           <h2 className="board-title">{board.title}</h2>
 
           <div className="board-actions">
-            {userId && board.writerId === user.id && (
+            {userId && board.writerId === user.userId && (
               <>
                 <button className="board-btn edit" onClick={handleEdit}>
                   수정

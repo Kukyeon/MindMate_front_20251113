@@ -13,10 +13,11 @@ const BoardListPage = ({ user }) => {
   const [totalElements, setTotalElements] = useState(0);
   const [search, setSearch] = useState({ field: "title", keyword: "" });
   const navigate = useNavigate();
+  const userId = user?.userId;
 
   const loadBoards = useCallback(async () => {
     try {
-      const data = await fetchBoards(page, 10, search, user);
+      const data = await fetchBoards(page, 10, search, userId);
       if (data && data.content) {
         setBoards(data.content);
         setTotalPages(data.totalPages);
@@ -25,7 +26,7 @@ const BoardListPage = ({ user }) => {
     } catch (err) {
       console.error("게시글 목록 불러오기 실패:", err);
     }
-  }, [page, search, user]);
+  }, [page, search, userId]);
 
   useEffect(() => {
     loadBoards();

@@ -5,12 +5,6 @@ const CommentEditForm = ({ comment, onUpdateSuccess, userId }) => {
   const [content, setContent] = useState(comment.content);
   const [loading, setLoading] = useState(false);
 
-  // ⚡ 임시 로그인
-  //const userId = parseInt(localStorage.getItem("userId") || 1, 10);
-
-  // ⚡ 실제 로그인 적용 시 (주석 해제 후 사용)
-  // const userId = comment.userId || 현재 로그인 유저 ID;
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!content.trim() || loading || !userId) return;

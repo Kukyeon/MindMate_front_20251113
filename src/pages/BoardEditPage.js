@@ -10,7 +10,7 @@ const BoardEditPage = ({ user }) => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const userId = user?.id;
+  const userId = user.userId;
 
   useEffect(() => {
     const loadBoard = async () => {
