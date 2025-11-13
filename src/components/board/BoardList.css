@@ -6,14 +6,23 @@ BoardList .board-table {
   border-radius: 12px;
   overflow: hidden;
 }
-
+.board-table td {
+  height: 50px; /* 최소 높이 고정 */
+  line-height: 1.2;
+  min-width: 60px;
+}
 .board-table th,
 .board-table td {
+  white-space: nowrap; /* 줄바꿈 방지 */
   padding: 12px 15px;
   text-align: center;
   border-bottom: 1px solid #f5deb3; /* 연한 브라운 선 */
 }
-
+.board-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .board-table-head {
   background-color: #fdebd0; /* 헤더 웜톤 */
   color: #6b4226;
@@ -50,6 +59,7 @@ BoardList .board-table {
   .board-table th,
   .board-table td {
     white-space: nowrap;
+    min-width: 80px;
   }
 }
 /* BoardItem */
