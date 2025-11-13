@@ -9,7 +9,6 @@ import "./EmojiSelector.css";
 
 const EmojiSelector = ({ boardId, commentId, userId }) => {
   const [open, setOpen] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [emojiCounts, setEmojiCounts] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -29,6 +28,7 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
         updated[e.type] = {
           count: info?.count || 0,
           selected: info?.selected || false,
+          image: e.image,
         };
       });
 
@@ -50,6 +50,10 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
     }
 
     setLoading(true);
+
+    const info = emojiCounts[emoji.type];
+    const isAlreadySelected = info?.selected;
+
     const data = {
       userId,
       type: emoji.type,
@@ -62,6 +66,9 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
 
       //서버 최신 데이터 다시 가져오기 (중요)
       await loadCounts();
+      // 선택창은 리스트에서 선택했을 때만 닫히게
+      if (!isAlreadySelected) setOpen(false);
+      // 이미 선택된 이모지 클릭(취소)은 리스트 닫지 않음
     } catch (err) {
       console.error("이모지 토글 실패:", err);
     } finally {
@@ -71,8 +78,6 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
 
   return (
     <div className="emoji-selector">
-      {/*  선택된 이모지 */}
-
       {/* 선택창 열기 버튼 */}
       <button
         className="emoji-toggle"
