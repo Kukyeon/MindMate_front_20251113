@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 // 1. [필수] useLocation 대신 useParams를 import
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchDiaryByDate } from "../api/diaryApi";
-
+import axios from "axios";
 export default function DiaryDetail({ dateFromCalendar, onDelete }) {
   // 2. [필수] useParams()를 사용하여 URL에서 date 값을 가져옴
 
@@ -19,23 +19,23 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
       return;
     }
 
-    const loadDiary = async () => {
-      try {
-        setLoading(true);
-        const res = await fetchDiaryByDate(date);
-        setDiary(res.data); // 4. API 호출 성공 시 state에 데이터 저장
-      } catch (err) {
-        if (err.response && err.response.status === 404) {
-          alert("해당 날짜에 작성된 일기가 없습니다.");
-          navigate("/diary/write", { state: { date } });
-        } else {
-          console.error("❌ fetchDiary 오류:", err);
-          alert("일기를 불러오는 중 오류가 발생했습니다.");
-        }
-      } finally {
-        setLoading(false); // 5. API 성공/실패 여부와 관계없이 로딩 종료
-      }
-    };
+  const loadDiary = async () => {
+  try {
+    setLoading(true);
+    const res = await axios.get(`http://localhost:8888/api/diary/date?date=${date}`);
+    setDiary(res.data); // ✅ Axios는 res.data
+  } catch (err) {
+    if (err.response && err.response.status === 404) {
+      alert("해당 날짜에 작성된 일기가 없습니다.");
+      navigate("/diary/write", { state: { date } });
+    } else {
+      console.error("❌ fetchDiary 오류:", err);
+      alert("일기를 불러오는 중 오류가 발생했습니다.");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
     loadDiary();
   }, [date, navigate]);

@@ -12,7 +12,7 @@ export default function DiaryWritePage() {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [emoji, setEmoji] = useState(null);
+  const [emoji, setEmoji] = useState({});
 
   useEffect(() => {
     // ⭐️ 2. 날짜가 없으면(잘못된 접근) 캘린더 페이지로 돌려보냄
@@ -25,22 +25,24 @@ export default function DiaryWritePage() {
     const loadDiary = async () => {
       try {
         const res = await fetchDiaryByDate(date);
-        if (res?.data) {
-          setTitle(res.data.title);
-          setContent(res.data.content);
-          setEmoji(res.data.emoji);
-        }
+            if (res?.data) {
+        setTitle(res.data.title || "");       // undefined일 경우 빈 문자열로 fallback
+        setContent(res.data.content || "");   // undefined일 경우 빈 문자열로 fallback
+        setEmoji(res.data.emoji || {});       // undefined일 경우 빈 객체로 fallback
+}
       } catch (err) {
         // 일기 없는 경우는 그냥 빈 상태 유지 (정상)
       }
     };
     loadDiary();
   }, [date, navigate]); // ⭐️ 의존성 배열에 date와 navigate 추가
-
+  const [isSaving, setIsSaving] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!date) return alert("날짜를 선택하세요.");
     if (!emoji) return alert("감정을 선택해 주세요");
+      if (isSaving) return; // 이미 저장 중이면 무시
+  setIsSaving(true);
     const username = localStorage.getItem("username");
 
     try {
@@ -48,10 +50,12 @@ export default function DiaryWritePage() {
       alert("일기가 저장되었습니다.");
       navigate("/diary/calendar", { state: { selectedDate: date } });
     } catch (err) {
-      console.error(err);
-      alert("저장 실패");
-    }
-  };
+    console.error(err);
+    alert("저장 실패");
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   // 날짜가 없는 경우 로딩 처리 (useEffect의 리다이렉트가 실행되기 전)
   if (!date) return <div>날짜 정보 확인 중...</div>;
