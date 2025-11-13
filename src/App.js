@@ -17,7 +17,7 @@ import DiaryWrite from "./pages/DiaryWrite";
 import DiaryEditor from "./pages/DiaryEditor";
 import SignupPage from "./pages/SignupPage.js";
 import Daily from "./pages/Daily.js";
-import Graph from "./components/Graph.js";
+import Graph2 from "./components/Graph2.js";
 
 import LoginPage from "./pages/LoginPage.js";
 
@@ -31,10 +31,8 @@ import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
 import ProfilePage from "./pages/ProfilePage.js";
 
-import ProfileSetup from "./components/user/ProfileSet.js";
 import { getUser, clearAuth } from "./api/authApi.js";
 import KakaoCallback from "./pages/KaKaoCallBack.js";
-import { div, small } from "framer-motion/client";
 
 import ProfileSet from "./components/user/ProfileSet.js";
 import NaverCallback from "./pages/NaverCallBack.js";
@@ -86,7 +84,7 @@ export default function App() {
       {/* <BrowserRouter> */}
       <Routes>
         <Route path="/daily" element={<Daily />}></Route>
-        <Route path="/graph" element={<Graph />}></Route>
+        <Route path="/graph" element={<Graph2 />}></Route>
         <Route path="/" element={<Home />}></Route>
 
         {/* 기본 루트 → 게시판 목록 */}
