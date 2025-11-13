@@ -4,6 +4,7 @@ import Character from "../components/Character";
 import ProfileForm from "../components/user/ProfileForm";
 import "./ProfilePage.css";
 import { useLocation } from "react-router-dom";
+import MyBoards from "./MyBoards";
 
 const ProfilePage = ({ user }) => {
   const location = useLocation(); // ✅ 라우터 state 접근
@@ -29,11 +30,18 @@ const ProfilePage = ({ user }) => {
         >
           내 캐릭터
         </button>
+        <button
+          className={activeTab === "MyBoards" ? "tab active" : "tab"}
+          onClick={() => setActiveTab("MyBoards")}
+        >
+          내 글
+        </button>
       </div>
 
       <div className="tab-content">
         {activeTab === "ProfileForm" && <ProfileForm />}
         {activeTab === "Character" && <Character user={user} />}
+        {activeTab === "MyBoards" && <MyBoards user={user} />}
         {/* {activeTab === "Settings" && <div>⚙️ 기타 설정 영역</div>} */}
       </div>
     </div>

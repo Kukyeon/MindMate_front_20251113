@@ -18,7 +18,7 @@ function DailyTest({ user }) {
       if (!user) return;
       try {
         const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-        const res = await api.get("/api/daily-result", {
+        const res = await api.get("/api/result", {
           params: { userId: user.id, date: today },
         });
 
