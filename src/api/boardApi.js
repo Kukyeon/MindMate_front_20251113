@@ -3,8 +3,13 @@ import { authHeader as getAuthHeader } from "./authApi";
 
 //게시글 목록
 
-export const fetchBoards = async (page = 0, size = 10, search = {}) => {
-  const headers = await getAuthHeader();
+export const fetchBoards = async (
+  page = 0,
+  size = 10,
+  search = {},
+  user = null
+) => {
+  const headers = user ? await getAuthHeader() : {};
   const params = new URLSearchParams({
     page,
     size,
@@ -22,8 +27,8 @@ export const fetchBoards = async (page = 0, size = 10, search = {}) => {
 };
 
 // 게시글 상세
-export const fetchBoardDetail = async (id) => {
-  const headers = await getAuthHeader();
+export const fetchBoardDetail = async (id, user = null) => {
+  const headers = user ? await getAuthHeader() : {};
   const res = await api.get(`/api/boards/${id}`, { headers });
   return res.data;
 };

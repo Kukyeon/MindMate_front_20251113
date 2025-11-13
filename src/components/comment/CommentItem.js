@@ -41,15 +41,19 @@ const CommentItem = ({ comment, onUpdated, userId }) => {
       <div className="comment-footer">
         <EmojiSelector commentId={comment.id} userId={userId} />
         <div className="comment-actions">
-          <button
-            className="comment-btn edit"
-            onClick={() => setEditing(!editing)}
-          >
-            {editing ? "취소" : "수정"}
-          </button>
-          <button className="comment-btn delete" onClick={handleDelete}>
-            삭제
-          </button>
+          {userId === comment.writerId && (
+            <>
+              <button
+                className="comment-btn edit"
+                onClick={() => setEditing(!editing)}
+              >
+                {editing ? "취소" : "수정"}
+              </button>
+              <button className="comment-btn delete" onClick={handleDelete}>
+                삭제
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

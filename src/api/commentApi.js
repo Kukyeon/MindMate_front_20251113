@@ -2,8 +2,8 @@ import api from "./axiosConfig";
 import { authHeader as getAuthHeader } from "./authApi";
 
 // 댓글 목록
-export const fetchComments = async (boardId) => {
-  const headers = await getAuthHeader();
+export const fetchComments = async (boardId, user = null) => {
+  const headers = user ? await getAuthHeader() : {};
   const res = await api.get(`/api/comments/boards/${boardId}`, {
     headers,
   });
