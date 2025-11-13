@@ -5,7 +5,7 @@ import ProfileForm from "../components/user/ProfileForm";
 import "./ProfilePage.css";
 
 const ProfilePage = ({ user }) => {
-  const [activeTab, setActiveTab] = useState("Edit");
+  const [activeTab, setActiveTab] = useState("ProfileForm");
 
   return (
     <div className="profile-page">

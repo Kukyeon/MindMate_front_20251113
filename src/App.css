@@ -1,3 +1,14 @@
+/* App 전체 레이아웃 */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 화면 전체 */
+}
+
+.app-main {
+  flex: 1; /* Header와 Footer 제외한 영역 */
+  padding: 20px; /* 모든 페이지 여백 */
+}
 /* 헤더 css */
 .header {
   display: flex;
