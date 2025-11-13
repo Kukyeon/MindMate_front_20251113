@@ -52,8 +52,8 @@ export const getEmojiCounts = async (id, targetType = "board") => {
   const headers = await getAuthHeader();
   const endpoint =
     targetType === "board"
-      ? `/api/boards/${id}/emoji`
-      : `/api/comments/${id}/emoji`;
+      ? `/api/emoji/board/${id}`
+      : `/api/emoji/comment/${id}`;
 
   const res = await api.get(endpoint, { headers });
 
