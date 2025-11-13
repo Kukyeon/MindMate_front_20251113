@@ -21,22 +21,22 @@ const mbtiOptions = [
   "ESFP",
 ];
 
-const EditProfile = () => {
-  const [profile, setProfile] = useState({
-    nickname: "",
-    birthday: "",
-    mbti: "",
-    password: "",
-  });
+const EditProfile = ({ setUser, user }) => {
+  // const [profile, setProfile] = useState({
+  //   nickname: "",
+  //   birthday: "",
+  //   mbti: "",
+  //   password: "",
+  // });
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
+    setUser({ ...user, [e.target.name]: e.target.value });
   };
 
   const handleSave = async () => {
     try {
-      await api.put("/api/user/profile", profile);
+      await api.put("/api/user/profile", user);
       setMessage("✅ 프로필이 저장되었습니다!");
     } catch (err) {
       console.error(err);
@@ -61,7 +61,7 @@ const EditProfile = () => {
             <input
               type="text"
               name="nickname"
-              value={profile.nickname}
+              value={user.nickname}
               onChange={handleChange}
               placeholder="닉네임"
               className="edit-profile-input"
@@ -75,7 +75,7 @@ const EditProfile = () => {
           <input
             type="date"
             name="birthday"
-            value={profile.birthday}
+            value={user.birthday}
             onChange={handleChange}
             className="edit-profile-input"
           />
@@ -83,7 +83,7 @@ const EditProfile = () => {
           {/* MBTI */}
           <select
             name="mbti"
-            value={profile.mbti}
+            value={user.mbti}
             onChange={handleChange}
             className="edit-profile-input"
           >
@@ -96,14 +96,14 @@ const EditProfile = () => {
           </select>
 
           {/* 비밀번호 */}
-          <input
+          {/* <input
             type="password"
             name="password"
             value={profile.password}
             onChange={handleChange}
             placeholder="새 비밀번호"
             className="edit-profile-input"
-          />
+          /> */}
 
           <button type="submit" className="edit-profile-button">
             저장

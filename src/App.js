@@ -41,7 +41,13 @@ import NaverCallback from "./pages/NaverCallBack.js";
 import GoogleCallback from "./pages/GoogleCallBack.js";
 
 export default function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({
+    userId: "",
+    nickname: "",
+    birth_date: "",
+    mbti: "",
+    authType: "",
+  });
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
@@ -191,8 +197,14 @@ export default function App() {
           }
         />
 
-        <Route path="/profile" element={<ProfilePage setUser={setUser} />} />
-        <Route path="/profile/set" element={<ProfileSet setUser={setUser} />} />
+        <Route
+          path="/profile"
+          element={<ProfilePage setUser={setUser} user={user} />}
+        />
+        <Route
+          path="/profile/set"
+          element={<ProfileSet setUser={setUser} user={user} />}
+        />
         {/* 다이어리 */}
         <Route path="/diary" element={<Calendar />} />
         <Route path="/diary/calendar" element={<Calendar />} />
