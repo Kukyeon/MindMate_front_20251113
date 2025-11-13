@@ -1,14 +1,12 @@
 import { useState } from "react";
 import DailyTest from "../components/DailyTest";
 import Fortune from "../components/Fortune";
-import Character from "../components/Character";
 import "./Daily.css";
 
-export default function Daily() {
-  const [activeTab, setActiveTab] = useState("Character");
+export default function Daily({ user }) {
+  const [activeTab, setActiveTab] = useState("MBTI 심리테스트");
 
   const tabs = [
-    { name: "Character", icon: "🧸" },
     { name: "MBTI 심리테스트", icon: "📝" },
     { name: "오늘의 별자리 운세", icon: "🔮" },
   ];
@@ -28,9 +26,8 @@ export default function Daily() {
       </div>
 
       <div className={`tab-content fade-in`}>
-        {activeTab === "Character" && <Character />}
-        {activeTab === "MBTI 심리테스트" && <DailyTest />}
-        {activeTab === "오늘의 별자리 운세" && <Fortune />}
+        {activeTab === "MBTI 심리테스트" && <DailyTest user={user} />}
+        {activeTab === "오늘의 별자리 운세" && <Fortune user={user} />}
       </div>
     </div>
   );

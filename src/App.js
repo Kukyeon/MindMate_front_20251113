@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 
 import "./App.css";
@@ -41,7 +41,7 @@ import GoogleCallback from "./pages/GoogleCallBack.js";
 export default function App() {
   const [user, setUser] = useState(null);
   const [initialized, setInitialized] = useState(false);
-
+  console.log(user);
   useEffect(() => {
     (async () => {
       const me = await getUser(); // user 객체 or null
@@ -83,8 +83,7 @@ export default function App() {
       )}
       {/* <BrowserRouter> */}
       <Routes>
-        <Route path="/daily" element={<Daily />}></Route>
-        <Route path="/graph" element={<Graph2 />}></Route>
+        <Route path="/graph" element={<Graph2 user={user} />}></Route>
         <Route path="/" element={<Home />}></Route>
 
         {/* 기본 루트 → 게시판 목록 */}
@@ -113,9 +112,9 @@ export default function App() {
         <Route path="/comment/edit/:id" element={<CommentEditForm />} />
 
         {/* 기타 */}
-        <Route path="/fortune" element={<Fortune />} />
-        <Route path="/dailyTest" element={<DailyTest />} />
-        <Route path="/daily" element={<Daily />} />
+        <Route path="/fortune" element={<Fortune user={user} />} />
+        <Route path="/dailyTest" element={<DailyTest user={user} />} />
+        <Route path="/daily" element={<Daily user={user} />} />
 
         {/* 게시글 수정 */}
         <Route path="/board/edit/:id" element={<BoardEditPage />} />
@@ -199,7 +198,10 @@ export default function App() {
           }
         />
 
-        <Route path="/profile" element={<ProfilePage setUser={setUser} />} />
+        <Route
+          path="/profile"
+          element={<ProfilePage setUser={setUser} user={user} />}
+        />
         <Route path="/profile/set" element={<ProfileSet setUser={setUser} />} />
         {/* 다이어리 */}
         <Route path="/diary" element={<Calendar />} />

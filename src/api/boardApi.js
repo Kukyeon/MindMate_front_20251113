@@ -20,9 +20,7 @@ export const fetchBoards = async (
     params.append("keyword", search.keyword);
   }
 
-  const res = await api.get(`/api/boards?${params.toString()}`, {
-    headers,
-  });
+  const res = await api.get(`/api/boards?${params.toString()}`);
   return res.data;
 };
 

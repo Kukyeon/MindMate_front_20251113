@@ -3,12 +3,12 @@ import api from "../api/axiosConfig";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Character = ({ user }) => {
-  const userId = 1;
+  const userId = user?.userId;
   const [character, setCharacter] = useState(null);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [cheeredToday, setCheeredToday] = useState(false);
-  console.log(user);
+  console.log(user.userId);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -56,7 +56,7 @@ const Character = ({ user }) => {
         params: { userId, addPoints: 4, moodChange: 5 },
       });
       setCharacter({ ...res.data });
-      setCheeredToday(true);
+      // setCheeredToday(true);
       setMessage("무드 업데이트 성공! 🌟");
     } catch (err) {
       const msg = err.response?.data?.message || "응원 중 오류가 발생했습니다.";
