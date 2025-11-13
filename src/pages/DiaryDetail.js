@@ -1,67 +1,66 @@
+// DiaryDetail.jsx
 import { useEffect, useState } from "react";
-// 1. [필수] useLocation 대신 useParams를 import
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchDiaryByDate } from "../api/diaryApi";
-import axios from "axios";
-export default function DiaryDetail({ dateFromCalendar, onDelete }) {
-  // 2. [필수] useParams()를 사용하여 URL에서 date 값을 가져옴
 
+export default function DiaryDetail({ dateFromCalendar, onDelete }) {
   const [diary, setDiary] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const params = useParams(); // 항상 호출
-  const date = dateFromCalendar || params.date; // 나중에 선택
+  const params = useParams();
+  const token = localStorage.getItem("accessToken");
+  // 캘린더에서 전달된 날짜 우선, URL 파라미터는 fallback
+  const date = dateFromCalendar || params.date;
 
   useEffect(() => {
-    // 3. date 변수에 URL에서 가져온 날짜가 정상적으로 들어옴
     if (!date) {
       navigate("/diary/calendar");
       return;
     }
 
-  const loadDiary = async () => {
-  try {
-    setLoading(true);
-    const res = await axios.get(`http://localhost:8888/api/diary/date?date=${date}`);
-    setDiary(res.data); // ✅ Axios는 res.data
-  } catch (err) {
-    if (err.response && err.response.status === 404) {
-      alert("해당 날짜에 작성된 일기가 없습니다.");
-      navigate("/diary/write", { state: { date } });
-    } else {
-      console.error("❌ fetchDiary 오류:", err);
-      alert("일기를 불러오는 중 오류가 발생했습니다.");
-    }
-  } finally {
-    setLoading(false);
+    const loadDiary = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`http://localhost:8888/api/diary/date?date=${date}`,{
+          headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}` // 🔑 필수
   }
-};
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          setDiary(data);
+        } else if (res.status === 404) {
+          alert("해당 날짜에 작성된 일기가 없습니다.");
+          navigate("/diary/write", { state: { date } });
+        } else {
+          throw new Error(`HTTP 오류: ${res.status}`);
+        }
+      } catch (err) {
+        console.error("❌ fetchDiary 오류:", err);
+        alert("일기를 불러오는 중 오류가 발생했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
     loadDiary();
   }, [date, navigate]);
 
-  // 3. 일기 삭제 처리 함수
+  // 삭제 처리
   const handleDelete = async () => {
-    if (!window.confirm(`${date} 날짜의 일기를 정말로 삭제하시겠습니까?`)) {
-      // ⬅️ '정말로' 추가
-      return;
-    }
+    if (!window.confirm(`${date} 날짜의 일기를 정말로 삭제하시겠습니까?`)) return;
+
     try {
-      const response = await fetch(
-        // 백엔드 DELETE API 호출 (경로 파라미터 사용)
-        `http://localhost:8888/api/diary/date/${date}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json", // JSON 형식이면 추가
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:8888/api/diary/date/${date}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}` },
+      });
 
       if (response.ok) {
         alert("일기가 삭제되었습니다.");
-        setDiary(null); // 현재 DiaryDetail에서는 일기 삭제 처리
-        if (onDelete) onDelete(date); // 상위 상태 갱신
+        setDiary(null);
+        if (onDelete) onDelete(date); // 캘린더 상태 갱신
       } else {
         throw new Error(`삭제 실패: ${response.status}`);
       }
@@ -71,17 +70,9 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
     }
   };
 
-  // 6. 로딩 중일 때 표시
-  if (loading) {
-    return <div>로딩 중...</div>;
-  }
+  if (loading) return <div>로딩 중...</div>;
+  if (!diary) return <div>일기 데이터를 불러오지 못했습니다.</div>;
 
-  // 7. 로딩이 끝났는데 diary 데이터가 없으면 (API 실패 등)
-  if (!diary) {
-    return <div>일기 데이터를 불러오지 못했습니다.</div>;
-  }
-
-  // 8. 데이터가 있으면 렌더링
   return (
     <div className="diary-detail-wrapper">
       <h2>{diary.title}</h2>
@@ -103,10 +94,7 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
       {diary.aiComment && <p className="ai-comment">{diary.aiComment}</p>}
 
       <div className="diary-buttons">
-        <button
-          className="edit"
-          onClick={() => navigate(`/diary/edit/${date}`)}
-        >
+        <button className="edit" onClick={() => navigate(`/diary/edit/${date}`)}>
           수정
         </button>
         <button className="delete" onClick={handleDelete}>
