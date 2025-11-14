@@ -8,7 +8,7 @@ import {
 } from "../../api/socialAuth";
 
 // ProfileView.jsx
-const ProfileView = ({ user, setActiveTab }) => {
+const ProfileView = ({ setUser, user, setActiveTab }) => {
   const navigate = useNavigate();
 
   const handleDeleteAccount = async () => {
@@ -37,9 +37,11 @@ const ProfileView = ({ user, setActiveTab }) => {
 
     // 2) 일반 계정인 경우: 우리 백엔드 탈퇴 API 바로 호출
     try {
-      await api.delete("/api/users/me"); // 필요하면 경로 수정
+      await api.post("/api/auth/delete"); // 필요하면 경로 수정
 
       clearAuth();
+      if (setUser) setUser(null);
+
       navigate("/delete-complete", { replace: true });
     } catch (err) {
       console.error("회원탈퇴 실패:", err);

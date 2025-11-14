@@ -38,22 +38,18 @@ const LoginPage = ({ setUser }) => {
       }
       if (!user.nickname) {
         // 닉네임이 없으면 프로필이 설정 되지 않음으로 정의
-        navigate("/profile", replace); // 로그인시, 프로필설정이 안되면 이동
+        navigate("/profile", { replace: true }); // 로그인시, 프로필설정이 안되면 이동
       } else {
-        navigate("/", replace);
+        navigate("/", { replace: true });
       }
     } catch (err) {
-      if (err.response && err.response.status === 400) {
-        alert("아이디 또는 비밀번호를 확인해주세요.");
+      if (err.response && err.response.status === 401) {
+        alert("아이디 또는 비밀번호가 올바르지 않습니다.");
       } else {
         console.error("로그인 실패", err);
-        alert("로그인 실패");
+        alert(err);
       }
     }
-  };
-  const handleSocialLogin = (provider) => {
-    alert(`${provider} 로그인 구현 필요`);
-    // 실제로는 OAuth API 호출
   };
 
   const handleKakaoLogin = () => {
@@ -84,6 +80,7 @@ const LoginPage = ({ setUser }) => {
             placeholder="아이디"
             onChange={handleOnChange}
             className="login-input"
+            required
           />
           <input
             type="password"
@@ -92,6 +89,7 @@ const LoginPage = ({ setUser }) => {
             placeholder="비밀번호"
             onChange={handleOnChange}
             className="login-input"
+            required
           />
           <button type="submit" className="login-button">
             로그인

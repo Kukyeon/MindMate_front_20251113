@@ -90,8 +90,9 @@ api.interceptors.response.use(
     try {
       const accessToken = getAccessToken();
       const refreshToken = getRefreshToken();
-      if (!accessToken || !refreshToken) throw new Error("Missing tokens");
-
+      if (!accessToken || !refreshToken) {
+        return Promise.reject(error);
+      }
       const { data } = await refreshClient.post("/api/auth/refresh", {
         accessToken,
         refreshToken,

@@ -13,13 +13,13 @@ const KakaoCallback = ({ setUser }) => {
 
     if (!code) {
       alert("카카오 인가 코드가 없습니다.");
-      navigate("/login");
+      navigate("/login", { replace: true });
       return;
     }
 
     (async () => {
       try {
-        const res = await api.get("/api/auth/kakao/login", {
+        const res = await api.get("/api/auth/login/kakao", {
           params: { code },
         });
 
@@ -38,15 +38,15 @@ const KakaoCallback = ({ setUser }) => {
           setUser(user);
         }
 
-        if (!user.nickname) {
-          navigate("/profile", replace); // 소셜 첫 가입 → 프로필 설정
+        if (!user.nickname.trim()) {
+          navigate("/profile", { replace: true }); // 소셜 첫 가입 → 프로필 설정
         } else {
-          navigate("/", replace);
+          navigate("/", { replace: true });
         }
       } catch (err) {
         console.error("카카오 로그인 실패:", err);
         alert("카카오 로그인 실패");
-        navigate("/login");
+        navigate("/login", { replace: true });
       }
     })();
   }, [location.search, navigate]);

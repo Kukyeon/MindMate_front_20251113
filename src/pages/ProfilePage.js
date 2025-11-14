@@ -43,7 +43,11 @@ const ProfilePage = ({ user, setUser }) => {
 
       <div className="tab-content">
         {activeTab === "ProfileView" && (
-          <ProfileView setActiveTab={setActiveTab} user={user} />
+          <ProfileView
+            setUser={setUser}
+            setActiveTab={setActiveTab}
+            user={user}
+          />
         )}
         {activeTab === "ProfileForm" && (
           <ProfileForm
