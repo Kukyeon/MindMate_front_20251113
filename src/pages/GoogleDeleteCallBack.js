@@ -26,7 +26,7 @@ const GoogleDeleteCallback = ({ setUser }) => {
     (async () => {
       try {
         // 1) 백엔드 구글 탈퇴 API 호출
-        await api.post("/api/auth/google/delete", { code });
+        await api.post("/api/auth/delete/google", { code });
 
         // 2) 프론트 인증 정보 정리
         clearAuth();

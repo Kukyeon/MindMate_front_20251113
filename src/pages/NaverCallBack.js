@@ -20,7 +20,7 @@ const NaverCallback = ({ setUser }) => {
 
     (async () => {
       try {
-        const res = await api.get("/api/auth/naver/login", {
+        const res = await api.get("/api/auth/login/naver", {
           params: { code, state },
         });
 

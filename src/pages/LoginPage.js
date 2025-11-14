@@ -51,10 +51,6 @@ const LoginPage = ({ setUser }) => {
       }
     }
   };
-  const handleSocialLogin = (provider) => {
-    alert(`${provider} 로그인 구현 필요`);
-    // 실제로는 OAuth API 호출
-  };
 
   const handleKakaoLogin = () => {
     const kakaoAuthUrl = buildKakaoAuthUrl();
@@ -84,6 +80,7 @@ const LoginPage = ({ setUser }) => {
             placeholder="아이디"
             onChange={handleOnChange}
             className="login-input"
+            required
           />
           <input
             type="password"
@@ -92,6 +89,7 @@ const LoginPage = ({ setUser }) => {
             placeholder="비밀번호"
             onChange={handleOnChange}
             className="login-input"
+            required
           />
           <button type="submit" className="login-button">
             로그인

@@ -28,7 +28,7 @@ const GoogleCallback = ({ setUser }) => {
 
     (async () => {
       try {
-        const res = await api.get("/api/auth/google/login", {
+        const res = await api.get("/api/auth/login/google", {
           params: { code },
         });
 

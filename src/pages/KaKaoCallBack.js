@@ -19,7 +19,7 @@ const KakaoCallback = ({ setUser }) => {
 
     (async () => {
       try {
-        const res = await api.get("/api/auth/kakao/login", {
+        const res = await api.get("/api/auth/login/kakao", {
           params: { code },
         });
 

@@ -74,6 +74,7 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
               onChange={handleChange}
               placeholder="닉네임"
               className="edit-profile-input"
+              required
             />
             <button type="button" className="edit-profile-check-btn">
               중복확인
@@ -87,6 +88,7 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
             value={profile.birth_date}
             onChange={handleChange}
             className="edit-profile-input"
+            required
           />
 
           {/* MBTI */}
@@ -95,6 +97,7 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
             value={profile.mbti}
             onChange={handleChange}
             className="edit-profile-input"
+            required
           >
             <option value="">MBTI 선택</option>
             {mbtiOptions.map((type) => (

@@ -27,7 +27,7 @@ const KakaoDeleteCallback = ({ setUser }) => {
     (async () => {
       try {
         // 1) 백엔드 카카오 탈퇴 API 호출
-        await api.post("/api/auth/kakao/delete", { code });
+        await api.post("/api/auth/delete/kakao", { code });
 
         // 2) 프론트 인증 정보 정리
         clearAuth();

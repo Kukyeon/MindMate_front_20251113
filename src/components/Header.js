@@ -1,12 +1,25 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { clearAuth } from "../api/authApi";
+import api from "../api/axiosConfig";
 
 const Header = ({ user, setUser }) => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const ClickOnLogout = () => {
-    clearAuth();
-    setUser(null);
+  const ClickOnLogout = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      await api.post("/api/auth/logout", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }); // 백엔드에서 토큰 정리
+    } catch (err) {
+      console.error(err);
+    } finally {
+      navigate("/", { replace: true });
+      clearAuth();
+      setUser(null);
+      return;
+    }
   };
   console.log(user);
   return (

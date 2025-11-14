@@ -57,15 +57,7 @@ export default function App() {
   }, []);
 
   function PrivateRoute({ children }) {
-    return user ? (
-      user.nickname ? (
-        children
-      ) : (
-        <Navigate to="/profile/set" replace />
-      )
-    ) : (
-      <Navigate to="/login" replace />
-    );
+    return user ? children : <Navigate to="/" replace />;
   }
 
   if (!initialized) {
@@ -199,26 +191,46 @@ export default function App() {
         />
         <Route
           path="/auth/naver/delete-callback"
-          element={<NaverDeleteCallback setUser={setUser} />}
+          element={
+            <PrivateRoute>
+              <NaverDeleteCallback setUser={setUser} />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/auth/kakao/delete-callback"
-          element={<KakaoDeleteCallback setUser={setUser} />}
+          element={
+            <PrivateRoute>
+              <KakaoDeleteCallback setUser={setUser} />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/auth/google/delete-callback"
-          element={<GoogleDeleteCallback setUser={setUser} />}
+          element={
+            <PrivateRoute>
+              <GoogleDeleteCallback setUser={setUser} />
+            </PrivateRoute>
+          }
         />
         <Route path="/delete-complete" element={<DeleteCompletePage />} />
 
         <Route
           path="/profile"
-          element={<ProfilePage setUser={setUser} user={user} />}
+          element={
+            <PrivateRoute>
+              <ProfilePage setUser={setUser} user={user} />
+            </PrivateRoute>
+          }
         />
 
         <Route
           path="/profile/set"
-          element={<ProfileSet setUser={setUser} user={user} />}
+          element={
+            <PrivateRoute>
+              <ProfileSet setUser={setUser} user={user} />
+            </PrivateRoute>
+          }
         />
 
         {/* 다이어리 */}
