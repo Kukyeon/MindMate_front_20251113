@@ -47,6 +47,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [initialized, setInitialized] = useState(false);
   console.log(user);
+
   useEffect(() => {
     (async () => {
       const me = await getUser(); // user 객체 or null

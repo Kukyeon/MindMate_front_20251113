@@ -6,18 +6,15 @@ import "./ProfilePage.css";
 
 import ProfileView from "../components/user/ProfileView";
 
-
-
 import { useLocation } from "react-router-dom";
 import MyBoards from "./MyBoards";
 
 const ProfilePage = ({ user, setUser }) => {
   const location = useLocation(); // ✅ 라우터 state 접근
-  //console.log(user.userId);
-  const initialTab =
-    location.state?.tab === "Character" ? "Character" : "ProfileForm"; // ✅ 기본 탭 결정
-  const [activeTab, setActiveTab] = useState(initialTab);
-
+  // console.log(user.userId);
+  // const initialTab =
+  //   location.state?.tab === "Character" ? "Character" : "ProfileForm"; // ✅ 기본 탭 결정
+  const [activeTab, setActiveTab] = useState("ProfileView");
 
   return (
     <div className="profile-page">
