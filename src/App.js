@@ -221,14 +221,14 @@ export default function App() {
         />
 
         {/* 다이어리 */}
-        <Route path="/diary" element={<Calendar />} />
-        <Route path="/diary/calendar" element={<Calendar />} />
+        <Route path="/diary" element={<Calendar user={user}/>} />
+        <Route path="/diary/calendar" element={<Calendar user={user}/>} />
 
-        <Route path="/diary/date/:date" element={<DiaryDetail />} />
+        <Route path="/diary/date/:date" element={<DiaryDetail user={user}/>} />
 
-        <Route path="/diary/edit/:date" element={<DiaryEditor />} />
+        <Route path="/diary/edit/:date" element={<DiaryEditor user={user}/>} />
 
-        <Route path="/diary/write" element={<DiaryWrite />} />
+        <Route path="/diary/write" element={<DiaryWrite user={user}/>} />
 
         {/* 잘못된 경로시 보드로 이동 */}
         {/* <Route path="*" element={<Navigate to="/boards" replace />} /> */}
