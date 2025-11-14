@@ -13,7 +13,7 @@ const Fortune = ({ user }) => {
     try {
       setLoading(true);
       const res = await api.post(
-        "/ai/fortune",
+        "/api/user/fortune",
         { content: birth },
         { headers }
       );
