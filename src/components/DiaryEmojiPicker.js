@@ -1,26 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { emojiList } from "../api/emojiApi";
+import "./DiaryEmojiPicker.css"; // CSS 파일 따로 만들어서 적용
 
 export default function DiaryEmojiPicker({ selectedEmoji, onSelectEmoji }) {
+  const [hoveredType, setHoveredType] = useState(null);
+
   return (
-    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+    <div className="emoji-picker-wrapper">
       {emojiList.map((emoji) => (
-        <button
+        <div
           key={emoji.id}
-          type="button"
-          onClick={() => onSelectEmoji(emoji)}
-          style={{
-            background: "none",
-            border: "none",
-            padding: "1px",
-            cursor: "pointer",
-            transition: "transform 0.2s ease",
-            transform:
-              selectedEmoji?.id === emoji.id ? "scale(1.5)" : "scale(1)",
-          }}
+          className="emoji-button-wrapper"
+          onMouseEnter={() => setHoveredType(emoji.type)}
+          onMouseLeave={() => setHoveredType(null)}
         >
-          <img src={emoji.image} alt={emoji.type} width="30" />
-        </button>
+          <button
+            type="button"
+            onClick={() => onSelectEmoji(emoji)}
+            className={selectedEmoji?.id === emoji.id ? "selected" : ""}
+          >
+            <img src={emoji.image} alt={emoji.type} width="30" />
+          </button>
+          {hoveredType === emoji.type && (
+            <div className="emoji-tooltip">{emoji.type}</div>
+          )}
+        </div>
       ))}
     </div>
   );
