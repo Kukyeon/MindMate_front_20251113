@@ -119,9 +119,6 @@ export default function DiaryWritePage() {
 
   return (
     <div className="diary-write-card">
-      <button type="button" onClick={() => navigate(-1)}>
-        &larr; 뒤로가기
-      </button>
 
       <h2>✍️ {date} 일기 작성</h2>
 
@@ -141,14 +138,7 @@ export default function DiaryWritePage() {
 
         <div className="diary-write-buttons">
           <button type="submit">저장</button>
-          <button
-            type="button"
-            onClick={() =>
-              navigate("/diary/calendar", { state: { selectedDate: date } })
-            }
-          >
-            취소
-          </button>
+          <button type="button" onClick={() => navigate(-1)}>취소</button>
         </div>
       </form>
     </div>
