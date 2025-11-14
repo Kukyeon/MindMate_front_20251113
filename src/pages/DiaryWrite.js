@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { createDiary, fetchDiaryByDate } from "../api/diaryApi";
 import { authHeader, getUser } from "../api/authApi"; // 서버에서 사용자 정보 가져오기
 import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
+import api from "../api/axiosConfig";
+
 
 export default function DiaryWritePage() {
   const location = useLocation();
@@ -39,10 +41,10 @@ export default function DiaryWritePage() {
       navigate("/diary");
       return;
     }
-
+    
     const loadDiary = async () => {
       try {
-        const res = await fetchDiaryByDate(date);
+       const res = await fetchDiaryByDate(date, user?.accessToken);
         if (res?.data) {
           setTitle(res.data.title || "");
           setContent(res.data.content || "");
@@ -56,27 +58,61 @@ export default function DiaryWritePage() {
   }, [date, navigate]);
 
   const [isSaving, setIsSaving] = useState(false);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!date) return alert("날짜를 선택하세요.");
-    if (!emoji) return alert("감정을 선택해 주세요");
-    if (!user?.userId) return alert("로그인이 필요합니다.");
-    if (isSaving) return;
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!date) return alert("날짜를 선택하세요.");
+  if (!emoji) return alert("감정을 선택해 주세요");
+  if (!user?.userId) return alert("로그인이 필요합니다.");
+  if (isSaving) return;
 
   setIsSaving(true);
 
-      try {
-      await createDiary({ title, content, username: user.username, date, emoji });
-      alert("일기가 저장되었습니다.");
-      navigate("/diary/calendar", { state: { selectedDate: date } });
+  try {
+    // 1️⃣ 일기 저장
+    await createDiary({ title, content, userId: user.userId, nickname: user.nickname, date, emoji });
+    
+    // 2️⃣ 캐릭터 처리
+    const headers = await authHeader();
+    let charResData = null;
+    try {
+      const charRes = await api.get(`/ai/me`, { headers });
+      charResData = charRes.data;
     } catch (err) {
-      console.error(err);
-      alert("저장 실패");
-    } finally {
-      setIsSaving(false);
+      if (err.response?.status === 404) {
+        charResData = null; // 캐릭터 없음
+      } else {
+        throw err;
+      }
     }
-  };
+
+    if (charResData) {
+      // 캐릭터 존재 → 성장 처리
+      await api.put("/ai/update", null, {
+        params: { addPoints: 10, moodChange: 5 },
+        headers,
+      });
+      alert("일기가 저장되었습니다! 캐릭터가 성장했어요!");
+      navigate("/diary/calendar", { state: { selectedDate: date } });
+    } else {
+      // 캐릭터 없음 → 생성 여부 확인
+      const createChar = window.confirm(
+        "일기가 저장되었습니다!\n 캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?"
+      );
+      if (createChar) {
+        navigate("/profile", { state: { tab: "Character" } });
+      } else {
+        navigate("/diary/calendar", { state: { selectedDate: date } });
+      }
+    }
+
+  } catch (err) {
+    console.error("일기 저장 실패:", err);
+    alert("일기 저장에 실패했습니다.");
+  } finally {
+    setIsSaving(false);
+  }
+};
   if (loadingUser) return <div>사용자 정보 로딩 중...</div>;
   if (!user?.userId) return <p>로그인이 필요합니다.</p>;
   if (!date) return <div>날짜 정보 확인 중...</div>;  
