@@ -21,12 +21,11 @@ const mbtiOptions = [
   "ESFP",
 ];
 
-const EditProfile = () => {
+const EditProfile = ({ setUser, user, setActiveTab }) => {
   const [profile, setProfile] = useState({
-    nickname: "",
-    birthday: "",
-    mbti: "",
-    password: "",
+    nickname: user.nickname,
+    birth_date: user.birth_date,
+    mbti: user.mbti,
   });
   const [message, setMessage] = useState("");
 
@@ -34,10 +33,26 @@ const EditProfile = () => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault();
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      return;
+    }
     try {
-      await api.put("/api/user/profile", profile);
+      const res = await api.put(
+        "/api/user",
+        { ...profile },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
       setMessage("✅ 프로필이 저장되었습니다!");
+      const user = res.data;
+      if (setUser && user) {
+        setUser(user);
+      }
+      setActiveTab("ProfileView");
     } catch (err) {
       console.error(err);
       setMessage("❌ 프로필 저장 실패");
@@ -49,13 +64,7 @@ const EditProfile = () => {
       <h1 className="edit-profile-title">프로필 수정</h1>
 
       <div className="edit-profile-card">
-        <form
-          className="edit-profile-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSave();
-          }}
-        >
+        <form className="edit-profile-form" onSubmit={handleSave}>
           {/* 닉네임 + 중복확인 */}
           <div className="edit-input-group">
             <input
@@ -74,8 +83,8 @@ const EditProfile = () => {
           {/* 생년월일 */}
           <input
             type="date"
-            name="birthday"
-            value={profile.birthday}
+            name="birth_date"
+            value={profile.birth_date}
             onChange={handleChange}
             className="edit-profile-input"
           />
@@ -96,14 +105,14 @@ const EditProfile = () => {
           </select>
 
           {/* 비밀번호 */}
-          <input
+          {/* <input
             type="password"
             name="password"
             value={profile.password}
             onChange={handleChange}
             placeholder="새 비밀번호"
             className="edit-profile-input"
-          />
+          /> */}
 
           <button type="submit" className="edit-profile-button">
             저장

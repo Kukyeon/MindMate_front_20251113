@@ -26,9 +26,9 @@ const mbtiOptions = [
 const ProfileSetupPage = ({ setUser, user }) => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState({
-    nickname: "",
-    birth_date: "",
-    mbti: "",
+    nickname: user.nickname,
+    birth_date: user.birth_date,
+    mbti: user.mbti,
   });
 
   const handleOnChange = (e) => {

@@ -3,18 +3,11 @@ import api from "../api/axiosConfig";
 import { useState } from "react";
 import "./LoginPage.css"; // 스타일 따로 분리
 import { getUser, saveAuth } from "../api/authApi";
-
-const KAKAO_REST_API_KEY = "d032aea47f7cde0d9d176389f15a4053"; // 프론트에 노출돼도 되는 키
-const KAKAO_REDIRECT_URI = "http://localhost:3000/auth/kakao/callback"; // 카카오 콘솔 + 백엔드 설정과 맞출 것
-
-const NAVER_CLIENT_ID = "ca5VSclizDaIGPg981EJ";
-const NAVER_REDIRECT_URI = "http://localhost:3000/auth/naver/callback";
-
-const GOOGLE_CLIENT_ID =
-  "866215417194-hsrr4k4h24rku7ng7le4rvnq8s9dqviv.apps.googleusercontent.com";
-const GOOGLE_REDIRECT_URI = "http://localhost:3000/auth/google/callback";
-const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
-const GOOGLE_SCOPE = "openid";
+import {
+  buildGoogleAuthUrl,
+  buildKakaoAuthUrl,
+  buildNaverAuthUrl,
+} from "../api/socialAuth";
 
 const LoginPage = ({ setUser }) => {
   const navigate = useNavigate();
@@ -64,45 +57,17 @@ const LoginPage = ({ setUser }) => {
   };
 
   const handleKakaoLogin = () => {
-    const kakaoAuthUrl =
-      "https://kauth.kakao.com/oauth/authorize" +
-      `?response_type=code` +
-      `&client_id=${encodeURIComponent(KAKAO_REST_API_KEY)}` +
-      `&redirect_uri=${encodeURIComponent(KAKAO_REDIRECT_URI)}`;
-
+    const kakaoAuthUrl = buildKakaoAuthUrl();
     window.location.href = kakaoAuthUrl;
   };
 
   const handleNaverLogin = () => {
-    const state = window.crypto?.randomUUID
-      ? window.crypto.randomUUID()
-      : Math.random().toString(36).substring(2, 14);
-
-    const naverAuthUrl =
-      "https://nid.naver.com/oauth2.0/authorize" +
-      `?response_type=code` +
-      `&client_id=${encodeURIComponent(NAVER_CLIENT_ID)}` +
-      `&redirect_uri=${encodeURIComponent(NAVER_REDIRECT_URI)}` +
-      `&state=${encodeURIComponent(state)}`;
-
+    const naverAuthUrl = buildNaverAuthUrl();
     window.location.href = naverAuthUrl;
   };
 
   const handleGoogleLogin = () => {
-    const state = window.crypto?.randomUUID
-      ? window.crypto.randomUUID()
-      : Math.random().toString(36).substring(2, 14);
-
-    sessionStorage.setItem("google_oauth_state", state);
-
-    const googleAuthUrl =
-      "https://accounts.google.com/o/oauth2/v2/auth" +
-      `?response_type=code` +
-      `&client_id=${encodeURIComponent(GOOGLE_CLIENT_ID)}` +
-      `&redirect_uri=${encodeURIComponent(GOOGLE_REDIRECT_URI)}` +
-      `&scope=${encodeURIComponent(GOOGLE_SCOPE)}` +
-      `&state=${encodeURIComponent(state)}`;
-
+    const googleAuthUrl = buildGoogleAuthUrl();
     window.location.href = googleAuthUrl;
   };
 
