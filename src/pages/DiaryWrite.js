@@ -39,10 +39,10 @@ export default function DiaryWritePage() {
       navigate("/diary");
       return;
     }
-
+    
     const loadDiary = async () => {
       try {
-        const res = await fetchDiaryByDate(date);
+       const res = await fetchDiaryByDate(date, user?.accessToken);
         if (res?.data) {
           setTitle(res.data.title || "");
           setContent(res.data.content || "");
@@ -67,7 +67,7 @@ export default function DiaryWritePage() {
   setIsSaving(true);
 
       try {
-      await createDiary({ title, content, username: user.username, date, emoji });
+      await createDiary({ title, content, userId: user.userId, nickname: user.nickname, date, emoji });
       alert("일기가 저장되었습니다.");
       navigate("/diary/calendar", { state: { selectedDate: date } });
     } catch (err) {
