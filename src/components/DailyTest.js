@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../api/axiosConfig";
 import html2canvas from "html2canvas";
+import { authHeader, authHeader as getAuthHeader } from "../api/authApi";
 
 function DailyTest({ user }) {
   const [testData, setTestData] = useState("");
@@ -11,16 +12,22 @@ function DailyTest({ user }) {
   const resultRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const mbti = user?.mbti;
+
   console.log(mbti);
+  console.log(user.userId);
   // 테스트 생성
   useEffect(() => {
     const fetchTodayResult = async () => {
       if (!user) return;
       try {
+        const headers = user ? await getAuthHeader() : {};
+        console.log("Authorization headers:", headers);
         const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
         const res = await api.get("/api/result", {
-          params: { userId: user.id, date: today },
+          params: { userId: user.userId, date: today },
+          headers,
         });
+        console.log(headers);
 
         if (res.data) {
           setResult(res.data.result_text);
@@ -28,6 +35,7 @@ function DailyTest({ user }) {
         }
       } catch (err) {
         console.log("오늘 결과 없음", err);
+        setResult("");
       }
     };
 

@@ -12,6 +12,7 @@ import {
 import api from "../api/axiosConfig";
 import { emojiList } from "../api/emojiApi";
 import "./Graph.css";
+import { authHeader as getAuthHeader } from "../api/authApi";
 
 ChartJS.register(
   CategoryScale,
@@ -50,7 +51,7 @@ const emotionColors = {
   dizzy: "#b14343ff",
 };
 
-const Graph = () => {
+const Graph = ({ user }) => {
   const [dailyData, setDailyData] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -80,9 +81,11 @@ const Graph = () => {
     if (!startDate || !endDate || !fetchTrigger) return;
 
     const fetchWeeklyData = async () => {
+      const headers = user ? await getAuthHeader() : {};
       try {
-        const res = await api.get("/api/diary/week", {
+        const res = await api.get("/api/diary/week/test", {
           params: { start: startDate, end: endDate },
+          headers,
         });
 
         // 1️⃣ 일별 데이터

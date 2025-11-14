@@ -50,7 +50,7 @@ const BoardWritePage = ({ user }) => {
       //캐릭터 처리 관련
       let charResData = null;
       try {
-        const charRes = await api.get(`/ai/${userId}`, { headers });
+        const charRes = await api.get(`/ai/me`, { headers });
         charResData = charRes.data;
       } catch (err) {
         if (err.response?.status === 404) {
@@ -64,7 +64,7 @@ const BoardWritePage = ({ user }) => {
       if (charResData) {
         // 캐릭터 존재 → 성장 처리
         await api.put("/ai/update", null, {
-          params: { userId, addPoints: 10, moodChange: 5 },
+          params: { addPoints: 10, moodChange: 5 },
           headers,
         });
         alert("게시글이 작성되었습니다! 캐릭터가 성장했어요!");

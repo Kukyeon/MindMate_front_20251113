@@ -252,7 +252,7 @@
 }
 /* 페이지 전체 */
 .my-boards-page {
-  max-width: 600px;
+  max-width: 700px;
   margin: 40px auto;
   padding: 0 15px;
 }
@@ -318,6 +318,12 @@
 .my-board-title {
   font-size: 1.2rem;
   color: #6b4226;
+  /* 10자 이상일 경우 ... 표시 */
+  display: inline-block;
+  max-width: 10ch; /* 10글자 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .my-board-views {

@@ -51,7 +51,9 @@ const MyBoards = ({ user }) => {
                 onClick={() => navigate(`/board/${board.id}`)}
               >
                 <div className="my-board-header">
-                  <strong className="my-board-title">{board.title}</strong>
+                  <strong className="my-board-title" title={board.title}>
+                    {board.title}
+                  </strong>
                   <span className="my-board-views">
                     조회수: {board.viewCount}
                   </span>
