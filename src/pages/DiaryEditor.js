@@ -8,9 +8,10 @@ export default function DiaryEditor() {
   const navigate = useNavigate();
   const [emoji, setEmoji] = useState(null);
   const [diary, setDiary] = useState({ title: "", content: "", username: "" });
-
+  const token = localStorage.getItem("accessToken");
   // 기존 일기 불러오기
   useEffect(() => {
+    
     if (!date) return;
 
     const fetchDiary = async () => {
