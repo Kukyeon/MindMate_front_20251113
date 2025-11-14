@@ -1,71 +1,85 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createDiary, fetchDiaryByDate } from "../api/diaryApi";
+import { authHeader, getUser } from "../api/authApi"; // 서버에서 사용자 정보 가져오기
 import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
 
 export default function DiaryWritePage() {
   const location = useLocation();
   const navigate = useNavigate();
   // ⭐️ 로그인 체크
-  const token = localStorage.getItem("accessToken");
+  //const token = localStorage.getItem("accessToken");
   // ⭐️ 1. setDate 제거, location.state에서 날짜를 상수로 받음
   const date = location.state?.date;
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [emoji, setEmoji] = useState({});
+  const [user, setUser] = useState(null); // 서버에서 가져온 사용자 정보
+  const [loadingUser, setLoadingUser] = useState(true);
+
+   useEffect(() => {
+    const fetchUser = async () => {
+      setLoadingUser(true);
+      const currentUser = await getUser();
+      if (!currentUser) {
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+        return;
+      }
+      setUser(currentUser);
+      setLoadingUser(false);
+    };
+    fetchUser();
+  }, [navigate]);
 
   useEffect(() => {
-    if (!token) {
-    alert("로그인이 필요합니다.");
-    navigate("/login");
-    return;
-    }
-    // ⭐️ 2. 날짜가 없으면(잘못된 접근) 캘린더 페이지로 돌려보냄
     if (!date) {
       alert("날짜가 선택되지 않았습니다.");
-      navigate("/diary"); // 캘린더 메인 페이지로 이동
+      navigate("/diary");
       return;
     }
 
     const loadDiary = async () => {
       try {
         const res = await fetchDiaryByDate(date);
-            if (res?.data) {
-        setTitle(res.data.title || "");       // undefined일 경우 빈 문자열로 fallback
-        setContent(res.data.content || "");   // undefined일 경우 빈 문자열로 fallback
-        setEmoji(res.data.emoji || {});       // undefined일 경우 빈 객체로 fallback
-}
+        if (res?.data) {
+          setTitle(res.data.title || "");
+          setContent(res.data.content || "");
+          setEmoji(res.data.emoji || {});
+        }
       } catch (err) {
-        // 일기 없는 경우는 그냥 빈 상태 유지 (정상)
+        // 일기 없는 경우는 그대로
       }
     };
     loadDiary();
-  }, [date, navigate, token]); // ⭐️ 의존성 배열에 date와 navigate 추가
+  }, [date, navigate]);
 
   const [isSaving, setIsSaving] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (!date) return alert("날짜를 선택하세요.");
     if (!emoji) return alert("감정을 선택해 주세요");
-      if (isSaving) return; // 이미 저장 중이면 무시
-  setIsSaving(true);
-    const username = localStorage.getItem("username");
+    if (!user?.userId) return alert("로그인이 필요합니다.");
+    if (isSaving) return;
 
-    try {
-      await createDiary({ title, content, username, date, emoji });
+  setIsSaving(true);
+
+      try {
+      await createDiary({ title, content, username: user.username, date, emoji });
       alert("일기가 저장되었습니다.");
       navigate("/diary/calendar", { state: { selectedDate: date } });
     } catch (err) {
-    console.error(err);
-    alert("저장 실패");
-  } finally {
-    setIsSaving(false);
-  }
-};
-
-  // 날짜가 없는 경우 로딩 처리 (useEffect의 리다이렉트가 실행되기 전)
-  if (!date) return <div>날짜 정보 확인 중...</div>;
+      console.error(err);
+      alert("저장 실패");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+  if (loadingUser) return <div>사용자 정보 로딩 중...</div>;
+  if (!user?.userId) return <p>로그인이 필요합니다.</p>;
+  if (!date) return <div>날짜 정보 확인 중...</div>;  
 
   return (
     <div className="diary-write-card">
