@@ -41,6 +41,8 @@ import NaverCallback from "./pages/NaverCallBack.js";
 import GoogleCallback from "./pages/GoogleCallBack.js";
 import DeleteCompletePage from "./pages/DeleteCompletePage.js";
 import NaverDeleteCallback from "./pages/NaverDeleteCallBack.js";
+import KakaoDeleteCallback from "./pages/KakaoDeleteCallBack.js";
+import GoogleDeleteCallback from "./pages/GoogleDeleteCallBack.js";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -195,6 +197,14 @@ export default function App() {
         <Route
           path="/auth/naver/delete-callback"
           element={<NaverDeleteCallback setUser={setUser} />}
+        />
+        <Route
+          path="/auth/kakao/delete-callback"
+          element={<KakaoDeleteCallback setUser={setUser} />}
+        />
+        <Route
+          path="/auth/google/delete-callback"
+          element={<GoogleDeleteCallback setUser={setUser} />}
         />
         <Route path="/delete-complete" element={<DeleteCompletePage />} />
 
