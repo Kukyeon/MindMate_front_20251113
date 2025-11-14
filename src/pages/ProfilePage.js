@@ -14,10 +14,10 @@ const ProfilePage = ({ user, setUser }) => {
 
       <div className="profile-tabs">
         <button
-          className={activeTab === "ProfileForm" ? "tab active" : "tab"}
-          onClick={() => setActiveTab("ProfileForm")}
+          className={activeTab === "ProfileView" ? "tab active" : "tab"}
+          onClick={() => setActiveTab("ProfileView")}
         >
-          프로필 수정
+          프로필
         </button>
         <button
           className={activeTab === "Character" ? "tab active" : "tab"}
@@ -34,9 +34,15 @@ const ProfilePage = ({ user, setUser }) => {
       </div>
 
       <div className="tab-content">
-        {activeTab === "ProfileView" && <ProfileView user={user} />}
+        {activeTab === "ProfileView" && (
+          <ProfileView setActiveTab={setActiveTab} user={user} />
+        )}
         {activeTab === "ProfileForm" && (
-          <ProfileForm setUser={setUser} user={user} />
+          <ProfileForm
+            setActiveTab={setActiveTab}
+            setUser={setUser}
+            user={user}
+          />
         )}
         {activeTab === "Character" && <Character user={user} />}
         {activeTab === "Settings" && <div>⚙️ 기타 설정 영역</div>}

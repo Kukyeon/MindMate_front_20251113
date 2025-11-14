@@ -39,15 +39,11 @@ import { div, small } from "framer-motion/client";
 import ProfileSet from "./components/user/ProfileSet.js";
 import NaverCallback from "./pages/NaverCallBack.js";
 import GoogleCallback from "./pages/GoogleCallBack.js";
+import DeleteCompletePage from "./pages/DeleteCompletePage.js";
+import NaverDeleteCallback from "./pages/NaverDeleteCallBack.js";
 
 export default function App() {
-  const [user, setUser] = useState({
-    userId: "",
-    nickname: "",
-    birth_date: "",
-    mbti: "",
-    authType: "",
-  });
+  const [user, setUser] = useState(null);
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
@@ -196,6 +192,11 @@ export default function App() {
             )
           }
         />
+        <Route
+          path="/auth/naver/delete-callback"
+          element={<NaverDeleteCallback setUser={setUser} />}
+        />
+        <Route path="/delete-complete" element={<DeleteCompletePage />} />
 
         <Route
           path="/profile"

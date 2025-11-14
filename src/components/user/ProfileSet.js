@@ -25,14 +25,14 @@ const mbtiOptions = [
 
 const ProfileSetupPage = ({ setUser, user }) => {
   const navigate = useNavigate();
-  // const [profile, setProfile] = useState({
-  //   nickname: "",
-  //   birth_date: "",
-  //   mbti: "",
-  // });
+  const [profile, setProfile] = useState({
+    nickname: user.nickname,
+    birth_date: user.birth_date,
+    mbti: user.mbti,
+  });
 
   const handleOnChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -44,7 +44,7 @@ const ProfileSetupPage = ({ setUser, user }) => {
     try {
       const res = await api.post(
         "/api/user",
-        { ...user },
+        { ...profile },
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -70,7 +70,7 @@ const ProfileSetupPage = ({ setUser, user }) => {
             <input
               type="text"
               name="nickname"
-              value={user.nickname}
+              value={profile.nickname}
               placeholder="닉네임"
               onChange={handleOnChange}
               className="signup-input"
@@ -84,7 +84,7 @@ const ProfileSetupPage = ({ setUser, user }) => {
           <input
             type="date"
             name="birth_date"
-            value={user.birth_date}
+            value={profile.birth_date}
             onChange={handleOnChange}
             className="signup-input"
             required
@@ -92,7 +92,7 @@ const ProfileSetupPage = ({ setUser, user }) => {
 
           <select
             name="mbti"
-            value={user.mbti}
+            value={profile.mbti}
             onChange={handleOnChange}
             className="signup-input"
             required
