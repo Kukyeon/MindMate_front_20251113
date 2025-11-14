@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 
 import "./App.css";
@@ -9,6 +9,7 @@ import BoardDetailPage from "./pages/BoardDetailPage";
 import BoardEditPage from "./pages/BoardEditPage";
 import BoardWritePage from "./pages/BoardWritePage";
 import CommentEditForm from "./components/comment/CommentEditForm";
+import MyBoards from "./pages/MyBoards";
 
 // 📘 일기 / 캘린더 관련
 import Calendar from "./pages/Calendar";
@@ -17,7 +18,7 @@ import DiaryWrite from "./pages/DiaryWrite";
 import DiaryEditor from "./pages/DiaryEditor";
 import SignupPage from "./pages/SignupPage.js";
 import Daily from "./pages/Daily.js";
-import Graph from "./components/Graph.js";
+import Graph2 from "./components/Graph2.js";
 
 import LoginPage from "./pages/LoginPage.js";
 
@@ -31,10 +32,8 @@ import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
 import ProfilePage from "./pages/ProfilePage.js";
 
-import ProfileSetup from "./components/user/ProfileSet.js";
 import { getUser, clearAuth } from "./api/authApi.js";
 import KakaoCallback from "./pages/KaKaoCallBack.js";
-import { div, small } from "framer-motion/client";
 
 import ProfileSet from "./components/user/ProfileSet.js";
 import NaverCallback from "./pages/NaverCallBack.js";
@@ -47,7 +46,7 @@ import GoogleDeleteCallback from "./pages/GoogleDeleteCallBack.js";
 export default function App() {
   const [user, setUser] = useState(null);
   const [initialized, setInitialized] = useState(false);
-
+  console.log(user);
   useEffect(() => {
     (async () => {
       const me = await getUser(); // user 객체 or null
@@ -72,26 +71,18 @@ export default function App() {
     return <div>로딩 중...</div>;
   }
 
-  const ClickOnLogout = () => {
-    clearAuth();
-    setUser(null);
-  };
   return (
     <>
-      <Header></Header>
+      <Header user={user} setUser={setUser} />
 
-      {user && (
-        <>
-          {/* 로그아웃 기능 임시로 넣은것 */}
-          <div> {user.nickname}님 로그인중</div>{" "}
-          <button onClick={ClickOnLogout}>로그아웃</button>
-        </>
-      )}
       {/* <BrowserRouter> */}
       <Routes>
-        <Route path="/daily" element={<Daily />}></Route>
-        <Route path="/graph" element={<Graph />}></Route>
-        <Route path="/" element={<Home />}></Route>
+        <Route path="/graph" element={<Graph2 user={user} />}></Route>
+        {user ? (
+          <Route path="/" element={<Calendar />}></Route>
+        ) : (
+          <Route path="/" element={<Home />}></Route>
+        )}
 
         {/* 기본 루트 → 게시판 목록 */}
         {/* <Route path="/" element={<Navigate to="/boards" />} /> */}
@@ -114,14 +105,15 @@ export default function App() {
             )
           }
         />
+        <Route path="/my-boards" element={<MyBoards user={user} />} />
         <Route path="/board/:id" element={<BoardDetailPage user={user} />} />
         <Route path="/board/edit/:id" element={<BoardEditPage user={user} />} />
         <Route path="/comment/edit/:id" element={<CommentEditForm />} />
 
         {/* 기타 */}
-        <Route path="/fortune" element={<Fortune />} />
-        <Route path="/dailyTest" element={<DailyTest />} />
-        <Route path="/daily" element={<Daily />} />
+        <Route path="/fortune" element={<Fortune user={user} />} />
+        <Route path="/dailyTest" element={<DailyTest user={user} />} />
+        <Route path="/daily" element={<Daily user={user} />} />
 
         {/* 게시글 수정 */}
         <Route path="/board/edit/:id" element={<BoardEditPage />} />
@@ -222,10 +214,12 @@ export default function App() {
           path="/profile"
           element={<ProfilePage setUser={setUser} user={user} />}
         />
+
         <Route
           path="/profile/set"
           element={<ProfileSet setUser={setUser} user={user} />}
         />
+
         {/* 다이어리 */}
         <Route path="/diary" element={<Calendar />} />
         <Route path="/diary/calendar" element={<Calendar />} />
@@ -242,7 +236,7 @@ export default function App() {
         {/* 잘못된 경로 처리 */}
         {/* <Route path="*" element={<Navigate to="/boards" replace />} /> */}
       </Routes>
-      <Footer></Footer>
+      <Footer user={user}></Footer>
     </>
   );
 }

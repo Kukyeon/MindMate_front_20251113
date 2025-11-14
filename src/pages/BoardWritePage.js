@@ -50,7 +50,7 @@ const BoardWritePage = ({ user }) => {
       //캐릭터 처리 관련
       let charResData = null;
       try {
-        const charRes = await api.get(`/ai/${userId}`, { headers });
+        const charRes = await api.get(`/ai/me`, { headers });
         charResData = charRes.data;
       } catch (err) {
         if (err.response?.status === 404) {
@@ -64,7 +64,7 @@ const BoardWritePage = ({ user }) => {
       if (charResData) {
         // 캐릭터 존재 → 성장 처리
         await api.put("/ai/update", null, {
-          params: { userId, addPoints: 10, moodChange: 5 },
+          params: { addPoints: 10, moodChange: 5 },
           headers,
         });
         alert("게시글이 작성되었습니다! 캐릭터가 성장했어요!");
@@ -75,7 +75,7 @@ const BoardWritePage = ({ user }) => {
           "게시글이 작성되었습니다!\n 캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?"
         );
         if (createChar) {
-          navigate("/profile"); // 캐릭터 생성 페이지로 이동
+          navigate("/profile", { state: { tab: "Character" } }); // 캐릭터 생성 페이지로 이동
         } else {
           navigate(`/board/${boardId}`); // 그냥 상세페이지로 이동
         }
@@ -118,7 +118,7 @@ const BoardWritePage = ({ user }) => {
           <div className="tags-wrapper">
             {aiTags.map((tag, idx) => (
               <span key={idx} className="tag">
-                #{tag}
+                {tag}
               </span>
             ))}
           </div>

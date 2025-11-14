@@ -1,12 +1,23 @@
 // ProfilePage.jsx
-import { use, useState } from "react";
+import { useState } from "react";
 import Character from "../components/Character";
 import ProfileForm from "../components/user/ProfileForm";
 import "./ProfilePage.css";
+
 import ProfileView from "../components/user/ProfileView";
 
+
+
+import { useLocation } from "react-router-dom";
+import MyBoards from "./MyBoards";
+
 const ProfilePage = ({ user, setUser }) => {
-  const [activeTab, setActiveTab] = useState("ProfileView");
+  const location = useLocation(); // ✅ 라우터 state 접근
+  //console.log(user.userId);
+  const initialTab =
+    location.state?.tab === "Character" ? "Character" : "ProfileForm"; // ✅ 기본 탭 결정
+  const [activeTab, setActiveTab] = useState(initialTab);
+
 
   return (
     <div className="profile-page">
@@ -26,10 +37,10 @@ const ProfilePage = ({ user, setUser }) => {
           내 캐릭터
         </button>
         <button
-          className={activeTab === "Settings" ? "tab active" : "tab"}
-          onClick={() => setActiveTab("Settings")}
+          className={activeTab === "MyBoards" ? "tab active" : "tab"}
+          onClick={() => setActiveTab("MyBoards")}
         >
-          기타
+          내 글
         </button>
       </div>
 
@@ -45,7 +56,8 @@ const ProfilePage = ({ user, setUser }) => {
           />
         )}
         {activeTab === "Character" && <Character user={user} />}
-        {activeTab === "Settings" && <div>⚙️ 기타 설정 영역</div>}
+        {activeTab === "MyBoards" && <MyBoards user={user} />}
+        {/* {activeTab === "Settings" && <div>⚙️ 기타 설정 영역</div>} */}
       </div>
     </div>
   );

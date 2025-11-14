@@ -6,7 +6,8 @@ import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
 export default function DiaryWritePage() {
   const location = useLocation();
   const navigate = useNavigate();
-
+  // ⭐️ 로그인 체크
+  const token = localStorage.getItem("accessToken");
   // ⭐️ 1. setDate 제거, location.state에서 날짜를 상수로 받음
   const date = location.state?.date;
 
@@ -15,6 +16,11 @@ export default function DiaryWritePage() {
   const [emoji, setEmoji] = useState({});
 
   useEffect(() => {
+    if (!token) {
+    alert("로그인이 필요합니다.");
+    navigate("/login");
+    return;
+    }
     // ⭐️ 2. 날짜가 없으면(잘못된 접근) 캘린더 페이지로 돌려보냄
     if (!date) {
       alert("날짜가 선택되지 않았습니다.");
@@ -35,7 +41,8 @@ export default function DiaryWritePage() {
       }
     };
     loadDiary();
-  }, [date, navigate]); // ⭐️ 의존성 배열에 date와 navigate 추가
+  }, [date, navigate, token]); // ⭐️ 의존성 배열에 date와 navigate 추가
+
   const [isSaving, setIsSaving] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();

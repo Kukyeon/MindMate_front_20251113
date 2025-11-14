@@ -1,3 +1,14 @@
+/* App 전체 레이아웃 */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 화면 전체 */
+}
+
+.app-main {
+  flex: 1; /* Header와 Footer 제외한 영역 */
+  padding: 20px; /* 모든 페이지 여백 */
+}
 /* 헤더 css */
 .header {
   display: flex;
@@ -29,6 +40,23 @@
 }
 
 .nav a:hover {
+  color: #d18b60;
+}
+/* 로그아웃 버튼 링크처럼 보이게 */
+.nav button.logout-btn {
+  background: none;
+  border: none;
+  font: inherit;
+  color: #6b4226;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav button.logout-btn:hover {
+  background-color: #f0e2d2;
   color: #d18b60;
 }
 

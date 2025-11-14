@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { clearAuth } from "../api/authApi";
 
-const Header = () => {
+const Header = ({ user, setUser }) => {
   const [open, setOpen] = useState(false);
+  const ClickOnLogout = () => {
+    clearAuth();
+    setUser(null);
+  };
+  console.log(user);
   return (
     <header className="header">
       <div className="logo">
@@ -15,14 +21,17 @@ const Header = () => {
         ☰
       </div>
       <nav className={`nav ${open ? "open" : ""}`}>
-        <ul>
-          <li>
-            <Link to={"/login"}>로그인</Link>
-          </li>
-          <li>
-            <Link to={"/signup"}>회원가입</Link>
-          </li>
-        </ul>
+        {user ? (
+          <button className="logout-btn" onClick={ClickOnLogout}>
+            {user.nickname} 님 로그아웃
+          </button>
+        ) : (
+          <ul>
+            <li>
+              <Link to={"/login"}>로그인</Link>
+            </li>
+          </ul>
+        )}
       </nav>
     </header>
   );

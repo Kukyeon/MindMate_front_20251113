@@ -12,6 +12,7 @@ import {
 import api from "../api/axiosConfig";
 import { emojiList } from "../api/emojiApi";
 import "./Graph.css";
+import { authHeader as getAuthHeader } from "../api/authApi";
 
 ChartJS.register(
   CategoryScale,
@@ -50,56 +51,63 @@ const emotionColors = {
   dizzy: "#b14343ff",
 };
 
-const Graph = () => {
-  const [weeklyCounts, setWeeklyCounts] = useState({});
-  const [weeklyPercent, setWeeklyPercent] = useState({});
-  const [aiComment, setAiComment] = useState("");
+const Graph = ({ user }) => {
+  const [dailyData, setDailyData] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [aiComment, setAiComment] = useState("");
+  const [weeklyCounts, setWeeklyCounts] = useState({});
+  const [weeklyPercent, setWeeklyPercent] = useState({});
   const [fetchTrigger, setFetchTrigger] = useState(false);
 
-  // 초기값 세팅 (이번 주)
+  // 초기값: 지난 주
   useEffect(() => {
     if (!startDate && !endDate) {
       const now = new Date();
       const day = now.getDay();
-      const diffToSunday = day === 0 ? 0 : day;
       const lastSunday = new Date(now);
-      lastSunday.setDate(now.getDate() - diffToSunday);
+      lastSunday.setDate(now.getDate() - day);
       const lastMonday = new Date(lastSunday);
       lastMonday.setDate(lastSunday.getDate() - 6);
 
       setStartDate(lastMonday.toISOString().slice(0, 10));
       setEndDate(lastSunday.toISOString().slice(0, 10));
-      setFetchTrigger(true); // 초기값도 바로 조회
+      setFetchTrigger(true);
     }
   }, []);
 
-  // fetchTrigger가 true일 때만 데이터 가져오기
+  // 데이터 가져오기
   useEffect(() => {
     if (!startDate || !endDate || !fetchTrigger) return;
 
     const fetchWeeklyData = async () => {
+      const headers = user ? await getAuthHeader() : {};
       try {
-        const res = await api.get(`/api/diary/week`, {
+        const res = await api.get("/api/diary/week/test", {
           params: { start: startDate, end: endDate },
+          headers,
         });
-        const { weeklyCounts: counts, aiComment } = res.data;
 
+        // 1️⃣ 일별 데이터
+        setDailyData(res.data.dailyEmotions || []);
+
+        // 2️⃣ 주간 통계
+        const counts = res.data.weeklyCounts || [];
         setWeeklyCounts(
           counts.reduce((acc, cur) => {
             acc[cur.emojiName] = cur.count;
             return acc;
           }, {})
         );
-
         const total = counts.reduce((sum, cur) => sum + cur.count, 0);
         const percent = {};
         counts.forEach((cur) => {
           percent[cur.emojiName] = total > 0 ? (cur.count / total) * 100 : 0;
         });
         setWeeklyPercent(percent);
-        setAiComment(aiComment);
+
+        // 3️⃣ AI 코멘트
+        setAiComment(res.data.aiComment || "");
       } catch (err) {
         console.error("데이터 불러오기 실패", err);
       } finally {
@@ -116,11 +124,8 @@ const Graph = () => {
   };
 
   const handleFetch = () => {
-    if (startDate && endDate) {
-      setFetchTrigger(true);
-    } else {
-      alert("시작일과 종료일을 모두 선택해주세요.");
-    }
+    if (startDate && endDate) setFetchTrigger(true);
+    else alert("시작일과 종료일을 모두 선택해주세요.");
   };
 
   const handleQuickSelect = (period) => {
@@ -128,7 +133,7 @@ const Graph = () => {
     let monday, sunday;
 
     if (period === "thisWeek") {
-      const day = now.getDay(); // 일(0)~토(6)
+      const day = now.getDay();
       const diffToMonday = day === 0 ? 6 : day - 1;
       monday = new Date(now);
       monday.setDate(now.getDate() - diffToMonday);
@@ -143,22 +148,52 @@ const Graph = () => {
 
     setStartDate(monday.toISOString().slice(0, 10));
     setEndDate(sunday.toISOString().slice(0, 10));
-    setFetchTrigger(true); // 바로 조회
+    setFetchTrigger(true);
   };
 
-  const emotions = emojiList.map((e) => e.type);
+  // X축 날짜
+  const labels = [];
+  if (startDate && endDate) {
+    let curr = new Date(startDate);
+    const last = new Date(endDate);
+    while (curr <= last) {
+      labels.push(curr.toISOString().slice(0, 10));
+      curr.setDate(curr.getDate() + 1);
+    }
+  }
+
+  // Y값 생성
+  const yValues = labels.map((date) => {
+    const entry = dailyData.find((d) => d.date === date);
+    return entry ? entry.emojiId : null;
+  });
+
+  // emoji 이미지 포인트
+  const pointStyles = labels.map((date) => {
+    const entry = dailyData.find((d) => d.date === date);
+    if (!entry) return null;
+    const emoji = emojiList.find((e) => e.id === entry.emojiId);
+    if (!emoji) return null;
+    const img = new Image();
+    img.src = emoji.image;
+    img.width = 25;
+    img.height = 25;
+    return img;
+  });
 
   const lineData = {
-    labels: emotions,
+    labels,
     datasets: [
       {
-        label: "감정 빈도",
-        data: emotions.map((e) => weeklyCounts[e] || 0),
+        label: "주간 기분",
+        data: yValues,
         borderColor: "#a8d8ff",
         backgroundColor: "#a8d8ff",
         tension: 0.3,
         fill: false,
-        pointRadius: 6,
+        pointRadius: 10,
+        pointHoverRadius: 14,
+        pointStyle: pointStyles,
       },
     ],
   };
@@ -167,14 +202,38 @@ const Graph = () => {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
-      x: { offset: true, grid: { display: true }, ticks: { display: false } },
+      x: { title: { display: true, text: "날짜" } },
       y: {
-        beginAtZero: true,
-        ticks: { stepSize: 1, font: { size: 12 } },
-        grid: { drawBorder: false },
+        min: 0.5,
+        max: 15.5,
+        reverse: true,
+        grace: "20%",
+        ticks: {
+          stepSize: 1,
+          callback: (value) => {
+            if (value >= 1 && value <= 5) return "좋음";
+            if (value >= 6 && value <= 10) return "보통";
+            if (value >= 11 && value <= 15) return "나쁨";
+            return "";
+          },
+        },
+        title: { display: true, text: "기분" },
       },
     },
-    plugins: { legend: { display: false } },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const date = context.label;
+            const entry = dailyData.find((d) => d.date === date);
+            if (!entry) return "";
+            const emoji = emojiList.find((e) => e.id === entry.emojiId);
+            return emoji ? emoji.type : "";
+          },
+        },
+      },
+    },
   };
 
   const sortedEmotions = emotionGroups.flatMap((group) =>
@@ -212,49 +271,8 @@ const Graph = () => {
         {startDate} ~ {endDate} 주간 감정 요약
       </h2>
 
-      <div
-        style={{
-          position: "relative",
-          height: "clamp(300px, 45vh, 500px)",
-          minHeight: 280,
-          width: "100%",
-          margin: "0 auto",
-        }}
-      >
+      <div style={{ position: "relative", height: "500px", width: "100%" }}>
         <Line data={lineData} options={options} />
-        <div
-          style={{
-            position: "absolute",
-            marginLeft: "20px",
-            bottom: "-2.2rem",
-            left: 0,
-            right: 0,
-            display: "grid",
-            gridTemplateColumns: `repeat(${emotions.length}, 1fr)`,
-            alignItems: "center",
-          }}
-        >
-          {emojiList.map((e) => (
-            <div
-              key={e.id}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <img
-                src={e.image}
-                alt={e.type}
-                style={{
-                  width: "min(7vw, 32px)",
-                  height: "auto",
-                  aspectRatio: "1 / 1",
-                }}
-              />
-            </div>
-          ))}
-        </div>
       </div>
 
       <h3 className="graph-subtitle">감정 비율</h3>
@@ -263,15 +281,13 @@ const Graph = () => {
           const percent = weeklyPercent[emotion];
           const emo = emojiList.find((e) => e.type === emotion);
           if (!emo) return null;
-          const gradient = emotionColors[emotion] || "#ccc";
-
           return (
             <div
               key={emotion}
               className="emotion-segment"
               style={{
                 width: `${percent}%`,
-                background: gradient,
+                background: emotionColors[emotion] || "#ccc",
                 position: "relative",
               }}
             >

@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 import { motion, AnimatePresence } from "framer-motion";
+import { authHeader as getAuthHeader } from "../api/authApi";
 
 const Character = ({ user }) => {
-  const userId = 1;
   const [character, setCharacter] = useState(null);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [cheeredToday, setCheeredToday] = useState(false);
-  console.log(user);
+
   const handleSubmit = async (e) => {
+    const headers = user ? await getAuthHeader() : {};
     e.preventDefault();
     try {
-      const payload = { userId, name };
-      const res = await api.post(`/ai/create?userId=${userId}`, payload);
+      const payload = { name };
+      const res = await api.post("/ai/create", payload, {
+        headers,
+      });
       setCharacter(res.data);
       setName("");
     } catch (err) {
@@ -22,8 +25,9 @@ const Character = ({ user }) => {
   };
 
   const fetchCharacter = async () => {
+    const headers = user ? await getAuthHeader() : {};
     try {
-      const res = await api.get(`/ai/${userId}`);
+      const res = await api.get(`/ai/me`, { headers });
       setCharacter(res.data);
     } catch (err) {
       if (err.response?.data?.message) setMessage(err.response.data.message);
@@ -36,9 +40,11 @@ const Character = ({ user }) => {
   }, []);
 
   const handleCheer = async () => {
+    const headers = user ? await getAuthHeader() : {};
     try {
       const res = await api.put("/ai/cheer", null, {
-        params: { userId, addPoints: 2, moodChange: 5 },
+        params: { addPoints: 2, moodChange: 5 },
+        headers,
       });
       setCharacter({ ...res.data });
       setCheeredToday(true);
@@ -51,12 +57,14 @@ const Character = ({ user }) => {
     }
   };
   const handleMood = async () => {
+    const headers = user ? await getAuthHeader() : {};
     try {
       const res = await api.put("/ai/update", null, {
-        params: { userId, addPoints: 4, moodChange: 5 },
+        params: { addPoints: 4, moodChange: 5 },
+        headers,
       });
       setCharacter({ ...res.data });
-      setCheeredToday(true);
+      // setCheeredToday(true);
       setMessage("무드 업데이트 성공! 🌟");
     } catch (err) {
       const msg = err.response?.data?.message || "응원 중 오류가 발생했습니다.";

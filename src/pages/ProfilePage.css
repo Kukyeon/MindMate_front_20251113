@@ -250,3 +250,134 @@
 .character-create-btn:hover {
   background-color: #b36b49;
 }
+/* 페이지 전체 */
+.my-boards-page {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 0 15px;
+}
+
+/* 제목 */
+.my-boards-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #6b4226;
+  margin-bottom: 25px;
+  padding-top: 20px;
+}
+
+/* 로그인 안내 */
+.my-boards-login {
+  text-align: center;
+  color: #6b4226;
+  font-size: 1.1rem;
+  padding: 40px 0;
+}
+
+/* 로딩 */
+.my-boards-loading {
+  text-align: center;
+  color: #6b4226;
+  font-size: 1.1rem;
+  padding: 40px 0;
+}
+
+/* 게시글 리스트 */
+.my-boards-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* 게시글 카드 */
+.my-board-card {
+  background-color: #fff;
+  padding: 18px 22px;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.my-board-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* 게시글 제목과 조회수 */
+.my-board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.my-board-title {
+  font-size: 1.2rem;
+  color: #6b4226;
+  /* 10자 이상일 경우 ... 표시 */
+  display: inline-block;
+  max-width: 10ch; /* 10글자 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.my-board-views {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* 작성일 */
+.my-board-date {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* 페이지네이션 */
+.my-boards-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.my-boards-pagination button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background-color: #d18b60;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.my-boards-pagination button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+.my-boards-pagination button:hover:not(:disabled) {
+  background-color: #b36b49;
+}
+
+.my-boards-pagination span {
+  font-weight: 500;
+  color: #6b4226;
+}
+
+/* 반응형 */
+@media (max-width: 500px) {
+  .my-board-card {
+    padding: 12px 15px;
+  }
+
+  .my-boards-pagination button {
+    padding: 6px 12px;
+  }
+}

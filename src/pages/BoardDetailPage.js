@@ -15,7 +15,7 @@ const BoardDetailPage = ({ user }) => {
   const [board, setBoard] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const userId = user.userId;
+  const userId = user?.userId || null;
 
   const fetchBoard = async () => {
     try {
