@@ -1,15 +1,22 @@
 import { useState } from "react";
 import api from "../api/axiosConfig";
+import { authHeader, authHeader as getAuthHeader } from "../api/authApi";
 
-const Fortune = () => {
+const Fortune = ({ user }) => {
   const [fortune, setFortune] = useState("");
-  const birth = "1월 22일";
+  const birth = user.birth_date;
+  console.log(user);
   const [loading, setLoading] = useState(false);
 
   const todayLuck = async () => {
+    const headers = user ? await getAuthHeader() : {};
     try {
       setLoading(true);
-      const res = await api.post("/ai/fortune", { content: birth });
+      const res = await api.post(
+        "/ai/fortune",
+        { content: birth },
+        { headers }
+      );
       if (res.data) {
         console.log(res.data);
         setFortune(res.data.aicomment);

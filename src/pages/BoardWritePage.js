@@ -26,26 +26,27 @@ const BoardWritePage = ({ user }) => {
       // 1. 게시글 생성
       const headers = await authHeader();
       const savedBoard = await createBoard({ title, content, userId }, headers);
+      setAiTags(savedBoard.hashtags?.split(" ") || []);
       const boardId = savedBoard.id || savedBoard.data?.id;
       if (!boardId) throw new Error("게시글 ID를 가져오지 못했습니다.");
 
-      // 2. AI 해시태그 생성
-      const { hashtags } = await generateHashtags(boardId, headers);
-      setAiTags(hashtags || []);
+      // // 2. AI 해시태그 생성
+      // const { hashtags } = await generateHashtags(boardId, headers);
+      // setAiTags(hashtags || []);
 
-      // 3. 게시글에 해시태그 업데이트
-      if (hashtags && hashtags.length > 0) {
-        await updateBoard(
-          boardId,
-          {
-            title,
-            content,
-            userId,
-            hashtags: hashtags.join(" "),
-          },
-          headers
-        );
-      }
+      // // 3. 게시글에 해시태그 업데이트
+      // if (hashtags && hashtags.length > 0) {
+      //   await updateBoard(
+      //     boardId,
+      //     {
+      //       title,
+      //       content,
+      //       userId,
+      //       hashtags: hashtags.join(" "),
+      //     },
+      //     headers
+      //   );
+      // }
 
       //캐릭터 처리 관련
       let charResData = null;

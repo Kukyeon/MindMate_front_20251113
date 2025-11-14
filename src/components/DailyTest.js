@@ -15,37 +15,48 @@ function DailyTest({ user }) {
 
   console.log(mbti);
   console.log(user.userId);
-  // 테스트 생성
-  useEffect(() => {
-    const fetchTodayResult = async () => {
-      if (!user) return;
-      try {
-        const headers = user ? await getAuthHeader() : {};
-        console.log("Authorization headers:", headers);
-        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-        const res = await api.get("/api/result", {
-          params: { userId: user.userId, date: today },
-          headers,
-        });
-        console.log(headers);
+  // // 테스트 생성
+  // useEffect(() => {
+  //   const fetchTodayResult = async () => {
+  //     if (!user) return;
+  //     try {
+  //       const headers = user ? await getAuthHeader() : {};
+  //       console.log("Authorization headers:", headers);
+  //       const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  //       const res = await api.get("/api/result", {
+  //         params: { date: today },
+  //         headers,
+  //       });
+  //       console.log(headers);
 
-        if (res.data) {
-          setResult(res.data.result_text);
-          setSelected(res.data.selected_choice);
-        }
-      } catch (err) {
-        console.log("오늘 결과 없음", err);
-        setResult("");
-      }
-    };
+  //       if (res.data) {
+  //         setResult(res.data.result_text);
+  //         setSelected(res.data.selected_choice);
+  //       }
+  //     } catch (err) {
+  //       console.log("오늘 결과 없음", err);
+  //       setResult("");
+  //     }
+  //   };
 
-    fetchTodayResult();
-  }, [user]);
+  //   fetchTodayResult();
+  // }, [user]);
   const generateTest = async (mbti) => {
+    const headers = user ? await getAuthHeader() : {};
     try {
       setLoading(true);
-      const response = await api.post("/ai/test", { content: mbti });
+      const response = await api.post(
+        "/api/user/test",
+        { content: mbti },
+        { headers }
+      );
+
       const data = response.data;
+
+      if (!data || !data.aicomment) {
+        throw new Error("서버 응답에 aicomment가 없습니다.");
+      }
+
       setTestData(data.aicomment);
 
       const lines = data.aicomment.split("\n").map((l) => l.trim());
@@ -53,7 +64,7 @@ function DailyTest({ user }) {
       setChoices(lines.filter((l) => /^[A-D]:/.test(l)));
     } catch (error) {
       console.error("테스트 생성 실패:", error);
-      alert("서버 연결에 문제가 있습니다.");
+      alert("서버 연결에 문제가 있거나, 데이터가 올바르지 않습니다.");
     } finally {
       setLoading(false);
     }
@@ -61,11 +72,16 @@ function DailyTest({ user }) {
 
   // 답변 전송
   const sendResult = async (mbti, question, selectedAnswer) => {
+    const headers = user ? await getAuthHeader() : {};
     const content = `MBTI: ${mbti}\n질문: ${question}\n선택한 답변: ${selectedAnswer}`;
     console.log(mbti);
     try {
       setLoading(true);
-      const response = await api.post("/ai/result", { content });
+      const response = await api.post(
+        "/api/user/result",
+        { content },
+        { headers }
+      );
       setResult(response.data.aicomment);
       setSelected(selectedAnswer);
     } catch (error) {
@@ -140,8 +156,37 @@ function DailyTest({ user }) {
             🤖 AI가 생각 중이에요... 잠시만요!
           </p>
         )}
-
-        {result ? (
+        {!testData && (
+          <button
+            className="daily-test-button"
+            onClick={() => generateTest(mbti)}
+          >
+            테스트 생성하기
+          </button>
+        )}
+        {question && (
+          <div className="daily-test-question-section">
+            <p className="daily-test-question">{question}</p>
+            <div className="daily-test-choices">
+              {choices.map((choice) => (
+                <button
+                  key={choice}
+                  onClick={() => {
+                    setSelected(choice);
+                    sendResult(mbti, question, choice);
+                  }}
+                  disabled={!!selected}
+                  className={`daily-test-choice ${
+                    selected === choice ? "selected" : ""
+                  }`}
+                >
+                  {choice}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        {result && (
           <div className="daily-test-result-section">
             <h3 className="daily-test-result-title">💬 오늘의 심리 결과</h3>
             <p className="daily-test-result-text">
@@ -160,39 +205,6 @@ function DailyTest({ user }) {
               <button onClick={saveAsImage}>🖼 이미지 저장</button>
             </div>
           </div>
-        ) : (
-          <>
-            {!testData && (
-              <button
-                className="daily-test-button"
-                onClick={() => generateTest(mbti)}
-              >
-                테스트 생성하기
-              </button>
-            )}
-            {question && (
-              <div className="daily-test-question-section">
-                <p className="daily-test-question">{question}</p>
-                <div className="daily-test-choices">
-                  {choices.map((choice) => (
-                    <button
-                      key={choice}
-                      onClick={() => {
-                        setSelected(choice);
-                        sendResult(mbti, question, choice);
-                      }}
-                      disabled={!!selected}
-                      className={`daily-test-choice ${
-                        selected === choice ? "selected" : ""
-                      }`}
-                    >
-                      {choice}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
         )}
       </div>
     </div>
