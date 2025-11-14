@@ -13,12 +13,6 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
   const [emojiCounts, setEmojiCounts] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // ⚡ 임시 로그인
-  //const userId = parseInt(localStorage.getItem("userId") || 1, 10);
-
-  // ⚡ 실제 로그인 적용 시
-  // const userId = 현재 로그인 유저 ID;
-
   //  이모지 카운트 초기화
   const loadCounts = async () => {
     const targetType = boardId ? "board" : "comment";
@@ -116,7 +110,7 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
       >
         👍
       </button>
-      {selectedEmoji && (
+      {selectedEmoji && selectedData && (
         <div
           className="selected-emoji"
           onClick={() => handleSelectEmoji(selectedData)}

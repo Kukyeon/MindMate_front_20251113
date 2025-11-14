@@ -15,26 +15,20 @@ const BoardDetailPage = ({ user }) => {
   const [board, setBoard] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // ⚡ 임시 로그인 (임시로 userId 1번 유저로 처리)
-  //const userId = parseInt(localStorage.getItem("userId") || 1, 10);
-
-  // ⚡ 실제 로그인 적용 시 (예: JWT 기반 로그인)
-  /*
-  import { useAuth } from "../context/AuthContext"; 
-  const { user } = useAuth(); 
-  const userId = user?.id; // 로그인된 유저의 id를 받아옴
-  */
-  const userId = user?.id;
+  const userId = user.userId;
 
   const fetchBoard = async () => {
     try {
       setLoading(true);
-      const headers = await authHeader();
+      const headers = user ? await authHeader() : {};
+
       const res = await api.get(`/api/boards/${id}`, { headers });
       //if (response.data) setBoard(response.data);
       setBoard(res.data);
     } catch (err) {
       console.error("게시글 불러오기 실패:", err);
+      alert("게시글을 불러오지 못했습니다.");
+      navigate("/boards");
     } finally {
       setLoading(false);
     }
@@ -90,12 +84,16 @@ const BoardDetailPage = ({ user }) => {
           <h2 className="board-title">{board.title}</h2>
 
           <div className="board-actions">
-            <button className="board-btn edit" onClick={handleEdit}>
-              수정
-            </button>
-            <button className="board-btn delete" onClick={handleDelete}>
-              삭제
-            </button>
+            {userId && board.writerId === user.userId && (
+              <>
+                <button className="board-btn edit" onClick={handleEdit}>
+                  수정
+                </button>
+                <button className="board-btn delete" onClick={handleDelete}>
+                  삭제
+                </button>
+              </>
+            )}
           </div>
         </div>
         <div className="board-meta">
@@ -113,17 +111,23 @@ const BoardDetailPage = ({ user }) => {
 
       <div className="board-hashtag-emoji-card">
         {tagData?.length > 0 && <HashtagList hashtags={tagData} />}
-        <EmojiSelector boardId={board.id} user={user} />
+        <EmojiSelector boardId={board.id} userId={userId} disabled={!user} />
       </div>
 
       {/* 댓글 영역 */}
       <div className="board-comment-section">
-        <CommentForm
-          userId={userId}
-          boardId={board.id}
-          onCommentAdded={fetchBoard}
-        />
-        <CommentList boardId={board.id} user={user} ref={commentListRef} />
+        {user ? (
+          <CommentForm
+            userId={userId}
+            boardId={board.id}
+            onCommentAdded={fetchBoard}
+          />
+        ) : (
+          <div className="comment-login-alert">
+            💬 댓글을 작성하려면 로그인하세요.
+          </div>
+        )}
+        <CommentList boardId={board.id} userId={userId} ref={commentListRef} />
       </div>
 
       {/* 하단 목록 버튼 */}

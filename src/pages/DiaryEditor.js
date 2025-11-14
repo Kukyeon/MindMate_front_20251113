@@ -52,7 +52,7 @@ export default function DiaryEditor() {
     console.log("Request Body:", JSON.stringify(dataToSend));
     try {
       const response = await fetch(
-        `http://localhost:8888/api/diary/date/${date}`,
+        `http://localhost:8888/api/diary/date?date=${date}`,
         {
           method: "PUT",
           headers: {

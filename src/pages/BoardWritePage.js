@@ -13,13 +13,13 @@ const BoardWritePage = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [aiTags, setAiTags] = useState([]);
 
-  const userId = user?.id;
+  const userId = user?.userId;
+  if (!userId) return <p>로그인이 필요합니다.</p>;
   // 임시 로그인
   //const userId = parseInt(localStorage.getItem("userId") || 2, 10);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!user) return alert("로그인이 필요합니다.");
     setLoading(true);
 
     try {
@@ -68,6 +68,7 @@ const BoardWritePage = ({ user }) => {
           headers,
         });
         alert("게시글이 작성되었습니다! 캐릭터가 성장했어요!");
+        navigate(`/board/${boardId}`); // 알림 이후 게시판으로 다시
       } else {
         // 캐릭터 없음 → 생성 여부 확인
         const createChar = window.confirm(

@@ -5,7 +5,7 @@ import { generateHashtags } from "../../api/aiApi"; //  AI 해시태그 함수 i
 
 const BoardContent = ({ board, user }) => {
   const [hashtags, setHashtags] = useState(board?.hashtags || []);
-  const userId = user?.id;
+  const userId = user.userId;
 
   useEffect(() => {
     // 게시글 내용이 있고, 기존 해시태그가 비어 있을 때만 AI 호출
