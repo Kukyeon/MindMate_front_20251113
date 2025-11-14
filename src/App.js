@@ -104,9 +104,9 @@ export default function App() {
         <Route path="/comment/edit/:id" element={<CommentEditForm />} />
 
         {/* 기타 */}
-        <Route path="/fortune" element={<Fortune user={user} />} />
-        <Route path="/dailyTest" element={<DailyTest user={user} />} />
-        <Route path="/daily" element={<Daily user={user} />} />
+        <Route path="/fortune" element={ <PrivateRoute><Fortune user={user} />  </PrivateRoute>} />
+        <Route path="/dailyTest" element={ <PrivateRoute> <DailyTest user={user}/> </PrivateRoute>} />
+        <Route path="/daily" element={ <PrivateRoute><Daily user={user} /> </PrivateRoute>} />
 
         {/* 게시글 수정 */}
         <Route path="/board/edit/:id" element={<BoardEditPage />} />
