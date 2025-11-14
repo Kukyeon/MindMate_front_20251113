@@ -381,3 +381,10 @@
     padding: 6px 12px;
   }
 }
+
+.edit-profile-help-text {
+  margin: -10px 10px 0px; /* 위쪽 살짝만 띄우고 아래는 0 */
+  font-size: 0.8rem;
+  text-align: left;
+  color: #6b4226;
+}

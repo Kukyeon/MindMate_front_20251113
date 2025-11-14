@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { replace, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import "./SignupPage.css";
@@ -8,9 +8,6 @@ import {
   buildNaverAuthUrl,
 } from "../api/socialAuth";
 import { getUser } from "../api/authApi";
-
-const KAKAO_REST_API_KEY = "d032aea47f7cde0d9d176389f15a4053"; // 프론트에 노출돼도 되는 키
-const KAKAO_REDIRECT_URI = "http://localhost:3000/auth/kakao/callback"; // 카카오 콘솔 + 백엔드 설정과 맞출 것
 
 const SignupPage = ({ setUser }) => {
   const navigate = useNavigate();
@@ -25,15 +22,23 @@ const SignupPage = ({ setUser }) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    setIsUsernameOk(false);
+  }, [state.username]);
+
   const checkUsername = async () => {
+    if (!state.username) {
+      alert("아이디를 입력후 다시 시도해주세요");
+      return;
+    }
     setIsUsernameOk(false);
     try {
       await api.get("/api/auth/check_username", {
         params: { username: state.username.trim() },
       });
+      alert("사용 가능한 아이디입니다.");
 
       setIsUsernameOk(true);
-      alert("사용 가능한 아이디입니다!");
     } catch (err) {
       setIsUsernameOk(false);
       if (err.response && err.response.status === 409) {
@@ -59,12 +64,13 @@ const SignupPage = ({ setUser }) => {
       if (setUser && user) {
         setUser(user);
       }
-      navigate("/profile/set", replace);
+      navigate("/profile/set", { replace: true });
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrors(err.response.data);
       } else {
         alert("회원가입 실패");
+        console.error(err);
       }
     }
   };
@@ -106,11 +112,26 @@ const SignupPage = ({ setUser }) => {
             <button
               type="button"
               className="signup-check-btn"
+              style={{
+                color: isUsernameOk && "GrayText",
+                backgroundColor: isUsernameOk && "lightgray",
+              }}
+              disabled={isUsernameOk}
               onClick={checkUsername}
             >
-              중복확인
+              {isUsernameOk ? "체크완료" : "중복확인"}
             </button>
           </div>
+          {!isUsernameOk && (
+            <p className="signup-help-text">
+              <small>아이디 중복체크를 해주세요.</small>
+            </p>
+          )}
+          {errors.username && (
+            <p className="signup-help-text">
+              <small>{errors.username}</small>
+            </p>
+          )}
 
           <input
             type="password"
@@ -121,7 +142,11 @@ const SignupPage = ({ setUser }) => {
             className="signup-input"
             required
           />
-
+          {errors.password && (
+            <p className="signup-help-text">
+              <small>{errors.password}</small>
+            </p>
+          )}
           <button
             type="submit"
             className="signup-button"
