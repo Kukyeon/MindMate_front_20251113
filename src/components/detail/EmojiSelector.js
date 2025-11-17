@@ -11,6 +11,7 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
   const [open, setOpen] = useState(false);
   const [emojiCounts, setEmojiCounts] = useState({});
   const [loading, setLoading] = useState(false);
+  const [hoveredType, setHoveredType] = useState(null); // emoji hover 상태
 
   const targetType = boardId ? "board" : "comment";
   const targetId = boardId || commentId;
@@ -97,9 +98,14 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
                 info.selected ? "emoji-selected" : ""
               }`}
               onClick={() => handleSelectEmoji(emoji)}
+              onMouseEnter={() => setHoveredType(emoji.type)}
+              onMouseLeave={() => setHoveredType(null)}
             >
               <img src={emoji.image} alt={emoji.type} width="25" />
               <span>{info.count}</span>
+              {hoveredType === emoji.type && (
+                <div className="emoji-tooltip">{emoji.type}</div>
+              )}
             </span>
           );
         })}
@@ -119,9 +125,14 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
                 className={`emoji-button ${isSelected ? "emoji-selected" : ""}`}
                 onClick={() => handleSelectEmoji(emoji)}
                 disabled={loading}
+                onMouseEnter={() => setHoveredType(emoji.type)}
+                onMouseLeave={() => setHoveredType(null)}
               >
                 <img src={emoji.image} alt={emoji.type} width="25" />
                 {count > 0 && <span>{count}</span>}
+                {hoveredType === emoji.type && (
+                  <div className="emoji-tooltip">{emoji.type}</div>
+                )}
               </button>
             );
           })}
