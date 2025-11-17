@@ -12,39 +12,80 @@ import { getUser } from "../api/authApi";
 const SignupPage = ({ setUser }) => {
   const navigate = useNavigate();
   const [state, setState] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
-  const [isUsernameOk, setIsUsernameOk] = useState(false);
+  const [isEmailOk, setIsEmailOk] = useState(false);
+  const [emailMessage, setEmailMessage] = useState("이메일을 입력해주세요.");
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  useEffect(() => {
+    const email = state.email;
+    setIsEmailOk(false);
+
+    if (!email) {
+      setEmailMessage("이메일을 입력해주세요.");
+    } else if (!emailPattern.test(email)) {
+      setEmailMessage("올바른 이메일 형식이 아닙니다.");
+    } else if (email.length > 50) {
+      setEmailMessage("이메일은 50자 이내로 입력해 주세요.");
+    } else {
+      setEmailMessage("이메일 중복체크를 해주세요.");
+    }
+  }, [state.email]);
+
+  const [isPasswordOk, setIsPasswordOk] = useState(false);
+  const [passwordMessage, setPasswordMessage] =
+    useState("비밀번호를 입력해주세요");
+  const passwordPattern = /^[a-zA-Z0-9]+$/;
+  useEffect(() => {
+    const password = state.password;
+    setIsPasswordOk(false);
+    if (!password) {
+      setPasswordMessage("비밀번호를 입력해주세요.");
+    } else if (!passwordPattern.test(password)) {
+      setPasswordMessage("영어 알파벳과 숫자만 입력할 수 있습니다.");
+    } else if (password.length < 8 || password.length > 16) {
+      setPasswordMessage("비밀번호는 8 ~ 16글자로 입력할 수 있습니다.");
+    } else {
+      setPasswordMessage("유효한 비밀번호 입니다.");
+      setIsPasswordOk(true);
+    }
+  }, [state.password]);
 
   const handleOnChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    setIsUsernameOk(false);
-  }, [state.username]);
+  const checkEmail = async () => {
+    const email = state.email;
 
-  const checkUsername = async () => {
-    if (!state.username) {
-      alert("아이디를 입력후 다시 시도해주세요");
+    if (!email) {
+      alert("이메일을 입력 후 다시 시도해주세요.");
+      return;
+    } else if (!emailPattern.test(email)) {
+      alert("올바른 이메일 형식이 아닙니다.");
       return;
     }
-    setIsUsernameOk(false);
-    try {
-      await api.get("/api/auth/check_username", {
-        params: { username: state.username.trim() },
-      });
-      alert("사용 가능한 아이디입니다.");
 
-      setIsUsernameOk(true);
+    setIsEmailOk(false);
+    try {
+      // 백엔드 메서드는 checkUsername 이지만, 실제 값은 이메일
+      await api.get("/api/auth/check_username", {
+        params: { username: state.email.trim() }, // username 자리에 email 전달
+      });
+      alert("사용 가능한 이메일입니다.");
+      setEmailMessage("사용 가능한 이메일입니다.");
+      setIsEmailOk(true);
     } catch (err) {
-      setIsUsernameOk(false);
+      setIsEmailOk(false);
       if (err.response && err.response.status === 409) {
-        alert("사용중인 아이디입니다.");
+        alert("이미 사용 중인 이메일입니다.");
+        setState({ ...state, email: "" });
       } else {
-        alert("아이디 확인 중 오류가 발생했습니다.");
+        alert("이메일 확인 중 오류가 발생했습니다.");
+        setState({ ...state, email: "" });
       }
     }
   };
@@ -52,8 +93,12 @@ const SignupPage = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-    if (!isUsernameOk) {
-      alert("아이디 중복체크후 다시 시도해주세요");
+    if (!isEmailOk) {
+      alert("이메일 중복체크후 다시 시도해주세요");
+      return;
+    } else if (!isPasswordOk) {
+      alert("비밀번호가 유효하지 않습니다 다시 시도해주세요");
+      setState({ ...state, password: "" });
       return;
     }
     try {
@@ -101,10 +146,10 @@ const SignupPage = ({ setUser }) => {
         <form onSubmit={handleSubmit} className="signup-form">
           <div className="input-group">
             <input
-              type="text"
-              name="username"
-              value={state.username}
-              placeholder="아이디"
+              type="email"
+              name="email"
+              value={state.email}
+              placeholder="이메일"
               onChange={handleOnChange}
               className="signup-input"
               required
@@ -113,25 +158,18 @@ const SignupPage = ({ setUser }) => {
               type="button"
               className="signup-check-btn"
               style={{
-                color: isUsernameOk && "GrayText",
-                backgroundColor: isUsernameOk && "lightgray",
+                color: isEmailOk && "GrayText",
+                backgroundColor: isEmailOk && "lightgray",
               }}
-              disabled={isUsernameOk}
-              onClick={checkUsername}
+              disabled={isEmailOk}
+              onClick={checkEmail}
             >
-              {isUsernameOk ? "체크완료" : "중복확인"}
+              {isEmailOk ? "체크완료" : "중복확인"}
             </button>
           </div>
-          {!isUsernameOk && (
-            <p className="signup-help-text">
-              <small>아이디 중복체크를 해주세요.</small>
-            </p>
-          )}
-          {errors.username && (
-            <p className="signup-help-text">
-              <small>{errors.username}</small>
-            </p>
-          )}
+          <p className="signup-help-text">
+            <small>{emailMessage}</small>
+          </p>
 
           <input
             type="password"
@@ -142,16 +180,11 @@ const SignupPage = ({ setUser }) => {
             className="signup-input"
             required
           />
-          {errors.password && (
-            <p className="signup-help-text">
-              <small>{errors.password}</small>
-            </p>
-          )}
-          <button
-            type="submit"
-            className="signup-button"
-            // disabled={!isUsernameOk}
-          >
+
+          <p className="signup-help-text">
+            <small>{passwordMessage}</small>
+          </p>
+          <button type="submit" className="signup-button">
             회원가입
           </button>
         </form>
