@@ -43,10 +43,27 @@ import NaverDeleteCallback from "./pages/NaverDeleteCallBack.js";
 import KakaoDeleteCallback from "./pages/KakaoDeleteCallBack.js";
 import GoogleDeleteCallback from "./pages/GoogleDeleteCallBack.js";
 
+//폰트 테스트
+// import FontSelector from "./pages/FontSelector";
+
 export default function App() {
   const [user, setUser] = useState(null);
   const [initialized, setInitialized] = useState(false);
+  //폰트 테스트
+  // const [font, setFont] = useState(
+  //   localStorage.getItem("font") || "'Noto Sans KR', sans-serif"
+  // );
   console.log(user);
+
+  //폰트 테스트
+  // useEffect(() => {
+  //   document.documentElement.style.setProperty("--app-font", font);
+  //   localStorage.setItem("font", font); // 새로고침해도 유지
+  // }, [font]);
+  // const handleFontChange = (selectedFont) => {
+  //   setFont(selectedFont);
+  //   localStorage.setItem("font", selectedFont);
+  // };
 
   useEffect(() => {
     (async () => {
@@ -67,7 +84,10 @@ export default function App() {
   return (
     <>
       <Header user={user} setUser={setUser} />
-
+      {/*폰트 테스트 1*/}
+      {/*<FontSelector selectedFont={font} onSelect={handleFontChange} />*/}
+      {/*폰트 테스트 2*/}
+      {/*<FontSelector selectedFont={font} onSelect={setFont} />*/}
       {/* <BrowserRouter> */}
       <Routes>
         <Route path="/graph" element={<Graph2 user={user} />}></Route>
@@ -104,9 +124,31 @@ export default function App() {
         <Route path="/comment/edit/:id" element={<CommentEditForm />} />
 
         {/* 기타 */}
-        <Route path="/fortune" element={ <PrivateRoute><Fortune user={user} />  </PrivateRoute>} />
-        <Route path="/dailyTest" element={ <PrivateRoute> <DailyTest user={user}/> </PrivateRoute>} />
-        <Route path="/daily" element={ <PrivateRoute><Daily user={user} /> </PrivateRoute>} />
+        <Route
+          path="/fortune"
+          element={
+            <PrivateRoute>
+              <Fortune user={user} />{" "}
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dailyTest"
+          element={
+            <PrivateRoute>
+              {" "}
+              <DailyTest user={user} />{" "}
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/daily"
+          element={
+            <PrivateRoute>
+              <Daily user={user} />{" "}
+            </PrivateRoute>
+          }
+        />
 
         {/* 게시글 수정 */}
         <Route path="/board/edit/:id" element={<BoardEditPage />} />
@@ -234,14 +276,14 @@ export default function App() {
         />
 
         {/* 다이어리 */}
-        <Route path="/diary" element={<Calendar user={user}/>} />
-        <Route path="/diary/calendar" element={<Calendar user={user}/>} />
+        <Route path="/diary" element={<Calendar user={user} />} />
+        <Route path="/diary/calendar" element={<Calendar user={user} />} />
 
-        <Route path="/diary/date/:date" element={<DiaryDetail user={user}/>} />
+        <Route path="/diary/date/:date" element={<DiaryDetail user={user} />} />
 
-        <Route path="/diary/edit/:date" element={<DiaryEditor user={user}/>} />
+        <Route path="/diary/edit/:date" element={<DiaryEditor user={user} />} />
 
-        <Route path="/diary/write" element={<DiaryWrite user={user}/>} />
+        <Route path="/diary/write" element={<DiaryWrite user={user} />} />
 
         {/* 잘못된 경로시 보드로 이동 */}
         {/* <Route path="*" element={<Navigate to="/boards" replace />} /> */}
