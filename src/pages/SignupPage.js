@@ -27,11 +27,13 @@ const SignupPage = ({ setUser }) => {
   }, [state.username]);
 
   const checkUsername = async () => {
+    const usernamePattern = "^[a-zA-Z0-9]*$";
     if (!state.username) {
       alert("아이디를 입력후 다시 시도해주세요");
       return;
     }
-    setIsUsernameOk(false);
+
+    if (username) setIsUsernameOk(false);
     try {
       await api.get("/api/auth/check_username", {
         params: { username: state.username.trim() },
