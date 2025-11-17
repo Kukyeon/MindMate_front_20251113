@@ -2,7 +2,10 @@ import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { clearAuth } from "../api/authApi";
-
+const getAuthHeader = () => {
+  const token = localStorage.getItem("accessToken"); // 토큰 키 이름 확인
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 const GoogleDeleteCallback = ({ setUser }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -26,7 +29,11 @@ const GoogleDeleteCallback = ({ setUser }) => {
     (async () => {
       try {
         // 1) 백엔드 구글 탈퇴 API 호출
-        await api.post("/api/auth/delete/google", { code });
+        await api.post(
+          "/api/auth/delete/google",
+          { code },
+          { headers: getAuthHeader() }
+        );
 
         // 2) 프론트 인증 정보 정리
         clearAuth();

@@ -2,7 +2,10 @@ import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { clearAuth } from "../api/authApi";
-
+const getAuthHeader = () => {
+  const token = localStorage.getItem("accessToken"); // 토큰 키 이름 확인
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 const NaverDeleteCallback = ({ setUser }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,7 +26,11 @@ const NaverDeleteCallback = ({ setUser }) => {
 
     (async () => {
       try {
-        await api.post("/api/auth/delete/naver", { code, state });
+        await api.post(
+          "/api/auth/delete/naver",
+          { code, state },
+          { headers: getAuthHeader() }
+        );
 
         clearAuth();
         if (setUser) setUser(null);

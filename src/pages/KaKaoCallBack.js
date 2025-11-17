@@ -38,7 +38,7 @@ const KakaoCallback = ({ setUser }) => {
           setUser(user);
         }
 
-        if (!user.nickname.trim()) {
+        if (!user.nickname) {
           navigate("/profile", { replace: true }); // 소셜 첫 가입 → 프로필 설정
         } else {
           navigate("/", { replace: true });

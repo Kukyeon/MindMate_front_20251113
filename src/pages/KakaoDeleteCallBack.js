@@ -4,6 +4,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { clearAuth } from "../api/authApi";
 
+const getAuthHeader = () => {
+  const token = localStorage.getItem("accessToken"); // 토큰 키 이름 확인
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 const KakaoDeleteCallback = ({ setUser }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -27,7 +31,11 @@ const KakaoDeleteCallback = ({ setUser }) => {
     (async () => {
       try {
         // 1) 백엔드 카카오 탈퇴 API 호출
-        await api.post("/api/auth/delete/kakao", { code });
+        await api.post(
+          "/api/auth/delete/kakao",
+          { code },
+          { headers: getAuthHeader() }
+        );
 
         // 2) 프론트 인증 정보 정리
         clearAuth();
