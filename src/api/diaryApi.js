@@ -28,6 +28,10 @@ export const fetchDiariesByMonth = (year, month) =>
     headers: getAuthHeader(),
   });
 
-// 통계 조회 (통계 페이지용)
-// export const fetchEmotionStats = (startDate, endDate) =>
-//   api.get(`/api/diary/stats`, { params: { startDate, endDate }, headers: getAuthHeader() });
+//일기 수정
+export const updateDiaryByDate = (date, data) =>
+  api.put(`/api/diary/date?date=${date}`, data, { headers: getAuthHeader() });
+
+//일기 삭제
+export const deleteDiaryByDate = (date) =>
+  api.delete(`/api/diary/date/${date}`, { headers: getAuthHeader() });

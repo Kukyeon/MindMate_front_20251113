@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
 import api from "../api/axiosConfig";
+import { fetchDiaryByDate, updateDiaryByDate } from "../api/diaryApi";
 
 export default function DiaryEditor() {
   const { date } = useParams();
@@ -17,7 +18,7 @@ export default function DiaryEditor() {
 
     const fetchDiary = async () => {
       try {
-        const res = await api.get("/api/diary/date", { params: { date } });
+         const res = await fetchDiaryByDate(date); // API 함수 사용
         setDiary(res.data);
         setEmoji(res.data.emoji);
       } catch (error) {
@@ -64,7 +65,7 @@ export default function DiaryEditor() {
     const dataToSend = { title: diary.title, content: diary.content, emoji: { id, type, imageUrl } };
 
     try {
-      await api.put(`/api/diary/date?date=${date}`, dataToSend);
+      await updateDiaryByDate(date, dataToSend); // API 함수로 수정 요청
       alert("수정되었습니다.");
       navigate("/diary/calendar", { state: { selectedDate: date } });
     } catch (error) {

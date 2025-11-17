@@ -1,6 +1,8 @@
 // DiaryDetail.jsx
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { fetchDiaryByDate } from "../api/diaryApi";
+import { deleteDiaryByDate } from "../api/diaryApi";
 
 export default function DiaryDetail({ dateFromCalendar, onDelete }) {
   const [diary, setDiary] = useState(null);
@@ -20,25 +22,20 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
     const loadDiary = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:8888/api/diary/date?date=${date}`,{
-          headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}` // 🔑 필수
-  }
-        });
-        
-        if (res.ok) {
-          const data = await res.json();
-          setDiary(data);
-        } else if (res.status === 404) {
-          alert("해당 날짜에 작성된 일기가 없습니다.");
-          navigate("/diary/write", { state: { date } });
-        } else {
-          throw new Error(`HTTP 오류: ${res.status}`);
-        }
+        const res = await fetchDiaryByDate(date); // ✅ API 함수 사용
+        setDiary(res.data);
       } catch (err) {
         console.error("❌ fetchDiary 오류:", err);
-        alert("일기를 불러오는 중 오류가 발생했습니다.");
+        const status = err.response?.status;
+        if (status === 404) {
+          alert("해당 날짜에 작성된 일기가 없습니다.");
+          navigate("/diary/write", { state: { date } });
+        } else if (status === 403) {
+          alert("로그인이 필요합니다.");
+          navigate("/login");
+        } else {
+          alert("일기를 불러오는 중 오류가 발생했습니다.");
+        }
       } finally {
         setLoading(false);
       }
@@ -47,23 +44,15 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
     loadDiary();
   }, [date, navigate]);
 
-  // 삭제 처리
+   // 삭제 처리
   const handleDelete = async () => {
     if (!window.confirm(`${date} 날짜의 일기를 정말로 삭제하시겠습니까?`)) return;
 
     try {
-      const response = await fetch(`http://localhost:8888/api/diary/date/${date}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}` },
-      });
-
-      if (response.ok) {
-        alert("일기가 삭제되었습니다.");
-        setDiary(null);
-        if (onDelete) onDelete(date); // 캘린더 상태 갱신
-      } else {
-        throw new Error(`삭제 실패: ${response.status}`);
-      }
+      await deleteDiaryByDate(date); // ✅ API 함수 사용
+      alert("일기가 삭제되었습니다.");
+      setDiary(null);
+      if (onDelete) onDelete(date); // 캘린더 상태 갱신
     } catch (err) {
       console.error(err);
       alert("삭제 중 오류가 발생했습니다.");
