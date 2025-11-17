@@ -98,7 +98,7 @@ const BoardDetailPage = ({ user }) => {
         </div>
         <div className="board-meta">
           <span>작성자: {board.writer || board.user?.nickname}</span>
-          <span>{new Date(board.createdAt).toLocaleDateString()}</span>
+          <span>{board.createdAt}</span>
         </div>
       </div>
 

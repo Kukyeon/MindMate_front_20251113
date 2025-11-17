@@ -18,9 +18,7 @@ const CommentItem = ({ comment, onUpdated, userId }) => {
     <div className="comment-item-card">
       <div className="comment-header">
         <span className="comment-writer">{comment.writer}</span>
-        <span className="comment-date">
-          {new Date(comment.createdate).toLocaleDateString()}
-        </span>
+        <span className="comment-date">{comment.createdate}</span>
       </div>
 
       <div className="comment-body">

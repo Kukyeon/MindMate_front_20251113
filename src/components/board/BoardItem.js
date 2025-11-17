@@ -15,7 +15,7 @@ const BoardItem = ({ board, index }) => {
       </td>
       <td>{board.writer}</td> {/* writer 사용 또는 board.nickname */}
       <td>{board.viewCount}</td>
-      <td>{new Date(board.createdAt).toLocaleDateString()}</td>
+      <td>{board.createdAt}</td>
     </tr>
   );
 };
