@@ -4,9 +4,8 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./Calendar.css";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import DiaryDetail from "./DiaryDetail";
-import { fetchDiariesByMonth } from "../api/diaryApi"; // api 인스턴스 사용
+import { fetchDiariesByMonth } from "../api/diaryApi";
 
 export default function CalendarPage() {
   const location = useLocation();
@@ -18,8 +17,6 @@ export default function CalendarPage() {
     exists: null,
     diary: null,
   });
-
- 
 
   // --------------------------
   // 마운트 시 선택된 날짜 적용
@@ -35,53 +32,63 @@ export default function CalendarPage() {
       });
     }
   }, [location.state]);
-// --------------------------
-// 월별 일기 로드
-// --------------------------
-useEffect(() => {
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth() + 1;
-  const token = localStorage.getItem("accessToken");
 
-  // ⭐ 로그인 안 한 경우: API 호출하지 않음
-  if (!token) {
-    setMonthlyDiaries([]); // 이모지 없는 빈 달력 유지
+  // --------------------------
+  // 월별 일기 로드
+  // --------------------------
+  useEffect(() => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      setMonthlyDiaries([]);
+      if (!location.state?.selectedDate) {
+        setClickResult({ date: null, exists: null, diary: null });
+      }
+      return;
+    }
+
+    const loadMonthlyDiaries = async () => {
+      try {
+        const res = await fetchDiariesByMonth(year, month);
+        setMonthlyDiaries(res.data);
+      } catch (err) {
+        console.error("월별 일기 로드 실패:", err);
+        if (err.response?.status === 403) {
+          alert("로그인이 필요합니다.");
+        } else if (err.response?.status === 404) {
+          setMonthlyDiaries([]);
+        } else {
+          alert("일기 데이터를 불러오는 데 실패했습니다.");
+        }
+      }
+    };
+
+    loadMonthlyDiaries();
+
     if (!location.state?.selectedDate) {
       setClickResult({ date: null, exists: null, diary: null });
     }
-    return;
-  }
+  }, [currentDate, location.state]);
 
-  // ⭐ 로그인된 경우만 API 호출
-  const loadMonthlyDiaries = async () => {
-    try {
-      const res = await fetchDiariesByMonth(year, month);
-      setMonthlyDiaries(res.data);
-    } catch (err) {
-      console.error("월별 일기 로드 실패:", err);
-      if (err.response?.status === 403) {
-        alert("로그인이 필요합니다.");
-      } else if (err.response?.status === 404) {
-        setMonthlyDiaries([]); 
-      } else {
-        alert("일기 데이터를 불러오는 데 실패했습니다.");
-      }
-    }
-  };
-
-  loadMonthlyDiaries();
-
-  // 선택된 날짜가 없을 때 클릭 결과 초기화
-  if (!location.state?.selectedDate) {
-    setClickResult({ date: null, exists: null, diary: null });
-  }
-}, [currentDate, location.state]);
   // --------------------------
   // 날짜 클릭
   // --------------------------
   const handleDateClick = (date) => {
     const dateString = formatDate(date);
-    const diary = monthlyDiaries.find((d) => d.date.slice(0, 10) === dateString);
+    const todayString = formatDate(new Date());
+
+    // // ✅ 미래 날짜 클릭 방지
+    // if (dateString > todayString) {
+    //   alert("미래 날짜에는 일기를 작성할 수 없습니다.");
+    //   setClickResult({ date: null, exists: null, diary: null });
+    //   return;
+    // }
+
+    const diary = monthlyDiaries.find(
+      (d) => d.date.slice(0, 10) === dateString
+    );
 
     if (diary) {
       setClickResult({ date: dateString, exists: true, diary });
@@ -94,18 +101,29 @@ useEffect(() => {
   // 일기 쓰기 버튼
   // --------------------------
   const handleWriteClick = () => {
+    const today = formatDate(new Date());
+
+    // ❗ 미래 날짜 클릭 방지
+    if (clickResult.date > today) {
+      alert("미래 날짜에는 일기를 작성할 수 없습니다.");
+      return;
+    }
+
     if (clickResult.date) {
       navigate("/diary/write", { state: { date: clickResult.date } });
     }
   };
 
   // --------------------------
-  // 달력 각 날짜 칸 표시 (이모지 또는 이미지)
+  // 달력 각 날짜 칸 표시
   // --------------------------
   const tileContent = ({ date, view }) => {
     if (view === "month") {
       const dateString = formatDate(date);
-      const diary = monthlyDiaries.find((d) => d.date.slice(0, 10) === dateString);
+      const diary = monthlyDiaries.find(
+        (d) => d.date.slice(0, 10) === dateString
+      );
+
       if (diary && diary.imageUrl) {
         return (
           <img
@@ -124,6 +142,7 @@ useEffect(() => {
   return (
     <div className="calendar-page-wrapper">
       <h2>📅 감정일기 캘린더</h2>
+
       <Calendar
         onActiveStartDateChange={({ activeStartDate }) =>
           setCurrentDate(activeStartDate)
@@ -159,11 +178,13 @@ useEffect(() => {
 }
 
 // --------------------------
-// DiaryDetailWrapper: DiaryDetail 재사용
+// DiaryDetailWrapper
 // --------------------------
 function DiaryDetailWrapper({ date, onDelete }) {
   const token = localStorage.getItem("accessToken");
-  return <DiaryDetail dateFromCalendar={date} onDelete={onDelete} token={token} />;
+  return (
+    <DiaryDetail dateFromCalendar={date} onDelete={onDelete} token={token} />
+  );
 }
 
 // --------------------------
