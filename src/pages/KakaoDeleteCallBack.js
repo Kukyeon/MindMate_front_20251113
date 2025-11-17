@@ -16,7 +16,6 @@ const KakaoDeleteCallback = ({ setUser }) => {
 
     const query = new URLSearchParams(location.search);
     const code = query.get("code");
-    const state = query.get("state"); // 카카오도 state 오긴 하는데, 필수는 아님 (옵션)
 
     if (!code) {
       alert("카카오 인가 코드가 없습니다.");
