@@ -88,36 +88,43 @@ export default function DiaryWritePage() {
 
       // 캐릭터 처리
       const headers = await authHeader();
-      let charResData = null;
-      try {
-        const charRes = await api.get(`/ai/me`, { headers });
-        charResData = charRes.data;
-      } catch (err) {
-        if (err.response?.status === 404) charResData = null;
-        else throw err;
-      }
+  let charResData = null;
+  
+  try {
+    const charRes = await api.get(`/ai/me`, { headers });
+    charResData = charRes.data;
+  } catch (err) {
+    if (err.response?.status === 404) charResData = null;
+    else throw err;
+  }
 
-      if (charResData) {
-        await api.put("/ai/update", null, {
-          params: { addPoints: 10, moodChange: 5 },
-          headers,
-        });
-        alert("일기가 저장되었습니다! 캐릭터가 성장했어요!");
-      } else {
-        const createChar = window.confirm(
-          "일기가 저장되었습니다!\n 캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?"
-        );
-        if (createChar) navigate("/profile", { state: { tab: "Character" } });
-      }
-
+  if (charResData) {
+    await api.put("/ai/update", null, {
+      params: { addPoints: 10, moodChange: 5 },
+      headers,
+    });
+    alert("일기가 저장되었습니다! 캐릭터가 성장했어요!");
+    // 캐릭터가 있을 때만 달력 페이지로 이동
+    navigate("/diary/calendar", { state: { selectedDate: date } });
+  } else {
+    const createChar = window.confirm(
+      "일기가 저장되었습니다!\n캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?"
+    );
+    if (createChar) {
+      // 캐릭터 생성 페이지로 이동
+      navigate("/profile", { state: { tab: "Character" } });
+    } else {
+      // 캐릭터 생성하지 않으면 달력 페이지로 이동
       navigate("/diary/calendar", { state: { selectedDate: date } });
-
-    } catch (err) {
-      console.error("일기 저장 실패:", err);
-      alert(err.response?.data?.message || "일기 저장에 실패했습니다.");
-    } finally {
-      setIsSaving(false);
     }
+  }
+
+} catch (err) {
+  console.error("일기 저장 실패:", err);
+  alert(err.response?.data?.message || "일기 저장에 실패했습니다.");
+} finally {
+  setIsSaving(false);
+}
   };
 
   if (loadingUser) return <div>사용자 정보 로딩 중...</div>;
