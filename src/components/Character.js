@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axiosConfig";
 import { motion, AnimatePresence } from "framer-motion";
 import { authHeader as getAuthHeader } from "../api/authApi";
+import CharacterChat from "./CharacterChat";
 
 const Character = ({ user }) => {
   const [character, setCharacter] = useState(null);
@@ -162,6 +163,9 @@ const Character = ({ user }) => {
           </form>
         </div>
       )}
+      <div>
+        <CharacterChat user={user} character={character} />
+      </div>
     </div>
   );
 };
