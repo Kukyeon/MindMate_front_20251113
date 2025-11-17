@@ -6,7 +6,10 @@ import {
   buildKakaoDeleteAuthUrl,
   buildNaverDeleteAuthUrl,
 } from "../../api/socialAuth";
-
+const getAuthHeader = () => {
+  const token = localStorage.getItem("accessToken"); // 토큰 키 이름 확인
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 // ProfileView.jsx
 const ProfileView = ({ setUser, user, setActiveTab }) => {
   const navigate = useNavigate();
@@ -37,7 +40,7 @@ const ProfileView = ({ setUser, user, setActiveTab }) => {
 
     // 2) 일반 계정인 경우: 우리 백엔드 탈퇴 API 바로 호출
     try {
-      await api.post("/api/auth/delete"); // 필요하면 경로 수정
+      await api.post("/api/auth/delete", null, { headers: getAuthHeader() }); // 필요하면 경로 수정
 
       clearAuth();
       if (setUser) setUser(null);

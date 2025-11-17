@@ -199,7 +199,11 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
             className="edit-profile-input"
           /> */}
 
-          <button type="submit" className="edit-profile-button">
+          <button
+            type="submit"
+            className="edit-profile-button"
+            onClick={handleSave}
+          >
             저장
           </button>
 
