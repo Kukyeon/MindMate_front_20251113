@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { replace, useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { getUser, saveAuth } from "../api/authApi";
+import { handleSocialLoginError } from "../api/socialErrorHandler";
 
 const KakaoCallback = ({ setUser }) => {
   const location = useLocation();
@@ -44,9 +45,7 @@ const KakaoCallback = ({ setUser }) => {
           navigate("/", { replace: true });
         }
       } catch (err) {
-        console.error("카카오 로그인 실패:", err);
-        alert("카카오 로그인 실패");
-        navigate("/login", { replace: true });
+        handleSocialLoginError(err, navigate);
       }
     })();
   }, [location.search, navigate]);

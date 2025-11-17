@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { replace, useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { getUser, saveAuth } from "../api/authApi";
+import { handleSocialLoginError } from "../api/socialErrorHandler";
 
 const NaverCallback = ({ setUser }) => {
   const location = useLocation();
@@ -45,9 +46,7 @@ const NaverCallback = ({ setUser }) => {
           navigate("/", replace);
         }
       } catch (err) {
-        console.error("네이버 로그인 실패:", err);
-        alert("네이버 로그인 실패");
-        navigate("/login");
+        handleSocialLoginError(err, navigate);
       }
     })();
   }, [location.search, navigate, setUser]);

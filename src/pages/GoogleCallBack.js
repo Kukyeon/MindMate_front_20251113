@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { replace, useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { getUser, saveAuth } from "../api/authApi";
+import { handleSocialLoginError } from "../api/socialErrorHandler";
 
 const GoogleCallback = ({ setUser }) => {
   const location = useLocation();
@@ -54,9 +55,7 @@ const GoogleCallback = ({ setUser }) => {
           navigate("/", replace);
         }
       } catch (err) {
-        console.error("구글 로그인 실패:", err);
-        alert("구글 로그인 실패");
-        navigate("/login");
+        handleSocialLoginError(err, navigate);
       }
     })();
   }, [location.search, navigate, setUser]);

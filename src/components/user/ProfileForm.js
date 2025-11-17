@@ -29,7 +29,11 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
   });
 
   const [initialNickname] = useState(user?.nickname || "");
-  const [isNicknameOk, setIsNicknameOk] = useState(true);
+  const today = new Date().toISOString().split("T")[0]; // 오늘 날짜 (YYYY-MM-DD)
+  const [isNicknameOk, setIsNicknameOk] = useState(false);
+  const [nicknameMessage, setNicknameMessage] =
+    useState("닉네임을 입력해주세요.");
+  const nicknamePattern = /^[a-zA-Z0-9가-힣]+$/;
 
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
@@ -38,10 +42,20 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
   };
 
   useEffect(() => {
-    if (profile.nickname === initialNickname) {
-      setIsNicknameOk(true);
+    const nickname = profile.nickname;
+    setIsNicknameOk(false);
+    if (!nickname) {
+      setNicknameMessage("닉네임을 입력해주세요");
+    } else if (nickname === initialNickname) {
+      setNicknameMessage("기존 닉네임과 동일합니다.");
+    } else if (!nicknamePattern.test(nickname)) {
+      setNicknameMessage(
+        "닉네임은 한글, 영문, 숫자만 사용할 수 있습니다.  (한글 초성 사용불가)"
+      );
+    } else if (nickname.length < 3 || nickname.length > 20) {
+      setNicknameMessage("닉네임은 3 ~ 20글자만 입력할 수 있습니다.");
     } else {
-      setIsNicknameOk(false);
+      setNicknameMessage("닉네임 중복체크를 해주세요.");
     }
   }, [profile.nickname, initialNickname]);
 
@@ -55,26 +69,39 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
   }, [user]);
 
   const checkNickname = async () => {
-    if (profile.nickname === initialNickname) {
+    const nickname = profile.nickname;
+    setIsNicknameOk(false);
+    if (nickname === initialNickname) {
       alert("기존 닉네임과 동일합니다.");
       return;
-    }
-    if (!profile.nickname.trim()) {
-      alert("닉네임을 입력후 다시 시도해주세요");
+    } else if (!nickname.trim()) {
+      alert("닉네임 입력후 다시 시도해주세요");
+      return;
+    } else if (!nicknamePattern.test(nickname)) {
+      alert(
+        "닉네임은 한글, 영문, 숫자만 사용할 수 있습니다.  (한글 초성 사용불가)"
+      );
+      return;
+    } else if (nickname.length < 3 || nickname.length > 20) {
+      alert("닉네임은 3 ~ 20글자만 입력할 수 있습니다.");
       return;
     }
+
     try {
       await api.get("/api/user/check_nickname", {
         params: { nickname: profile.nickname.trim() },
       });
       alert("사용 가능한 닉네임입니다.");
+      setNicknameMessage("유효한 닉네임 입니다.");
       setIsNicknameOk(true);
     } catch (err) {
       setIsNicknameOk(false);
       if (err.response && err.response.status === 409) {
         alert("사용중인 닉네임입니다.");
+        setProfile({ ...profile, nickname: "" });
       } else {
         alert("닉네임 확인 중 오류가 발생했습니다.");
+        setProfile({ ...profile, nickname: "" });
       }
     }
   };
@@ -89,8 +116,8 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
       return;
     }
 
-    if (profile.nickname !== initialNickname && !isNicknameOk) {
-      alert("닉네임 중복체크 후 다시 시도해주세요");
+    if (!isNicknameOk) {
+      alert("닉네임 중복체크후 다시 시도해주세요");
       return;
     }
 
@@ -144,17 +171,17 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
                 color: isNicknameOk && "GrayText",
                 backgroundColor: isNicknameOk && "lightgray",
               }}
-              disabled={isNicknameOk || profile.nickname === initialNickname}
+              disabled={isNicknameOk}
               onClick={checkNickname}
             >
               {isNicknameOk ? "체크완료" : "중복확인"}
             </button>
           </div>
-          {errors.nickname && (
-            <p className="edit-profile-help-text">
-              <small>{errors.nickname}</small>
-            </p>
-          )}
+
+          <p className="signup-help-text">
+            <small>{nicknameMessage}</small>
+          </p>
+
           {/* 생년월일 */}
           <input
             type="date"
@@ -162,11 +189,12 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
             value={profile.birth_date}
             onChange={handleChange}
             className="edit-profile-input"
+            max={today}
             required
           />
-          {errors.birth_date && (
-            <p className="edit-profile-help-text">
-              <small>{errors.birth_date}</small>
+          {!profile.birth_date && (
+            <p className="signup-help-text">
+              <small>"생일을 선택해주세요."</small>
             </p>
           )}
           {/* MBTI */}
@@ -184,9 +212,9 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
               </option>
             ))}
           </select>
-          {errors.mbti && (
-            <p className="edit-profile-help-text">
-              <small>{errors.mbti}</small>
+          {!profile.mbti && (
+            <p className="signup-help-text">
+              <small>"MBTI를 선택해주세요."</small>
             </p>
           )}
           {/* 비밀번호 */}
