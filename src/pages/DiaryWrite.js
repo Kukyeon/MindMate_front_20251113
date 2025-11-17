@@ -50,10 +50,15 @@ export default function DiaryWritePage() {
           setContent(res.data.content || "");
           setEmoji(res.data.emoji || null);
         }
-      } catch (err) {
-        // 일기 없는 경우 그대로
+      } catch (errors) {
+          if (errors.response && errors.response.status === 404) {
+        console.log("해당 날짜에 일기가 없음. 새로 작성");
+        return null;
+      } else {
+        console.error("일기 조회 중 오류:", errors);
       }
-    };
+    }
+  };
     loadDiary();
   }, [date, user?.accessToken, navigate]);
 
@@ -93,9 +98,9 @@ export default function DiaryWritePage() {
   try {
     const charRes = await api.get(`/ai/me`, { headers });
     charResData = charRes.data;
-  } catch (err) {
-    if (err.response?.status === 404) charResData = null;
-    else throw err;
+  } catch (errors) {
+    if (errors.response?.status === 404) charResData = null;
+    else throw errors;
   }
 
   if (charResData) {
@@ -119,9 +124,9 @@ export default function DiaryWritePage() {
     }
   }
 
-} catch (err) {
-  console.error("일기 저장 실패:", err);
-  alert(err.response?.data?.message || "일기 저장에 실패했습니다.");
+} catch (errors) {
+  console.error("일기 저장 실패:", errors);
+  alert(errors.response?.data?.message || "일기 저장에 실패했습니다.");
 } finally {
   setIsSaving(false);
 }
