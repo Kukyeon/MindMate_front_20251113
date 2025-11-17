@@ -35,7 +35,7 @@ const BoardEditPage = ({ user }) => {
     if (!userId) return alert("로그인이 필요합니다.");
     try {
       await updateBoard(id, { title, content, userId });
-      await generateHashtags(id);
+      // await generateHashtags(id);
       alert("게시글이 수정되었습니다!");
       navigate(`/board/${id}`);
     } catch (err) {
