@@ -176,8 +176,8 @@ const Graph = ({ user }) => {
     if (!emoji) return null;
     const img = new Image();
     img.src = emoji.image;
-    img.width = 25;
-    img.height = 25;
+    img.width = 35;
+    img.height = 35;
     return img;
   });
 
@@ -194,6 +194,7 @@ const Graph = ({ user }) => {
         pointRadius: 10,
         pointHoverRadius: 14,
         pointStyle: pointStyles,
+        spanGaps: true, // 이거 추가
       },
     ],
   };
