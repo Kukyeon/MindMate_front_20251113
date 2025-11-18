@@ -53,12 +53,20 @@ export default function App() {
   // const [font, setFont] = useState(
   //   localStorage.getItem("font") || "'Noto Sans KR', sans-serif"
   // );
+  // const [isFontModalOpen, setIsFontModalOpen] = useState(false);
   console.log(user);
 
   //폰트 테스트
   // useEffect(() => {
   //   document.documentElement.style.setProperty("--app-font", font);
   //   localStorage.setItem("font", font); // 새로고침해도 유지
+  // }, [font]);
+  // const handleFontChange = (selectedFont) => {
+  //   setFont(selectedFont);
+  //   localStorage.setItem("font", selectedFont);
+  // };
+  // useEffect(() => {
+  //   document.documentElement.style.setProperty("--app-font", font);
   // }, [font]);
   // const handleFontChange = (selectedFont) => {
   //   setFont(selectedFont);
@@ -88,6 +96,14 @@ export default function App() {
       {/*<FontSelector selectedFont={font} onSelect={handleFontChange} />*/}
       {/*폰트 테스트 2*/}
       {/*<FontSelector selectedFont={font} onSelect={setFont} />*/}
+      {/*폰트 테스트 3*/}
+      {/* <button onClick={() => setIsFontModalOpen(true)}>폰트 선택</button>
+      <FontSelector
+        isOpen={isFontModalOpen}
+        onClose={() => setIsFontModalOpen(false)}
+        selectedFont={font}
+        onSelect={handleFontChange}
+      /> */}
       {/* <BrowserRouter> */}
       <Routes>
         <Route path="/graph" element={<Graph2 user={user} />}></Route>

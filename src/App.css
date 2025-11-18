@@ -247,8 +247,8 @@
   --app-font: "Noto Sans KR", sans-serif;
 }
 
-body {
-  font-family: var(--app-font);
-  margin: 0;
-  padding: 0;
+html,
+body,
+#root {
+  font-family: var(--app-font) !important;
 }

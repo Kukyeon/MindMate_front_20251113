@@ -8,6 +8,7 @@ import ProfileView from "../components/user/ProfileView";
 
 import { useLocation } from "react-router-dom";
 import MyBoards from "./MyBoards";
+import FontSelector from "../components/FontSelector";
 
 const ProfilePage = ({ user, setUser }) => {
   const location = useLocation(); // ✅ 라우터 state 접근
@@ -15,6 +16,9 @@ const ProfilePage = ({ user, setUser }) => {
   const initialTab =
     location.state?.tab === "Character" ? "Character" : "ProfileView"; // ✅ 기본 탭 결정
   const [activeTab, setActiveTab] = useState(initialTab);
+
+  //폰트
+  const [showFontPopup, setShowFontPopup] = useState(false);
 
   return (
     <div className="profile-page">
@@ -39,7 +43,13 @@ const ProfilePage = ({ user, setUser }) => {
         >
           내 글
         </button>
+
+        {/* 폰트 변경 버튼 */}
+        <button className="tab font-btn" onClick={() => setShowFontPopup(true)}>
+          글꼴 변경
+        </button>
       </div>
+      {showFontPopup && <FontSelector close={() => setShowFontPopup(false)} />}
 
       <div className="tab-content">
         {activeTab === "ProfileView" && (
