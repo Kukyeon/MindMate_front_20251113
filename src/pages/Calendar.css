@@ -50,6 +50,17 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* 일요일 빨간색 */
+.react-calendar__month-view__days__day--weekend:nth-child(7n) {
+  color: #e74c3c; /* 빨간색 */
+}
+
+/* 선택된 일요일 */
+.react-calendar__month-view__days__day--weekend:nth-child(7n).react-calendar__tile--active {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
 .react-calendar__tile--now {
   border: 2px solid #d18b60;
 }

@@ -1,0 +1,231 @@
+/* === 게시글 상세 페이지 (트렌드 + 웜톤 색상 적용) === */
+
+/* (팁!) 전체 페이지 배경에 기존 웜톤을 적용하면
+  이 흰색 컨테이너와 대비되어 더 예쁩니다.
+  (예: body 또는 .App { background-color: #fff8f0; })
+*/
+
+/* 전체 페이지를 감싸는 컨테이너 */
+.board-detail-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 28px;
+  background-color: #ffffff; /* 본문은 흰색으로 유지 (가독성) */
+  border: 1px solid #f0e0cc; /* ✅ 웜톤 테두리 */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(107, 66, 38, 0.05); /* ✅ 웜톤 그림자 (살짝) */
+  color: #4a3422; /* ✅ 기본 텍스트 색상 (진한 갈색) */
+}
+
+/* 1. 헤더: 제목 + 수정/삭제 버튼 */
+.board-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.board-detail-title {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #6b4226; /* ✅ 제목 (진한 갈색) */
+  word-break: keep-all;
+}
+
+.board-detail-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* 수정/삭제 버튼 */
+.board-action-btn {
+  background-color: transparent;
+  border: none;
+  color: #8c6239; /* ✅ 버튼 (중간 갈색) */
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+.board-action-btn:hover {
+  color: #d18b60; /* ✅ Hover (강조색) */
+  background-color: #fef5e7; /* ✅ Hover (연한 베이지) */
+}
+.board-action-btn.delete:hover {
+  color: #e57373; /* ✅ 삭제 (기존 삭제색) */
+  background-color: #fff5f5;
+}
+
+/* 2. 작성자 정보 */
+.board-author-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0e0cc; /* ✅ 웜톤 구분선 */
+}
+
+.board-author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #fdebd0; /* ✅ 아바타 배경 (연한 베이지) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #6b4226; /* ✅ 아바타 텍스트 (진한 갈색) */
+  font-size: 1.1rem;
+}
+
+.board-author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.board-author-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #6b4226; /* ✅ 작성자명 (진한 갈색) */
+}
+
+.board-meta-info {
+  font-size: 0.875rem;
+  color: #8c6239; /* ✅ 날짜 (중간 갈색) */
+  display: flex;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+/* 3. 본문 */
+.board-detail-content {
+  padding: 24px 0;
+  min-height: 200px;
+  line-height: 1.7;
+  font-size: 1rem;
+  color: #4a3422; /* ✅ 본문 (기존 댓글색과 동일, 가독성 좋음) */
+}
+
+.board-content-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 4. 게시글 하단: 해시태그 + 이모지 */
+.board-post-footer {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f0e0cc; /* ✅ 웜톤 구분선 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 해시태그 스타일 (이전 제안과 동일, 이미 웜톤) */
+.hashtag-list .hashtag-item {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #f7f3ef;
+  color: #8c6239;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+.hashtag-list .hashtag-item:hover {
+  background-color: #f0e9e1;
+}
+
+/* 5. 댓글 */
+.board-comment-section {
+  margin-top: 24px;
+  border-top: 1px solid #e0c097; /* ✅ 댓글 구분선 (조금 더 진하게) */
+  padding-top: 24px;
+}
+
+.comment-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #6b4226; /* ✅ 댓글 제목 (진한 갈색) */
+}
+
+/* 댓글 로그인 알림 */
+.comment-login-alert {
+  padding: 12px;
+  background-color: #fff8f0; /* ✅ 웜톤 배경 */
+  border-radius: 8px;
+  text-align: center;
+  color: #8c6239; /* ✅ 웜톤 텍스트 */
+  margin: 16px 0;
+  border: 1px solid #f0e0cc;
+}
+
+/* (참고) CommentForm, CommentList 관련 CSS는
+  기존에 제공해주신 웜톤 스타일을 그대로 사용하시면 잘 어울립니다.
+*/
+
+
+/* 6. 목록 버튼 */
+.board-back-button-wrapper {
+  text-align: center;
+  margin-top: 30px;
+}
+
+/* 목록 버튼 (기존 웜톤 강조색 사용) */
+.board-btn.back {
+  background-color: #d18b60; /* ✅ 기존 강조색 */
+  color: white;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  font-size: 1rem;
+}
+.board-btn.back:hover {
+  background-color: #b36b49; /* ✅ 기존 hover 색상 */
+  box-shadow: 0 2px 8px rgba(107, 66, 38, 0.15);
+}
+
+
+/* 반응형 (이전 제안과 동일) */
+@media (max-width: 600px) {
+  .board-detail-container {
+    margin: 10px;
+    padding: 20px;
+  }
+
+  .board-detail-title {
+    font-size: 1.6rem;
+  }
+
+  .board-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .board-detail-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .board-detail-content {
+    font-size: 0.95rem;
+    padding: 16px 0;
+  }
+
+  .board-btn.back {
+    width: 100%;
+  }
+}
