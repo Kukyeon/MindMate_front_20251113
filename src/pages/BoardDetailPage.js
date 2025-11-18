@@ -108,12 +108,14 @@ const BoardDetailPage = ({ user }) => {
       </div>
 
       {/* 해시태그 + 이모지 */}
-
-      <div className="board-hashtag-emoji-card">
-        {tagData?.length > 0 && <HashtagList hashtags={tagData} />}
-        <EmojiSelector boardId={board.id} userId={userId} disabled={!user} />
+      <div className="board-emoji-hashtag-card">
+        <div className="board-emoji-card">
+          {tagData?.length > 0 && <HashtagList hashtags={tagData} />}
+        </div>
+        <div className="board-hashtag-card">
+          <EmojiSelector boardId={board.id} userId={userId} disabled={!user} />
+        </div>
       </div>
-
       {/* 댓글 영역 */}
       <div className="board-comment-section">
         {user ? (
