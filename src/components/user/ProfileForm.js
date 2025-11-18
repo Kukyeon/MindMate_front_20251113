@@ -28,15 +28,16 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
     mbti: user?.mbti || "",
   });
 
-  const [initialNickname] = useState(user?.nickname || "");
+  // const [initialNickname, setInitialNickname] = useState(user?.nickname || "");
   const today = new Date().toISOString().split("T")[0]; // 오늘 날짜 (YYYY-MM-DD)
-  const [isNicknameOk, setIsNicknameOk] = useState(false);
+  const [isNicknameOk, setIsNicknameOk] = useState(true);
   const [nicknameMessage, setNicknameMessage] =
     useState("닉네임을 입력해주세요.");
   const nicknamePattern = /^[a-zA-Z0-9가-힣]+$/;
 
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
+
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
@@ -44,10 +45,14 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
   useEffect(() => {
     const nickname = profile.nickname;
     setIsNicknameOk(false);
-    if (!nickname) {
+
+    const originalNickname = user?.nickname || "";
+
+    if (nickname === originalNickname) {
+      setNicknameMessage("");
+      setIsNicknameOk(true);
+    } else if (!nickname) {
       setNicknameMessage("닉네임을 입력해주세요");
-    } else if (nickname === initialNickname) {
-      setNicknameMessage("기존 닉네임과 동일합니다.");
     } else if (!nicknamePattern.test(nickname)) {
       setNicknameMessage(
         "닉네임은 한글, 영문, 숫자만 사용할 수 있습니다.  (한글 초성 사용불가)"
@@ -57,22 +62,15 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
     } else {
       setNicknameMessage("닉네임 중복체크를 해주세요.");
     }
-  }, [profile.nickname, initialNickname]);
-
-  useEffect(() => {
-    if (!user) return;
-    setProfile({
-      nickname: user.nickname || "",
-      birth_date: user.birth_date || "",
-      mbti: user.mbti || "",
-    });
-  }, [user]);
+  }, [profile.nickname, user]);
 
   const checkNickname = async () => {
+    const originalNickname = user?.nickname || "";
     const nickname = profile.nickname;
     setIsNicknameOk(false);
-    if (nickname === initialNickname) {
-      alert("기존 닉네임과 동일합니다.");
+
+    if (nickname === originalNickname) {
+      setIsNicknameOk(true);
       return;
     } else if (!nickname.trim()) {
       alert("닉네임 입력후 다시 시도해주세요");
@@ -95,13 +93,14 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
       setNicknameMessage("유효한 닉네임 입니다.");
       setIsNicknameOk(true);
     } catch (err) {
-      setIsNicknameOk(false);
       if (err.response && err.response.status === 409) {
-        alert("사용중인 닉네임입니다.");
-        setProfile({ ...profile, nickname: "" });
+        alert("사용중인 닉네임입니다, 기존 닉네임으로 유지됩니다.");
+        setProfile({ ...profile, nickname: originalNickname });
+        setIsNicknameOk(true);
       } else {
         alert("닉네임 확인 중 오류가 발생했습니다.");
         setProfile({ ...profile, nickname: "" });
+        setIsNicknameOk(false);
       }
     }
   };
