@@ -6,23 +6,22 @@ import {
   getEmojiCounts,
 } from "../../api/emojiApi";
 import "./EmojiSelector.css";
+import { useNavigate } from "react-router-dom";
 
 const EmojiSelector = ({ boardId, commentId, userId }) => {
   const [open, setOpen] = useState(false);
   const [emojiCounts, setEmojiCounts] = useState({});
   const [loading, setLoading] = useState(false);
-  const [hoveredType, setHoveredType] = useState(null); // emoji hover 상태
+  const navigate = useNavigate();
 
   const targetType = boardId ? "board" : "comment";
   const targetId = boardId || commentId;
 
-  //  이모지 카운트 초기화
+  // 서버에서 이모지 카운트 불러오기
   const loadCounts = async () => {
     if (!targetId) return;
     try {
       const counts = await getEmojiCounts(targetId, targetType);
-
-      // 서버에서 받은 counts 객체 기반으로 완전 덮어쓰기
       const updated = {};
       emojiList.forEach((e) => {
         const info = counts?.[e.type];
@@ -32,7 +31,6 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
           image: e.image,
         };
       });
-
       setEmojiCounts(updated);
     } catch (err) {
       console.error("이모지 불러오기 실패:", err);
@@ -43,35 +41,49 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
     loadCounts();
   }, [targetId]);
 
-  //  이모지 선택
+  // 클릭 즉시 UI 반영 + 서버 동기화 (Optimistic UI)
   const handleSelectEmoji = async (emoji) => {
     if (!userId) {
       alert("로그인이 필요합니다.");
+      navigate("/login");
       return;
     }
-
-    setLoading(true);
 
     const info = emojiCounts[emoji.type];
     const isAlreadySelected = info?.selected;
 
-    const data = {
-      userId,
-      type: emoji.type,
-      imageUrl: emoji.image,
-    };
+    // 선택 여부에 따라 count 변경
+    const newSelected = isAlreadySelected ? false : true;
+    const newCount = isAlreadySelected ? info.count - 1 : info.count + 1;
+
+    // UI 먼저 업데이트
+    setEmojiCounts((prev) => ({
+      ...prev,
+      [emoji.type]: {
+        ...prev[emoji.type],
+        selected: newSelected,
+        count: newCount,
+      },
+    }));
+
+    setOpen(false);
+    setLoading(true);
+
+    const data = { userId, type: emoji.type, imageUrl: emoji.image };
 
     try {
       if (targetType === "board") await toggleBoardEmoji(targetId, data);
       else await toggleCommentEmoji(targetId, data);
 
-      //서버 최신 데이터 다시 가져오기 (중요)
       await loadCounts();
-      // 선택창은 리스트에서 선택했을 때만 닫히게
-      if (!isAlreadySelected) setOpen(false);
-      // 이미 선택된 이모지 클릭(취소)은 리스트 닫지 않음
     } catch (err) {
       console.error("이모지 토글 실패:", err);
+
+      // 실패 시 롤백
+      setEmojiCounts((prev) => ({
+        ...prev,
+        [emoji.type]: info,
+      }));
     } finally {
       setLoading(false);
     }
@@ -79,65 +91,47 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
 
   return (
     <div className="emoji-selector">
-      {/* 선택창 열기 버튼 */}
-      <button
-        className="emoji-toggle"
-        onClick={() => setOpen((prev) => !prev)}
-        disabled={loading}
-      >
-        👍
-      </button>
-      <div className="selected-emoji">
-        {emojiList.map((emoji) => {
-          const info = emojiCounts[emoji.type];
-          if (!info || info.count === 0) return null;
-          return (
-            <span
-              key={emoji.type}
-              className={`emoji-inline ${
-                info.selected ? "emoji-selected" : ""
-              }`}
-              onClick={() => handleSelectEmoji(emoji)}
-              onMouseEnter={() => setHoveredType(emoji.type)}
-              onMouseLeave={() => setHoveredType(null)}
-            >
-              <img src={emoji.image} alt={emoji.type} width="25" />
-              <span>{info.count}</span>
-              {hoveredType === emoji.type && (
-                <div className="emoji-tooltip">{emoji.type}</div>
-              )}
-            </span>
-          );
-        })}
-      </div>
+      <div className="emoji-header">
+        {/* 토글 버튼 */}
+        <button
+          className="emoji-toggle"
+          onClick={() => setOpen((prev) => !prev)}
+        >
+          {emojiList.slice(0, 3).map((e) => (
+            <img key={e.type} src={e.image} alt={e.type} width="20" />
+          ))}
+        </button>
 
-      {/*  이모지 선택 목록 */}
-      {open && (
-        <div className="emoji-popup">
+        {/* 버튼 옆 선택된 이모지 + 숫자 표시 */}
+        <div className="selected-emoji">
           {emojiList.map((emoji) => {
             const info = emojiCounts[emoji.type];
-            const count = info?.count || 0;
-            const isSelected = info?.selected;
-
+            if (!info || !info.selected) return null;
             return (
-              <button
-                key={emoji.id}
-                className={`emoji-button ${isSelected ? "emoji-selected" : ""}`}
-                onClick={() => handleSelectEmoji(emoji)}
-                disabled={loading}
-                onMouseEnter={() => setHoveredType(emoji.type)}
-                onMouseLeave={() => setHoveredType(null)}
-              >
+              <span key={emoji.type} className="emoji-inline">
                 <img src={emoji.image} alt={emoji.type} width="25" />
-                {count > 0 && <span>{count}</span>}
-                {hoveredType === emoji.type && (
-                  <div className="emoji-tooltip">{emoji.type}</div>
-                )}
-              </button>
+                <span className="emoji-count">{info.count}</span>
+              </span>
             );
           })}
         </div>
-      )}
+      </div>
+
+      {/* 밑 슬라이드 리스트 */}
+      <div className={`emoji-list ${open ? "open" : ""}`}>
+        {emojiList.map((emoji) => (
+          <button
+            key={emoji.type}
+            className={`emoji-button ${
+              emojiCounts[emoji.type]?.selected ? "emoji-selected" : ""
+            }`}
+            onClick={() => handleSelectEmoji(emoji)}
+            disabled={loading}
+          >
+            <img src={emoji.image} alt={emoji.type} width="25" />
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

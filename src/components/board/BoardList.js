@@ -20,7 +20,6 @@ const BoardList = ({ boards, page, size, totalElements }) => {
               key={board.id}
               board={board}
               index={reverseIndex} // 최신순 번호
-              className="board-item"
             />
           );
         })}

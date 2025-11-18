@@ -310,15 +310,22 @@
   margin-bottom: 15px;
 }
 
-.board-hashtag-emoji-card {
-  background-color: #fef5e7;
+.board-emoji-hashtag-card {
+  /* background-color: #fef5e7; */
   padding: 15px;
   border-radius: 12px;
-  margin-bottom: 15px;
+  margin-bottom: 3px;
 }
-
+.board-emoji-card {
+  background-color: #fef5e7;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+.board-hashtag-card {
+  margin-top: 15px;
+}
 .board-comment-section {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .board-btn.back {

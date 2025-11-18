@@ -59,6 +59,7 @@ const Graph = ({ user }) => {
   const [weeklyCounts, setWeeklyCounts] = useState({});
   const [weeklyPercent, setWeeklyPercent] = useState({});
   const [fetchTrigger, setFetchTrigger] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // 초기값: 지난 주
   useEffect(() => {
@@ -81,6 +82,7 @@ const Graph = ({ user }) => {
     if (!startDate || !endDate || !fetchTrigger) return;
 
     const fetchWeeklyData = async () => {
+      setLoading(true);
       const headers = user ? await getAuthHeader() : {};
       try {
         const res = await api.get("/api/diary/week/test", {
@@ -88,10 +90,8 @@ const Graph = ({ user }) => {
           headers,
         });
 
-        // 1️⃣ 일별 데이터
         setDailyData(res.data.dailyEmotions || []);
 
-        // 2️⃣ 주간 통계
         const counts = res.data.weeklyCounts || [];
         setWeeklyCounts(
           counts.reduce((acc, cur) => {
@@ -99,6 +99,7 @@ const Graph = ({ user }) => {
             return acc;
           }, {})
         );
+
         const total = counts.reduce((sum, cur) => sum + cur.count, 0);
         const percent = {};
         counts.forEach((cur) => {
@@ -106,11 +107,12 @@ const Graph = ({ user }) => {
         });
         setWeeklyPercent(percent);
 
-        // 3️⃣ AI 코멘트
         setAiComment(res.data.aiComment || "");
       } catch (err) {
         console.error("데이터 불러오기 실패", err);
+        alert("데이터를 불러오는데 실패했습니다.");
       } finally {
+        setLoading(false);
         setFetchTrigger(false);
       }
     };
@@ -162,14 +164,13 @@ const Graph = ({ user }) => {
     }
   }
 
-  // Y값 생성
   const yValues = labels.map((date) => {
     const entry = dailyData.find((d) => d.date === date);
     return entry ? entry.emojiId : null;
   });
 
-  const isMobile = window.innerWidth <= 480; // 모바일 판단
-  const emojiSize = isMobile ? 25 : 35; // 모바일이면 20px, 아니면 35px
+  const isMobile = window.innerWidth <= 480;
+  const emojiSize = isMobile ? 25 : 35;
 
   const pointStyles = labels.map((date) => {
     const entry = dailyData.find((d) => d.date === date);
@@ -196,7 +197,7 @@ const Graph = ({ user }) => {
         pointRadius: 10,
         pointHoverRadius: 14,
         pointStyle: pointStyles,
-        spanGaps: true, // 이거 추가
+        spanGaps: true,
       },
     ],
   };
@@ -274,8 +275,15 @@ const Graph = ({ user }) => {
         {startDate} ~ {endDate} 주간 감정 요약
       </h2>
 
+      {/* ✅ 그래프 영역 조건부 렌더링 */}
       <div style={{ position: "relative", height: "500px", width: "100%" }}>
-        <Line data={lineData} options={options} />
+        {loading ? (
+          <div className="loading-graph">데이터를 불러오는 중입니다...</div>
+        ) : dailyData.length > 0 ? (
+          <Line data={lineData} options={options} />
+        ) : (
+          <div className="no-data-graph">이번 주 기록이 없습니다.</div>
+        )}
       </div>
 
       <h3 className="graph-subtitle">감정 비율</h3>
