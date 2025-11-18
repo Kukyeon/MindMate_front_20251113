@@ -2,43 +2,46 @@
 import { useState } from "react";
 import Character from "../components/Character";
 import ProfileForm from "../components/user/ProfileForm";
-import "./ProfilePage.css";
-
 import ProfileView from "../components/user/ProfileView";
-
-import { useLocation } from "react-router-dom";
 import MyBoards from "./MyBoards";
 import FontSelector from "../components/FontSelector";
+import { useLocation } from "react-router-dom";
+import "./ProfilePage.css"; // 통합 CSS 사용
 
 const ProfilePage = ({ user, setUser }) => {
-  const location = useLocation(); // ✅ 라우터 state 접근
-  // console.log(user.userId);
+  const location = useLocation();
   const initialTab =
-    location.state?.tab === "Character" ? "Character" : "ProfileView"; // ✅ 기본 탭 결정
+    location.state?.tab === "Character" ? "Character" : "ProfileView";
   const [activeTab, setActiveTab] = useState(initialTab);
 
   //폰트
   const [showFontPopup, setShowFontPopup] = useState(false);
 
   return (
-    <div className="profile-page">
-      <h1 className="profile-title">내 프로필</h1>
+    <div className="page-container">
+      <h1 className="page-title">내 프로필</h1>
 
-      <div className="profile-tabs">
+      <div className="tabs-container profile-tabs">
         <button
-          className={activeTab === "ProfileView" ? "tab active" : "tab"}
+          className={
+            activeTab === "ProfileView" ? "tab-button active" : "tab-button"
+          }
           onClick={() => setActiveTab("ProfileView")}
         >
           프로필
         </button>
         <button
-          className={activeTab === "Character" ? "tab active" : "tab"}
+          className={
+            activeTab === "Character" ? "tab-button active" : "tab-button"
+          }
           onClick={() => setActiveTab("Character")}
         >
           내 캐릭터
         </button>
         <button
-          className={activeTab === "MyBoards" ? "tab active" : "tab"}
+          className={
+            activeTab === "MyBoards" ? "tab-button active" : "tab-button"
+          }
           onClick={() => setActiveTab("MyBoards")}
         >
           내 글
@@ -53,22 +56,33 @@ const ProfilePage = ({ user, setUser }) => {
 
       <div className="tab-content">
         {activeTab === "ProfileView" && (
-          <ProfileView
-            setUser={setUser}
-            setActiveTab={setActiveTab}
-            user={user}
-          />
+          <div className="card">
+            <ProfileView
+              setUser={setUser}
+              setActiveTab={setActiveTab}
+              user={user}
+            />
+          </div>
         )}
         {activeTab === "ProfileForm" && (
-          <ProfileForm
-            setActiveTab={setActiveTab}
-            setUser={setUser}
-            user={user}
-          />
+          <div className="card">
+            <ProfileForm
+              setActiveTab={setActiveTab}
+              setUser={setUser}
+              user={user}
+            />
+          </div>
         )}
-        {activeTab === "Character" && <Character user={user} />}
-        {activeTab === "MyBoards" && <MyBoards user={user} />}
-        {/* {activeTab === "Settings" && <div>⚙️ 기타 설정 영역</div>} */}
+        {activeTab === "Character" && (
+          <div className="card">
+            <Character user={user} />
+          </div>
+        )}
+        {activeTab === "MyBoards" && (
+          <div className="card">
+            <MyBoards user={user} />
+          </div>
+        )}
       </div>
     </div>
   );

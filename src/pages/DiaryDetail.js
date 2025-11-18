@@ -24,6 +24,7 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
         setLoading(true);
         const res = await fetchDiaryByDate(date); // ✅ API 함수 사용
         setDiary(res.data);
+        console.log(res.data);
       } catch (err) {
         console.error("❌ fetchDiary 오류:", err);
         const status = err.response?.status;
@@ -44,9 +45,10 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
     loadDiary();
   }, [date, navigate]);
 
-   // 삭제 처리
+  // 삭제 처리
   const handleDelete = async () => {
-    if (!window.confirm(`${date} 날짜의 일기를 정말로 삭제하시겠습니까?`)) return;
+    if (!window.confirm(`${date} 날짜의 일기를 정말로 삭제하시겠습니까?`))
+      return;
 
     try {
       await deleteDiaryByDate(date); // ✅ API 함수 사용
@@ -83,7 +85,10 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
       {diary.aiComment && <p className="ai-comment">{diary.aiComment}</p>}
 
       <div className="diary-buttons">
-        <button className="edit" onClick={() => navigate(`/diary/edit/${date}`)}>
+        <button
+          className="edit"
+          onClick={() => navigate(`/diary/edit/${date}`)}
+        >
           수정
         </button>
         <button className="delete" onClick={handleDelete}>

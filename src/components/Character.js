@@ -139,9 +139,9 @@ const Character = ({ user }) => {
           >
             응원하기 💖
           </button>
-          <button onClick={handleMood} className="character-cheer-btn">
+          {/* <button onClick={handleMood} className="character-cheer-btn">
             무드 업데이트하기 💖
-          </button>
+          </button> */}
 
           {message && <p className="character-message">{message}</p>}
         </>

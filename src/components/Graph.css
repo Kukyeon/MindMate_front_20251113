@@ -3,6 +3,7 @@
   width: 100%;
   margin: 0 auto;
   text-align: center;
+  padding-bottom: 80px;
 }
 
 .graph-title {
@@ -18,7 +19,7 @@
 }
 
 .graph-subtitle {
-  margin-top: 4rem;
+  margin-top: 2rem;
   font-size: 1.2rem;
   font-weight: 600;
   color: #333;
@@ -136,6 +137,11 @@
     transform: translateY(0);
   }
 }
+.date-select-container label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 .date-select-container {
   display: flex;
   align-items: center;
@@ -151,23 +157,107 @@
   border-radius: 6px;
   font-family: inherit;
 }
+
+/* 퀵 선택 버튼 */
 .quick-select {
   display: flex;
   gap: 6px;
-  margin-left: 10px;
 }
 
 .quick-select button {
+  padding: 6px 10px;
+}
+.date-select-container button {
+  padding: 6px 12px;
   background-color: #f2d6c2;
   border: none;
   border-radius: 6px;
-  padding: 4px 10px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 500;
   transition: all 0.2s;
 }
-
 .quick-select button:hover {
   background-color: #e6bca1;
+}
+@media (max-width: 480px) {
+  .graph-container {
+    max-width: 95%;
+    padding: 0 10px 40px;
+    margin-bottom: 50px;
+  }
+
+  .emotion-bar-wrapper {
+    flex-wrap: nowrap;
+    height: 28px;
+    gap: 1px;
+  }
+
+  .emotion-segment {
+    display: flex;
+    justify-content: space-between; /* 좌: 아이콘, 우: 퍼센트 */
+    align-items: center;
+    padding: 0 4px; /* 내부 여백 */
+    font-size: 0.7rem; /* 글자 작게 */
+    min-width: 28px; /* 최소 폭 확보 */
+  }
+
+  .emotion-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 2px;
+  }
+
+  .emotion-percent {
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .ai-comment-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
+  .ai-comment-card::before {
+    font-size: 1.2rem;
+  }
+
+  .date-select-container {
+    display: flex;
+    flex-direction: row; /* 기본: 가로 정렬 */
+    align-items: center; /* 세로 가운데 정렬 */
+    gap: 6px;
+    flex-wrap: wrap; /* 화면 좁으면 자동 줄바꿈 */
+    justify-content: center; /* 가운데 정렬 */
+  }
+
+  .date-select-container label,
+  .date-select-container input,
+  .date-select-container button {
+    flex-shrink: 0; /* 너무 작아지지 않게 방지 */
+  }
+  .quick-select {
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .date-select-container button,
+  .quick-select button {
+    width: auto; /* 100% 대신 내용에 맞춤 */
+    max-width: 80px;
+    font-size: 0.7rem;
+  }
+
+  .graph-title {
+    font-size: 1.2rem;
+  }
+
+  .graph-subtitle {
+    font-size: 1rem;
+  }
 }

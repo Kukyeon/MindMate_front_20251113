@@ -50,21 +50,41 @@
   color: #555;
 }
 .edit-profile-card {
-  background-color: #fff;
+  width: 100%;
+  max-width: 480px; /* 데스크탑 최대폭 */
+  box-sizing: border-box; /* padding 포함 폭 계산 */
+  margin: 0 auto;
   padding: 20px;
+  background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  width: 100%;
-  margin: 0 auto; /* 부모 안에서 정확히 가운데 */
-  max-width: 400px; /* 카드 최대 너비 */
 }
+
+.profile-view-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* 좁아지면 value가 아래로 내려가도록 */
+  margin-bottom: 12px;
+}
+.profile-view-label {
+  font-weight: 600;
+  color: #6b4226;
+  min-width: 100px; /* 최소 폭 확보 */
+}
+.profile-view-value {
+  flex: 1; /* 나머지 공간 차지 */
+  color: #555;
+  word-break: break-word; /* 긴 텍스트 줄바꿈 */
+}
+
 .edit-profile-title {
   font-size: 1.6rem; /* 너무 크지 않게 조정 */
   color: #6b4226; /* 기존 색상 유지 */
   text-align: center; /* 카드 안에서 중앙 정렬 */
   margin-bottom: 15px;
 }
-.edit-profile-form {
+.edit-pfile-form {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -127,6 +147,12 @@
   text-align: center;
 }
 
+@media (max-width: 480px) {
+  .edit-profile-card {
+    padding: 16px; /* 좌우 여백 살짝 줄임 */
+    max-width: 100%; /* 모바일 화면 꽉 차게 */
+  }
+}
 @media (max-width: 500px) {
   .edit-input-group {
     flex-direction: column;
@@ -197,6 +223,7 @@
   background-color: #f472b6;
   color: #fff;
   font-weight: 600;
+  margin-left: 200px;
   cursor: pointer;
   transition: background 0.2s;
 }

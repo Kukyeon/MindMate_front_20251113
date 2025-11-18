@@ -27,7 +27,7 @@ const Header = ({ user, setUser }) => {
       <div className="logo">
         <Link to={"/"}>
           {" "}
-          <img src="/logo/logo.png" alt="logo" width={70} height={60} />
+          <img src="/logo.png" alt="logo" width={70} height={60} />
         </Link>
       </div>
       <div className="hamburger" onClick={() => setOpen(!open)}>

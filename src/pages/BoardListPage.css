@@ -123,7 +123,7 @@
   padding: 12px 15px;
   text-align: center;
   border-bottom: 1px solid #f5deb3; /* 연한 브라운 선 */
-  min-width: 100px;
+  /* min-width: 100px; */
 }
 
 .board-table-head {
@@ -154,16 +154,19 @@
 
 /* 반응형: 화면 폭이 600px 이하일 때 스크롤 */
 @media (max-width: 600px) {
-  .board-table {
-    display: block;
-    overflow-x: auto;
-  }
-
   .board-table th,
   .board-table td {
-    white-space: nowrap;
+    white-space: normal; /* 줄바꿈 허용 */
+    word-break: break-word;
+    font-size: 0.85rem; /* 글자 작게 */
+    padding: 6px 8px; /* 패딩 줄이기 */
+  }
+
+  .board-table {
+    width: 100%; /* 부모 폭에 맞춤 */
   }
 }
+
 /* BoardItem */
 .board-item {
   cursor: pointer;
@@ -673,4 +676,49 @@
 
 .board-btn.cancel:hover {
   background-color: #ddd;
+}
+/* 모바일 대응 카드 축소 */
+@media (max-width: 480px) {
+  .board-header-card,
+  .board-content-card,
+  .board-hashtag-emoji-card,
+  .comment-item-card {
+    padding: 12px; /* 패딩 축소 */
+    border-radius: 10px; /* 모서리 살짝 줄임 */
+  }
+
+  .profile-title,
+  .board-page-title {
+    font-size: 1.3rem; /* 제목 글자 줄이기 */
+  }
+
+  .board-meta,
+  .comment-header,
+  .comment-body {
+    font-size: 0.85rem; /* 글씨 조금 줄임 */
+  }
+
+  .board-content-card {
+    line-height: 1.4; /* 줄간격 축소 */
+  }
+
+  .board-btn,
+  .comment-btn {
+    padding: 6px 12px; /* 버튼 축소 */
+    font-size: 0.85rem;
+  }
+
+  .board-hashtag-emoji-card {
+    gap: 6px; /* 해시태그 간격 축소 */
+  }
+  .board-search-form {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .board-search-input,
+  .board-search-select,
+  .board-search-button {
+    width: 100%; /* 입력창 & 버튼 전체 폭 사용 */
+  }
 }

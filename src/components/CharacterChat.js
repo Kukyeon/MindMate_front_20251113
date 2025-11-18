@@ -40,30 +40,32 @@ const CharacterChat = ({ character, user }) => {
   };
 
   return (
-    <div className="character-chat-container">
-      <div className="character-chat-messages">
-        {messages.map((msg, idx) => (
-          <div key={idx} className={`character-chat-message ${msg.sender}`}>
-            <span>{msg.text}</span>
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
+    character && (
+      <div className="character-chat-container">
+        <div className="character-chat-messages">
+          {messages.map((msg, idx) => (
+            <div key={idx} className={`character-chat-message ${msg.sender}`}>
+              <span>{msg.text}</span>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
 
-      <div className="character-chat-input">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="캐릭터에게 메시지 보내기..."
-          disabled={loading}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-        <button onClick={sendMessage} disabled={loading}>
-          전송
-        </button>
+        <div className="character-chat-input">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="캐릭터에게 메시지 보내기..."
+            disabled={loading}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          />
+          <button onClick={sendMessage} disabled={loading}>
+            전송
+          </button>
+        </div>
       </div>
-    </div>
+    )
   );
 };
 

@@ -168,7 +168,9 @@ const Graph = ({ user }) => {
     return entry ? entry.emojiId : null;
   });
 
-  // emoji 이미지 포인트
+  const isMobile = window.innerWidth <= 480; // 모바일 판단
+  const emojiSize = isMobile ? 25 : 35; // 모바일이면 20px, 아니면 35px
+
   const pointStyles = labels.map((date) => {
     const entry = dailyData.find((d) => d.date === date);
     if (!entry) return null;
@@ -176,8 +178,8 @@ const Graph = ({ user }) => {
     if (!emoji) return null;
     const img = new Image();
     img.src = emoji.image;
-    img.width = 35;
-    img.height = 35;
+    img.width = emojiSize;
+    img.height = emojiSize;
     return img;
   });
 

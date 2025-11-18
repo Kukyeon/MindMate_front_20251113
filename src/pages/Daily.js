@@ -1,7 +1,8 @@
+// Daily.jsx
 import { useState } from "react";
 import DailyTest from "../components/DailyTest";
 import Fortune from "../components/Fortune";
-import "./Daily.css";
+import "./Daily.css"; // 통합 CSS 사용
 
 export default function Daily({ user }) {
   const [activeTab, setActiveTab] = useState("MBTI 심리테스트");
@@ -12,12 +13,16 @@ export default function Daily({ user }) {
   ];
 
   return (
-    <div className="daily-page">
-      <div className="tabs">
+    <div className="page-container">
+      <h1 className="page-title">오늘의 테스트</h1>
+
+      <div className="tabs-container tabs">
         {tabs.map((tab) => (
           <button
             key={tab.name}
-            className={activeTab === tab.name ? "tab active" : "tab"}
+            className={
+              activeTab === tab.name ? "tab-button active" : "tab-button"
+            }
             onClick={() => setActiveTab(tab.name)}
           >
             <span className="tab-icon">{tab.icon}</span> {tab.name}
@@ -25,9 +30,17 @@ export default function Daily({ user }) {
         ))}
       </div>
 
-      <div className={`tab-content fade-in`}>
-        {activeTab === "MBTI 심리테스트" && <DailyTest user={user} />}
-        {activeTab === "오늘의 별자리 운세" && <Fortune user={user} />}
+      <div className="tab-content">
+        {activeTab === "MBTI 심리테스트" && (
+          <div className="card daily-test-card">
+            <DailyTest user={user} />
+          </div>
+        )}
+        {activeTab === "오늘의 별자리 운세" && (
+          <div className="card fortune-card">
+            <Fortune user={user} />
+          </div>
+        )}
       </div>
     </div>
   );
