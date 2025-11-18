@@ -65,36 +65,39 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
   if (!diary) return <div>일기 데이터를 불러오지 못했습니다.</div>;
 
   return (
-    <div className="diary-detail-wrapper">
-      <h2>{diary.title}</h2>
-      <p>
-        <strong>작성자:</strong> {diary.nickname}
-      </p>
-      <p>
-        <strong>작성일:</strong> {diary.date}
-      </p>
+  <div className="diary-detail-wrapper">
+    <h2>{diary.title}</h2>
+
+    <div className="detail-meta">
+      <p><strong>작성자:</strong> {diary.nickname}</p>
+      <p><strong>작성일:</strong> {diary.date}</p>
       {diary.emoji && (
         <p>
           <strong>감정:</strong>{" "}
           <span className="diary-emoji">
-            <img src={diary.emoji.imageUrl} alt={diary.emoji.type} width="24" />
+            <img src={diary.emoji.imageUrl} alt={diary.emoji.type} width="26" />
           </span>
         </p>
       )}
-      <p>{diary.content}</p>
-      {diary.aiComment && <p className="ai-comment">{diary.aiComment}</p>}
-
-      <div className="diary-buttons">
-        <button
-          className="edit"
-          onClick={() => navigate(`/diary/edit/${date}`)}
-        >
-          수정
-        </button>
-        <button className="delete" onClick={handleDelete}>
-          삭제
-        </button>
-      </div>
     </div>
-  );
+
+    <div className="diary-content">{diary.content}</div>
+
+    {diary.aiComment && (
+      <p className="ai-comment">{diary.aiComment}</p>
+    )}
+
+    <div className="diary-buttons">
+      <button
+        className="edit"
+        onClick={() => navigate(`/diary/edit/${date}`)}
+      >
+        수정
+      </button>
+      <button className="delete" onClick={handleDelete}>
+        삭제
+      </button>
+    </div>
+  </div>
+);
 }

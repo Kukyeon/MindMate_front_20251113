@@ -137,38 +137,39 @@ export default function DiaryWritePage() {
   if (!date) return <div>날짜 정보 확인 중...</div>;  
 
   return (
-    <div className="diary-write-card">
-      <h2>✍️ {date} 일기 작성</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <input
-            type="text"
-            placeholder="제목을 입력하세요"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          {errors.title && <p style={{ color: "red" }}>{errors.title}</p>}
-        </div>
+   <div className="diary-write-card">
+  <h2>📝 {date} 일기 작성</h2>
 
-        <div>
-          <textarea
-            placeholder="내용을 입력하세요"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-          {errors.content && <p style={{ color: "red" }}>{errors.content}</p>}
-        </div>
-
-        <div>
-          <DiaryEmojiPicker selectedEmoji={emoji} onSelectEmoji={setEmoji} />
-          {errors.emoji && <p style={{ color: "red" }}>{errors.emoji}</p>}
-        </div>
-
-        <div className="diary-write-buttons">
-          <button type="submit">저장</button>
-          <button type="button" onClick={() => navigate(-1)}>취소</button>
-        </div>
-      </form>
+  <form onSubmit={handleSubmit}>
+    <div>
+      <input
+        type="text"
+        placeholder="제목을 입력하세요"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      {errors.title && <p className="diary-error">{errors.title}</p>}
     </div>
+
+    <div>
+      <textarea
+        placeholder="내용을 입력하세요"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      />
+      {errors.content && <p className="diary-error">{errors.content}</p>}
+    </div>
+
+    <div className="emoji-picker-wrapper">
+      <DiaryEmojiPicker selectedEmoji={emoji} onSelectEmoji={setEmoji} />
+      {errors.emoji && <p className="diary-error">{errors.emoji}</p>}
+    </div>
+
+    <div className="diary-write-buttons">
+      <button type="submit">저장</button>
+      <button type="button" onClick={() => navigate(-1)}>취소</button>
+    </div>
+  </form>
+</div>
   );
 }
