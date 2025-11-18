@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { replace, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import "./SignupPage.css";
 import {
@@ -13,6 +13,7 @@ const SignupPage = ({ setUser }) => {
   const navigate = useNavigate();
   const [state, setState] = useState({
     email: "",
+    code: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
@@ -21,7 +22,7 @@ const SignupPage = ({ setUser }) => {
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   useEffect(() => {
-    const email = state.email;
+    const email = state.email.trim();
     setIsEmailOk(false);
 
     if (!email) {
@@ -54,12 +55,33 @@ const SignupPage = ({ setUser }) => {
     }
   }, [state.password]);
 
+  const [isCodeOk, setIsCodeOk] = useState(false);
+  const [codeMessage, setCodeMessage] = useState(
+    "이메일로 받은 인증코드를 입력해주세요."
+  );
+
+  const codePattern = /^\d{6}$/; // 6자리 숫자 예시
+
+  useEffect(() => {
+    const code = state.code.trim();
+    setIsCodeOk(false);
+
+    if (!code) {
+      setCodeMessage("이메일로 받은 인증코드를 입력해주세요.");
+    } else if (!codePattern.test(code)) {
+      setCodeMessage("인증코드는 6자리 숫자로 입력해주세요.");
+    } else {
+      setCodeMessage("인증코드를 입력했습니다.");
+      setIsCodeOk(true);
+    }
+  }, [state.code]);
+
   const handleOnChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };
 
   const checkEmail = async () => {
-    const email = state.email;
+    const email = state.email.trim();
 
     if (!email) {
       alert("이메일을 입력 후 다시 시도해주세요.");
@@ -75,7 +97,7 @@ const SignupPage = ({ setUser }) => {
       await api.get("/api/auth/check_username", {
         params: { username: state.email.trim() }, // username 자리에 email 전달
       });
-      alert("사용 가능한 이메일입니다.");
+      alert("인증 코드를 이메일로 전송했습니다. 메일함을 확인해주세요.");
       setEmailMessage("사용 가능한 이메일입니다.");
       setIsEmailOk(true);
     } catch (err) {
@@ -83,8 +105,10 @@ const SignupPage = ({ setUser }) => {
       if (err.response && err.response.status === 409) {
         alert("이미 사용 중인 이메일입니다.");
         setState({ ...state, email: "" });
+      } else if (err.response && err.response.status === 429) {
+        alert(err.response.data || "요청 가능 횟수를 초과했습니다.");
       } else {
-        alert("이메일 확인 중 오류가 발생했습니다.");
+        alert("이메일 확인/코드 발급 중 오류가 발생했습니다.");
         setState({ ...state, email: "" });
       }
     }
@@ -96,9 +120,14 @@ const SignupPage = ({ setUser }) => {
     if (!isEmailOk) {
       alert("이메일 중복체크후 다시 시도해주세요");
       return;
-    } else if (!isPasswordOk) {
+    }
+    if (!isPasswordOk) {
       alert("비밀번호가 유효하지 않습니다 다시 시도해주세요");
       setState({ ...state, password: "" });
+      return;
+    }
+    if (!isCodeOk) {
+      setCodeMessage("유효한 인증코드를 입력해주세요.");
       return;
     }
     try {
@@ -111,7 +140,13 @@ const SignupPage = ({ setUser }) => {
       }
       navigate("/profile/set", { replace: true });
     } catch (err) {
+      if (err.response && err.response.status === 422) {
+        alert("이메일 인증코드가 틀렸거나 만료되었습니다.");
+        setState((prev) => ({ ...prev, code: "" })); // 코드만 초기화
+        return;
+      }
       if (err.response && err.response.status === 400) {
+        alert("유효하지 않은 값이 들어왔습니다 확인해주세요.");
         setErrors(err.response.data);
       } else {
         alert("회원가입 실패");
@@ -170,7 +205,22 @@ const SignupPage = ({ setUser }) => {
           <p className="signup-help-text">
             <small>{emailMessage}</small>
           </p>
-
+          {isEmailOk && (
+            <>
+              <input
+                type="text"
+                name="code"
+                value={state.code}
+                placeholder="인증코드"
+                onChange={handleOnChange}
+                className="signup-input"
+                required
+              />
+              <p className="signup-help-text">
+                <small>{codeMessage}</small>
+              </p>
+            </>
+          )}
           <input
             type="password"
             name="password"
