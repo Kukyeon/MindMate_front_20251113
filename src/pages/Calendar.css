@@ -29,7 +29,7 @@
   border: none;
   border-radius: 18px;
   padding: 15px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
   animation: fadeIn 0.35s ease;
 }
 
@@ -94,8 +94,8 @@
 }
 
 .react-calendar__tile--neighboringMonth {
-  color: #b0b0b0;       /* 흐린 회색 계열 */
-  opacity: 0.5;         /* 반투명 효과 */
+  color: #b0b0b0; /* 흐린 회색 계열 */
+  opacity: 0.5; /* 반투명 효과 */
 }
 
 /* 마우스 오버하면 조금 진하게 */
@@ -108,7 +108,7 @@
 .react-calendar__tile:hover {
   background: #f9e7d8;
   transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.07);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
 }
 
 /* 오늘 날짜 표시 */
@@ -124,7 +124,7 @@
   background: #d18b60 !important;
   color: white !important;
   transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 /* ============================
@@ -135,7 +135,9 @@
 }
 
 /* 선택된 일요일 */
-.react-calendar__month-view__days__day--weekend:nth-child(7n).react-calendar__tile--active {
+.react-calendar__month-view__days__day--weekend:nth-child(
+    7n
+  ).react-calendar__tile--active {
   background: #e74c3c !important;
   color: #fff !important;
 }
@@ -227,7 +229,6 @@
   transform: translateY(-2px);
 }
 
-
 /* 반응형 */
 @media (max-width: 480px) {
   .diary-result-box {
@@ -251,8 +252,14 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 제목 */
@@ -290,7 +297,7 @@
   border-radius: 12px;
   background-color: #ffe6d9;
   margin-left: 6px;
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
 }
 
 /* 일기 본문 */
@@ -323,17 +330,16 @@
   margin-top: 20px;
 }
 
-
 /* 공통 버튼 — 길이 제한 제거 */
 .diary-buttons button {
-  padding: 7px 14px;       /* 작고 깔끔하게 */
+  padding: 7px 14px; /* 작고 깔끔하게 */
   border-radius: 8px;
   border: none;
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  width: auto;             /* 🔥 버튼 길이 자동 */
-  min-width: 70px;         /* 선택: 너무 작아지지 않도록 */
+  width: auto; /* 🔥 버튼 길이 자동 */
+  min-width: 70px; /* 선택: 너무 작아지지 않도록 */
   transition: all 0.2s ease;
 }
 
@@ -481,7 +487,7 @@
   justify-content: center;
 
   background: #fff4e8;
-  box-shadow: inset 0 0 4px rgba(0,0,0,0.06);
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.06);
 
   transition: all 0.2s ease;
 }
@@ -522,8 +528,14 @@
 
 /* 애니메이션 */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ============================
@@ -531,15 +543,17 @@
 ============================= */
 .diary-write-card {
   max-width: 650px;
-  margin: 25px auto;
-  background: #fff8f0;
-  padding: 28px;
-  border-radius: 14px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  margin: 20px auto;
+  background-color: #fff8f0;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.25s ease-in-out;
+  display: flex;
+  flex-direction: column; /* 세로로 쌓이도록 */
+  align-items: stretch; /* 자식이 카드 폭에 맞게 늘어나도록 */
 }
 
-/* 제목 */
 .diary-write-card h2 {
   font-size: 1.8rem;
   font-weight: 700;
@@ -547,15 +561,15 @@
   margin-bottom: 20px;
   text-align: center;
 }
-
-/* 입력 그룹 */
 .diary-write-card input,
 .diary-write-card textarea {
   width: 100%;
-  padding: 12px 14px;
-  background: #fffdf9;
-  border: 1px solid #e0c8b0;
-  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box; /* 패딩 포함해서 100% */
+  margin-top: 6px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -569,73 +583,74 @@
   outline: none;
 }
 
-/* 텍스트박스 */
 .diary-write-card textarea {
   min-height: 140px;
   resize: none;
 }
+.diary-write-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
 
-/* 에러 메시지 */
 .diary-error {
   color: #e74c3c;
   font-size: 0.85rem;
   margin-top: 4px;
 }
-
-/* 감정 선택 영역 */
-.emoji-picker-wrapper {
-  margin-top: 12px;
-  padding: 12px;
-  background: #fff4e8;
-  border-radius: 10px;
-  border: 1px solid #f0d5c0;
-}
-
-/* 버튼 영역 */
-.diary-write-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 18px;
-}
-
-/* 버튼 기본 */
 .diary-write-buttons button {
-  padding: 8px 18px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  border: none;
+  padding: 8px 16px;
+  justify-content: flex-end;
   border-radius: 8px;
+  border: none;
   cursor: pointer;
-  transition: 0.2s ease;
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
-/* 저장 버튼 */
 .diary-write-buttons button[type="submit"] {
   background-color: #d18b60;
   color: #fff;
 }
 
 .diary-write-buttons button[type="submit"]:hover {
-  background-color: #b8724b;
-  transform: translateY(-2px);
+  background-color: #b36b49;
 }
 
-/* 취소 버튼 */
 .diary-write-buttons button[type="button"] {
-  background-color: #ddd;
-  color: #333;
+  background-color: #ccc;
 }
 
 .diary-write-buttons button[type="button"]:hover {
-  background-color: #bbb;
-  transform: translateY(-2px);
+  background-color: #aaa;
+}
+.emoji-picker-item {
+  width: 40px;
+  height: 40px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
 }
 
+.emoji-picker-item.selected {
+  border: 2px solid #d18b60;
+  transform: scale(1.1);
+}
 /* 애니메이션 */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 480px) {
