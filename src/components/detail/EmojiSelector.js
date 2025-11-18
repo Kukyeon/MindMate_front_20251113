@@ -108,7 +108,11 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
             const info = emojiCounts[emoji.type];
             if (!info || !info.selected) return null;
             return (
-              <span key={emoji.type} className="emoji-inline">
+              <span
+                key={emoji.type}
+                className="emoji-inline"
+                onClick={() => handleSelectEmoji(emoji)}
+              >
                 <img src={emoji.image} alt={emoji.type} width="25" />
                 <span className="emoji-count">{info.count}</span>
               </span>
