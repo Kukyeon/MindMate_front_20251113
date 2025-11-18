@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import api from "../api/axiosConfig";
 import { authHeader as getAuthHeader } from "../api/authApi";
 
-const CharacterChat = ({ character, user }) => {
+const CharacterChat = ({ character, user, setCharacter, onPointChange }) => {
   const [messages, setMessages] = useState([]); // { sender: 'user'|'ai', text: '...' }
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,7 +27,11 @@ const CharacterChat = ({ character, user }) => {
 
       const aiResponseText = res.data.aiResponse || "AI가 답변하지 못했어요 😢";
       const updatedCharacter = res.data.character || character;
-
+      setCharacter(updatedCharacter);
+      if (updatedCharacter.points !== character.points && onPointChange) {
+        const diff = updatedCharacter.points - character.points;
+        onPointChange(diff);
+      }
       const aiMessage = { sender: "ai", text: aiResponseText };
       setMessages((prev) => [...prev, aiMessage]);
     } catch (err) {
@@ -48,6 +52,19 @@ const CharacterChat = ({ character, user }) => {
               <span>{msg.text}</span>
             </div>
           ))}
+          {/* AI 입력 중 표시 */}
+          {loading && (
+            <div className="character-chat-message ai typing-indicator">
+              <span>
+                {character.name}(이)가 생각 중
+                <span className="dots">
+                  <span>.</span>
+                  <span>.</span>
+                  <span>.</span>
+                </span>
+              </span>
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
 
