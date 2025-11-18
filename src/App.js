@@ -74,6 +74,10 @@ export default function App() {
   // };
 
   useEffect(() => {
+    const savedFont = localStorage.getItem("appFont");
+    if (savedFont) {
+      document.documentElement.style.setProperty("--app-font", savedFont);
+    }
     (async () => {
       const me = await getUser(); // user 객체 or null
       setUser(me);
