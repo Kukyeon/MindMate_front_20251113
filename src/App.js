@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import "./App.css";
 
@@ -44,6 +44,7 @@ import GoogleDeleteCallback from "./pages/GoogleDeleteCallBack.js";
 export default function App() {
   const [user, setUser] = useState(null);
   const [initialized, setInitialized] = useState(false);
+  const location = useLocation();
   console.log(user);
   useEffect(() => {
     const savedFont = localStorage.getItem("appFont");
@@ -64,35 +65,60 @@ export default function App() {
   if (!initialized) {
     return <div>로딩 중...</div>;
   }
+  const hideHeaderFooter = location.pathname === "/" && !user;
 
   return (
     <>
-      <Header user={user} setUser={setUser} />
+      {!hideHeaderFooter && <Header user={user} setUser={setUser} />}
       <Routes>
-        <Route path="/graph" element={<Graph2 user={user} />}></Route>
+        {/* 인덱스 */}
         {user ? (
-          <Route path="/" element={<Calendar />}></Route>
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Calendar />
+              </PrivateRoute>
+            }
+          ></Route>
         ) : (
           <Route path="/" element={<Home />}></Route>
         )}
-
         {/* 게시판 */}
         <Route path="/boards" element={<BoardListPage user={user} />} />
         <Route
           path="/board/write"
           element={
-            user ? (
+            <PrivateRoute>
               <BoardWritePage user={user} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
+            </PrivateRoute>
           }
         />
-        <Route path="/my-boards" element={<MyBoards user={user} />} />
+        <Route
+          path="/my-boards"
+          element={
+            <PrivateRoute>
+              <MyBoards user={user} />
+            </PrivateRoute>
+          }
+        />
         <Route path="/board/:id" element={<BoardDetailPage user={user} />} />
-        <Route path="/board/edit/:id" element={<BoardEditPage user={user} />} />
-        <Route path="/comment/edit/:id" element={<CommentEditForm />} />
-
+        <Route
+          path="/board/edit/:id"
+          element={
+            <PrivateRoute>
+              <BoardEditPage user={user} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/comment/edit/:id"
+          element={
+            <PrivateRoute>
+              <CommentEditForm />
+            </PrivateRoute>
+          }
+        />
         {/* 기타 */}
         <Route
           path="/fortune"
@@ -119,12 +145,7 @@ export default function App() {
             </PrivateRoute>
           }
         />
-
-        {/* 게시글 수정 */}
-        <Route path="/board/edit/:id" element={<BoardEditPage />} />
-
-        {/* 댓글 수정 (분리된 수정 페이지) */}
-        <Route path="/comment/edit/:id" element={<CommentEditForm />} />
+        {/* 유저 */}
         <Route
           path="/login"
           element={
@@ -224,9 +245,9 @@ export default function App() {
         <Route
           path="/profile"
           element={
-            <PrivateRoute>
-              <ProfilePage setUser={setUser} user={user} />
-            </PrivateRoute>
+            // <PrivateRoute>
+            <ProfilePage setUser={setUser} user={user} />
+            //</PrivateRoute>
           }
         />
 
@@ -240,16 +261,56 @@ export default function App() {
         />
 
         {/* 다이어리 */}
-        <Route path="/diary" element={<Calendar user={user} />} />
-        <Route path="/diary/calendar" element={<Calendar user={user} />} />
-
-        <Route path="/diary/date/:date" element={<DiaryDetail user={user} />} />
-
-        <Route path="/diary/edit/:date" element={<DiaryEditor user={user} />} />
-
-        <Route path="/diary/write" element={<DiaryWrite user={user} />} />
+        <Route
+          path="/diary"
+          element={
+            <PrivateRoute>
+              <Calendar user={user} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/diary/calendar"
+          element={
+            <PrivateRoute>
+              <Calendar user={user} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/diary/date/:date"
+          element={
+            <PrivateRoute>
+              <DiaryDetail user={user} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/diary/edit/:date"
+          element={
+            <PrivateRoute>
+              <DiaryEditor user={user} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/diary/write"
+          element={
+            <PrivateRoute>
+              <DiaryWrite user={user} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/graph"
+          element={
+            <PrivateRoute>
+              <Graph2 user={user} />
+            </PrivateRoute>
+          }
+        ></Route>
       </Routes>
-      <Footer user={user}></Footer>
+      {!hideHeaderFooter && <Footer user={user} />}
     </>
   );
 }
