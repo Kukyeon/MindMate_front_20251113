@@ -8,16 +8,44 @@ import {
   buildKakaoAuthUrl,
   buildNaverAuthUrl,
 } from "../api/socialAuth";
+import AlertModal from "../components/AlertModal";
 
-const LoginPage = ({ setUser }) => {
+const LoginPage = ({ user, setUser }) => {
   const navigate = useNavigate();
   const [state, setState] = useState({
     username: "",
     password: "",
   });
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
+  useEffect(() => {
+    if (user && !justLoggedIn) {
+      // 로그인 상태에서 직접 /login 접근 → 바로 이동
+      navigate(user.nickname ? "/" : "/profile/set", { replace: true });
+    }
+  }, [user, justLoggedIn]);
+
   const [isEmailOk, setIsEmailOk] = useState(false);
   const [emailMessage, setEmailMessage] = useState("이메일을 입력해주세요.");
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [navigateToPath, setNavigateToPath] = useState(null);
+  const triggerCustomAlert = (message, path = null) => {
+    setAlertMessage(message);
+    setNavigateToPath(path);
+    setShowAlert(true);
+  };
 
+  // 모달을 닫는 함수
+  const closeCustomAlert = () => {
+    console.log("CLOSE 실행됨");
+    setShowAlert(false);
+    setAlertMessage("");
+    if (navigateToPath) {
+      console.log("NAV 실행됨");
+      navigate(navigateToPath, { replace: true });
+      setNavigateToPath(null);
+    }
+  };
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   useEffect(() => {
     const email = state.username;
@@ -64,7 +92,8 @@ const LoginPage = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isEmailOk || !isPasswordOk) {
-      alert("이메일 및 비밀번호가 유효하지 않습니다");
+      //alert("이메일 및 비밀번호가 유효하지 않습니다");
+      triggerCustomAlert("이메일 및 비밀번호가 유효하지 않습니다");
       return;
     }
     try {
@@ -77,19 +106,26 @@ const LoginPage = ({ setUser }) => {
       const user = await getUser();
       if (setUser && user) {
         setUser(user);
+        setJustLoggedIn(true);
       }
       if (!user.nickname) {
         // 닉네임이 없으면 프로필이 설정 되지 않음으로 정의
-        navigate("/profile", { replace: true }); // 로그인시, 프로필설정이 안되면 이동
+        triggerCustomAlert(
+          `${user.username}님, 환영합니다! 프로필 설정을 완료해 주세요.`,
+          "/profile" // 네비게이션 경로 전달
+        );
       } else {
-        navigate("/", { replace: true });
+        triggerCustomAlert(
+          `${user.nickname}님, 다시 만나서 반갑습니다!`,
+          "/" // 네비게이션 경로 전달
+        );
       }
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+        triggerCustomAlert("아이디 또는 비밀번호가 올바르지 않습니다.");
       } else {
         console.error("로그인 실패", err);
-        alert(err);
+        triggerCustomAlert("로그인 처리 중 알 수 없는 오류가 발생했습니다.");
       }
     }
   };
@@ -171,6 +207,12 @@ const LoginPage = ({ setUser }) => {
           </div>
         </div>
       </div>
+      {showAlert && (
+        <AlertModal
+          message={alertMessage}
+          onClose={closeCustomAlert}
+        ></AlertModal>
+      )}
     </div>
   );
 };

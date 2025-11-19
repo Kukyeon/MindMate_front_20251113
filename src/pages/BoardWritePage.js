@@ -15,6 +15,7 @@ const BoardWritePage = ({ user }) => {
   const userId = user?.userId;
   if (!userId) return <p>로그인이 필요합니다.</p>;
   // 임시 로그인
+  //const userId = parseInt(localStorage.getItem("userId") || 2, 10);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
