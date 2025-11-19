@@ -84,7 +84,7 @@
   text-align: center; /* 카드 안에서 중앙 정렬 */
   margin-bottom: 15px;
 }
-.edit-pfile-form {
+.edit-profile-form {
   display: flex;
   flex-direction: column;
   gap: 12px;
