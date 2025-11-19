@@ -150,17 +150,7 @@ export default function App() {
         {/* 유저 */}
         <Route
           path="/login"
-          element={
-            user ? (
-              user.nickname ? (
-                <Navigate to="/" />
-              ) : (
-                <Navigate to="/profile/set" />
-              )
-            ) : (
-              <LoginPage setUser={setUser} />
-            )
-          }
+          element={<LoginPage setUser={setUser} user={user} />}
         />
         <Route
           path="/signup"
