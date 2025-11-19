@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createBoard, updateBoard } from "../api/boardApi";
-import { generateHashtags } from "../api/aiApi";
+import { createBoard } from "../api/boardApi";
 import { authHeader } from "../api/authApi";
 import "./BoardWritePage.css";
 import api from "../api/axiosConfig";
@@ -16,7 +15,6 @@ const BoardWritePage = ({ user }) => {
   const userId = user?.userId;
   if (!userId) return <p>로그인이 필요합니다.</p>;
   // 임시 로그인
-  //const userId = parseInt(localStorage.getItem("userId") || 2, 10);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,24 +27,6 @@ const BoardWritePage = ({ user }) => {
       setAiTags(savedBoard.hashtags?.split(" ") || []);
       const boardId = savedBoard.id || savedBoard.data?.id;
       if (!boardId) throw new Error("게시글 ID를 가져오지 못했습니다.");
-
-      // // 2. AI 해시태그 생성
-      // const { hashtags } = await generateHashtags(boardId, headers);
-      // setAiTags(hashtags || []);
-
-      // // 3. 게시글에 해시태그 업데이트
-      // if (hashtags && hashtags.length > 0) {
-      //   await updateBoard(
-      //     boardId,
-      //     {
-      //       title,
-      //       content,
-      //       userId,
-      //       hashtags: hashtags.join(" "),
-      //     },
-      //     headers
-      //   );
-      // }
 
       //캐릭터 처리 관련
       let charResData = null;

@@ -42,10 +42,6 @@ const Footer = ({ user }) => {
             <span className="icon">👥</span>
             <span className="text">커뮤니티</span>
           </Link>
-          <Link to="/signup">
-            <span className="icon">⚙️</span>
-            <span className="text">회원가입</span>
-          </Link>
         </>
       )}
     </footer>

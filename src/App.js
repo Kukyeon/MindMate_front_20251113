@@ -1,5 +1,5 @@
-import { use, useEffect, useState } from "react";
-import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import "./App.css";
 
@@ -22,8 +22,6 @@ import Graph2 from "./components/Graph2.js";
 
 import LoginPage from "./pages/LoginPage.js";
 
-//import StatsPage from './pages/StatsPage'; // ⬅️ [추가]
-
 // 💫 기타 기능
 import Fortune from "./components/Fortune";
 import DailyTest from "./components/DailyTest";
@@ -32,7 +30,7 @@ import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
 import ProfilePage from "./pages/ProfilePage.js";
 
-import { getUser, clearAuth } from "./api/authApi.js";
+import { getUser } from "./api/authApi.js";
 import KakaoCallback from "./pages/KaKaoCallBack.js";
 
 import ProfileSet from "./components/user/ProfileSet.js";
@@ -43,36 +41,10 @@ import NaverDeleteCallback from "./pages/NaverDeleteCallBack.js";
 import KakaoDeleteCallback from "./pages/KakaoDeleteCallBack.js";
 import GoogleDeleteCallback from "./pages/GoogleDeleteCallBack.js";
 
-//폰트 테스트
-// import FontSelector from "./pages/FontSelector";
-
 export default function App() {
   const [user, setUser] = useState(null);
   const [initialized, setInitialized] = useState(false);
-  //폰트 테스트
-  // const [font, setFont] = useState(
-  //   localStorage.getItem("font") || "'Noto Sans KR', sans-serif"
-  // );
-  // const [isFontModalOpen, setIsFontModalOpen] = useState(false);
   console.log(user);
-
-  //폰트 테스트
-  // useEffect(() => {
-  //   document.documentElement.style.setProperty("--app-font", font);
-  //   localStorage.setItem("font", font); // 새로고침해도 유지
-  // }, [font]);
-  // const handleFontChange = (selectedFont) => {
-  //   setFont(selectedFont);
-  //   localStorage.setItem("font", selectedFont);
-  // };
-  // useEffect(() => {
-  //   document.documentElement.style.setProperty("--app-font", font);
-  // }, [font]);
-  // const handleFontChange = (selectedFont) => {
-  //   setFont(selectedFont);
-  //   localStorage.setItem("font", selectedFont);
-  // };
-
   useEffect(() => {
     const savedFont = localStorage.getItem("appFont");
     if (savedFont) {
@@ -96,19 +68,6 @@ export default function App() {
   return (
     <>
       <Header user={user} setUser={setUser} />
-      {/*폰트 테스트 1*/}
-      {/*<FontSelector selectedFont={font} onSelect={handleFontChange} />*/}
-      {/*폰트 테스트 2*/}
-      {/*<FontSelector selectedFont={font} onSelect={setFont} />*/}
-      {/*폰트 테스트 3*/}
-      {/* <button onClick={() => setIsFontModalOpen(true)}>폰트 선택</button>
-      <FontSelector
-        isOpen={isFontModalOpen}
-        onClose={() => setIsFontModalOpen(false)}
-        selectedFont={font}
-        onSelect={handleFontChange}
-      /> */}
-      {/* <BrowserRouter> */}
       <Routes>
         <Route path="/graph" element={<Graph2 user={user} />}></Route>
         {user ? (
@@ -117,16 +76,7 @@ export default function App() {
           <Route path="/" element={<Home />}></Route>
         )}
 
-        {/* 기본 루트 → 게시판 목록 */}
-        {/* <Route path="/" element={<Navigate to="/boards" />} /> */}
-        {/* <Route path="/" element={<Navigate to="/diary" />} /> */}
-
-        {/* 기본 루트 로그인 여부(token체크)에 따라 분기 */}
-        {/* <Route path="/" element={<RootRedirect />} /> */}
-        {/* <Route path="/" element={<Navigate to="/boards" replace />} /> */}
-
         {/* 게시판 */}
-
         <Route path="/boards" element={<BoardListPage user={user} />} />
         <Route
           path="/board/write"
@@ -175,12 +125,6 @@ export default function App() {
 
         {/* 댓글 수정 (분리된 수정 페이지) */}
         <Route path="/comment/edit/:id" element={<CommentEditForm />} />
-
-        {/* 잘못된 경로 → 목록으로 리다이렉트 */}
-        {/* RootRedirect 작동시 삭제 가능 path *은 마지막에 배치 */}
-        {/* <Route path="*" element={<Navigate to="/boards" />} />
-          <Route path="/" element={<Navigate to="/login" />} /> */}
-
         <Route
           path="/login"
           element={
@@ -304,12 +248,6 @@ export default function App() {
         <Route path="/diary/edit/:date" element={<DiaryEditor user={user} />} />
 
         <Route path="/diary/write" element={<DiaryWrite user={user} />} />
-
-        {/* 잘못된 경로시 보드로 이동 */}
-        {/* <Route path="*" element={<Navigate to="/boards" replace />} /> */}
-        {/* </BrowserRouter> */}
-        {/* 잘못된 경로 처리 */}
-        {/* <Route path="*" element={<Navigate to="/boards" replace />} /> */}
       </Routes>
       <Footer user={user}></Footer>
     </>

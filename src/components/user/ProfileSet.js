@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ProfileSet.css";
 import api from "../../api/axiosConfig";
-import { getAccessToken } from "../../api/authApi";
 const mbtiOptions = [
   "INTJ",
   "INTP",
@@ -17,7 +16,6 @@ const mbtiOptions = [
   "ISFJ",
   "ESTJ",
   "ESFJ",
-  "ISTP",
   "ISFP",
   "ESTP",
   "ESFP",

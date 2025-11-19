@@ -9,7 +9,6 @@ export const fetchBoards = async (
   search = {},
   user = null
 ) => {
-  const headers = user ? await getAuthHeader() : {};
   const params = new URLSearchParams({
     page,
     size,
@@ -77,9 +76,3 @@ export const fetchMyBoards = async (page = 0, size = 10) => {
   });
   return res.data;
 };
-
-// // 게시글 이모지
-// export const toggleBoardEmoji = async (boardId, emojiData) => {
-//   const res = await api.post(`/boards/${boardId}/emoji`, emojiData);
-//   return res.data;
-// };

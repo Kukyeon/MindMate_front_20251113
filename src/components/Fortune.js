@@ -1,6 +1,6 @@
 import { useState } from "react";
 import api from "../api/axiosConfig";
-import { authHeader, authHeader as getAuthHeader } from "../api/authApi";
+import { authHeader as getAuthHeader } from "../api/authApi";
 
 const Fortune = ({ user }) => {
   const [fortune, setFortune] = useState("");

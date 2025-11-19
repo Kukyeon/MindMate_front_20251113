@@ -216,16 +216,6 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
               <small>"MBTI를 선택해주세요."</small>
             </p>
           )}
-          {/* 비밀번호 */}
-          {/* <input
-            type="password"
-            name="password"
-            value={profile.password}
-            onChange={handleChange}
-            placeholder="새 비밀번호"
-            className="edit-profile-input"
-          /> */}
-
           <button
             type="submit"
             className="edit-profile-button"
@@ -233,8 +223,6 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
           >
             저장
           </button>
-
-          {/* {message && <p className="edit-profile-message">{message}</p>} */}
         </form>
       </div>
     </div>

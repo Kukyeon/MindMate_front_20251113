@@ -41,12 +41,3 @@ export const deleteComment = async (commentId) => {
   const headers = await getAuthHeader();
   await api.delete(`/api/comments/${commentId}`, { headers });
 };
-
-// 댓글 이모지
-// export const toggleCommentEmoji = async (commentId, emojiType, accountId) => {
-//   const res = await api.post(`/comments/${commentId}/emoji`, {
-//     accountId,
-//     emojiType,
-//   });
-//   return res.data;
-// };

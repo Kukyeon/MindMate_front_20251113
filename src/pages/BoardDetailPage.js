@@ -62,9 +62,6 @@ const BoardDetailPage = ({ user }) => {
   if (!board)
     return <div className="not-found">게시글 정보를 찾을 수 없습니다.</div>;
 
-  // ✅ 본인 게시글 여부 판단 (writer가 User.nickname과 연동될 경우)
-  //const isMyPost = board.writerId === userId;
-
   // ✅ 해시태그 안전 처리
   let tagData = [];
   if (typeof board?.hashtags === "string") {

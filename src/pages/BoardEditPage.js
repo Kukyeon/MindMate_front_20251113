@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchBoardDetail, updateBoard } from "../api/boardApi";
-import { generateHashtags } from "../api/aiApi";
 
 const BoardEditPage = ({ user }) => {
   const { id } = useParams();

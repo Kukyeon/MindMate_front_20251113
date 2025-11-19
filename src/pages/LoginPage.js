@@ -1,4 +1,4 @@
-import { replace, useNavigate } from "react-router-dom";
+import { Link, replace, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { useEffect, useState } from "react";
 import "./LoginPage.css"; // 스타일 따로 분리
@@ -162,6 +162,12 @@ const LoginPage = ({ setUser }) => {
             <button className="social-button naver" onClick={handleNaverLogin}>
               <img src="/logo/naver.png" alt="Naver" className="social-icon" />
             </button>
+            <p className="signup-link">
+              계정이 없으신가요?{" "}
+              <Link to="/signup" className="signup-text">
+                회원가입
+              </Link>
+            </p>
           </div>
         </div>
       </div>
