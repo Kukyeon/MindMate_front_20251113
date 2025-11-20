@@ -1,0 +1,263 @@
+.graph-container {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  padding-bottom: 80px;
+}
+
+.graph-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
+  position: relative;
+}
+
+.graph-title::before {
+  content: "📊 ";
+}
+
+.graph-subtitle {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.graph-subtitle::before {
+  content: "💖 ";
+  margin-right: 0.5rem;
+}
+
+.emotion-bar-wrapper {
+  display: flex;
+  width: 100%;
+  height: 40px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  background: #f0f0f0;
+  gap: 2px;
+}
+@keyframes growBar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.emotion-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.9rem;
+  position: relative;
+  border-radius: 6px;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: growBar 1s forwards;
+  min-width: 20px; /* 퍼센트가 작아도 막대 표시 */
+}
+
+.emotion-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 4px;
+}
+
+.emotion-percent {
+  position: absolute;
+  right: 6px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.ai-comment-card {
+  margin-top: 1rem;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #ffe5b4, #ffd2a6);
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  font-style: italic;
+  color: #333;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  animation: fadeIn 0.8s ease;
+}
+
+/* 말풍선 꼬리 */
+.ai-comment-card::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 20px;
+  border-width: 10px 10px 0 0;
+  border-style: solid;
+  border-color: #ffd2a6 transparent transparent transparent;
+  transform: rotate(45deg);
+}
+
+/* AI 이모지 애니메이션 */
+.ai-comment-card::before {
+  content: "🤖";
+  font-size: 1.5rem;
+  animation: bounce 1.2s infinite;
+  margin-right: 8px;
+}
+
+/* 에니메이션 키프레임 */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.date-select-container label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.date-select-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+
+.date-select-container input[type="date"] {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: inherit;
+}
+
+/* 퀵 선택 버튼 */
+.quick-select {
+  display: flex;
+  gap: 6px;
+}
+
+.quick-select button {
+  padding: 6px 10px;
+}
+.date-select-container button {
+  padding: 6px 12px;
+  background-color: #f2d6c2;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.quick-select button:hover {
+  background-color: #e6bca1;
+}
+@media (max-width: 480px) {
+  .graph-container {
+    max-width: 95%;
+    padding: 0 10px 40px;
+    margin-bottom: 50px;
+  }
+
+  .emotion-bar-wrapper {
+    flex-wrap: nowrap;
+    height: 28px;
+    gap: 1px;
+  }
+
+  .emotion-segment {
+    display: flex;
+    justify-content: space-between; /* 좌: 아이콘, 우: 퍼센트 */
+    align-items: center;
+    padding: 0 4px; /* 내부 여백 */
+    font-size: 0.7rem; /* 글자 작게 */
+    min-width: 28px; /* 최소 폭 확보 */
+  }
+
+  .emotion-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 2px;
+  }
+
+  .emotion-percent {
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .ai-comment-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
+  .ai-comment-card::before {
+    font-size: 1.2rem;
+  }
+
+  .date-select-container {
+    display: flex;
+    flex-direction: row; /* 기본: 가로 정렬 */
+    align-items: center; /* 세로 가운데 정렬 */
+    gap: 6px;
+    flex-wrap: wrap; /* 화면 좁으면 자동 줄바꿈 */
+    justify-content: center; /* 가운데 정렬 */
+  }
+
+  .date-select-container label,
+  .date-select-container input,
+  .date-select-container button {
+    flex-shrink: 0; /* 너무 작아지지 않게 방지 */
+  }
+  .quick-select {
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .date-select-container button,
+  .quick-select button {
+    width: auto; /* 100% 대신 내용에 맞춤 */
+    max-width: 80px;
+    font-size: 0.7rem;
+  }
+
+  .graph-title {
+    font-size: 1.2rem;
+  }
+
+  .graph-subtitle {
+    font-size: 1rem;
+  }
+}

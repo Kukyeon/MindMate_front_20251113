@@ -1,0 +1,46 @@
+.emoji-picker-wrapper {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.emoji-button-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.emoji-button-wrapper button {
+  background: none;
+  border: none;
+  padding: 1px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.emoji-button-wrapper button.selected {
+  transform: scale(1.5); /* 선택 시 확대만 적용 */
+}
+
+.emoji-tooltip {
+  position: absolute;
+  bottom: 100%; 
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 6px;
+  padding: 4px 8px;
+  background-color: #d18b60;
+  color: #fff;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  animation: fadeIn 0.2s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}

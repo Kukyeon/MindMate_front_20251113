@@ -1,0 +1,49 @@
+/* ===== 여기부터 프로필 뷰 공통 스타일 (모든 화면에서 적용) ===== */
+
+/* 프로필 뷰 - 라벨 / 값 2열 구조 */
+.profile-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-view-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 왼쪽 텍스트(라벨) */
+.profile-view-label {
+  flex: 0 0 80px; /* 라벨 고정 너비 */
+  text-align: left;
+  font-weight: 600;
+  color: #6b4226;
+}
+
+/* 오른쪽 값 카드 (인풋처럼 보이게) */
+.profile-view-value {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+/* 버튼 영역 */
+.profile-view-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+/* 회원탈퇴 버튼 보조 스타일 */
+.edit-profile-delete-btn {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}

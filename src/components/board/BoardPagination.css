@@ -1,0 +1,39 @@
+.board-pagination {
+  display: flex;
+  gap: 6px;
+  margin-top: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-family: "Nanum Gothic", sans-serif; /* 전체 통일 폰트 */
+}
+
+.board-pagination button {
+  padding: 6px 14px;
+  border: 1px solid #d18b60;
+  border-radius: 12px;
+  background-color: #fff;
+  color: #d18b60;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 36px;
+}
+
+.board-pagination button:hover {
+  background-color: #d18b60;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.board-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.board-pagination button.active {
+  background-color: #d18b60;
+  color: #fff;
+  font-weight: bold;
+  transform: scale(1.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}

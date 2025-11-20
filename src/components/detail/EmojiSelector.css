@@ -1,0 +1,77 @@
+.emoji-selector {
+  display: inline-block;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.emoji-header {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* 버튼과 선택된 이모지 사이 */
+}
+
+.emoji-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  display: flex;
+  gap: 2px;
+}
+
+.selected-emoji {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.emoji-inline {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.emoji-list {
+  max-height: 0;
+  overflow: hidden;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap; /* 한 줄에 안 들어가면 줄 바꿈 */
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.emoji-list.open {
+  max-height: 300px; /* 실제 리스트 높이 */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.emoji-button span {
+  font-size: 12px;
+  position: absolute;
+  top: -5px;
+  right: -6px;
+  font-weight: 600;
+}
+.emoji-button {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 2px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.emoji-button:hover {
+  transform: scale(1.1);
+}
+
+.emoji-selected {
+  border: 2px solid #d18b60;
+  background-color: #fff0e0;
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
