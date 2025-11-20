@@ -10,7 +10,7 @@ import BoardEditPage from "./pages/BoardEditPage";
 import BoardWritePage from "./pages/BoardWritePage";
 import CommentEditForm from "./components/comment/CommentEditForm";
 import MyBoards from "./pages/MyBoards";
-import HashtagBoardPage from "./components/detail/HashtagBoardPage.js";
+import HashtagBoardPage from "./components/detail/HashtagBoardPage";
 // 📘 일기 / 캘린더 관련
 import Calendar from "./pages/Calendar";
 import DiaryDetail from "./pages/DiaryDetail";
