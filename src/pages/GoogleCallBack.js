@@ -34,13 +34,14 @@ const GoogleCallback = ({ setUser }) => {
         });
 
         const accessToken = res.data.accessToken;
-        const refreshToken = res.data.refreshToken;
+        // const refreshToken = res.data.refreshToken;
 
-        saveAuth({ accessToken, refreshToken });
+        // saveAuth({ accessToken, refreshToken });
+        saveAuth({ accessToken });
         console.log("google res:", res.data);
         console.log("after saveAuth:", {
           access: localStorage.getItem("accessToken"),
-          refresh: localStorage.getItem("refreshToken"),
+          // refresh: localStorage.getItem("refreshToken"),
         });
 
         const user = await getUser();

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import "./SignupPage.css";
@@ -8,6 +8,7 @@ import {
   buildNaverAuthUrl,
 } from "../api/socialAuth";
 import { getUser } from "../api/authApi";
+import { requestEmailCode, startEmailStatusPolling } from "../api/emailApi";
 
 const SignupPage = ({ setUser }) => {
   const navigate = useNavigate();
@@ -19,10 +20,22 @@ const SignupPage = ({ setUser }) => {
   const [errors, setErrors] = useState({});
   const [isEmailOk, setIsEmailOk] = useState(false);
   const [emailMessage, setEmailMessage] = useState("이메일을 입력해주세요.");
+  const [isEmailChecking, setIsEmailChecking] = useState(false);
+
+  // 폴링 중단 조건 체크용
+  const emailStatusStopRef = useRef(null);
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   useEffect(() => {
     const email = state.email.trim();
+
+    // 이메일 바뀌면 폴링(이메일 상태체크) 중단
+    if (emailStatusStopRef.current) {
+      emailStatusStopRef.current();
+      emailStatusStopRef.current = null;
+    }
+
+    setIsEmailChecking(false);
     setIsEmailOk(false);
 
     if (!email) {
@@ -35,6 +48,15 @@ const SignupPage = ({ setUser }) => {
       setEmailMessage("이메일 중복체크를 해주세요.");
     }
   }, [state.email]);
+
+  useEffect(() => {
+    return () => {
+      //
+      if (emailStatusStopRef.current) {
+        emailStatusStopRef.current();
+      }
+    };
+  }, []);
 
   const [isPasswordOk, setIsPasswordOk] = useState(false);
   const [passwordMessage, setPasswordMessage] =
@@ -92,16 +114,33 @@ const SignupPage = ({ setUser }) => {
     }
 
     setIsEmailOk(false);
+
+    if (emailStatusStopRef.current) {
+      // 이전 폴링 중단
+      emailStatusStopRef.current();
+      emailStatusStopRef.current = null;
+    }
+    setIsEmailChecking(false);
+
     try {
       // 백엔드 메서드는 checkUsername 이지만, 실제 값은 이메일
-      await api.get("/api/auth/check_username", {
-        params: { username: state.email.trim() }, // username 자리에 email 전달
+      await requestEmailCode(email);
+
+      alert("인증 코드 발송을 요청했습니다. 이메일 발송 상태를 확인 중입니다.");
+
+      emailStatusStopRef.current = startEmailStatusPolling(email, {
+        setEmailMessage,
+        setIsEmailChecking,
+        setIsEmailOk,
       });
-      alert("인증 코드를 이메일로 전송했습니다. 메일함을 확인해주세요.");
-      setEmailMessage("사용 가능한 이메일입니다.");
-      setIsEmailOk(true);
     } catch (err) {
+      if (emailStatusStopRef.current) {
+        emailStatusStopRef.current();
+        emailStatusStopRef.current = null;
+      }
+      setIsEmailChecking(false);
       setIsEmailOk(false);
+
       if (err.response && err.response.status === 409) {
         alert("이미 사용 중인 이메일입니다.");
         setState({ ...state, email: "" });
@@ -133,7 +172,7 @@ const SignupPage = ({ setUser }) => {
     try {
       const res = await api.post("/api/auth/signup", { ...state });
       localStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
+      // localStorage.setItem("refreshToken", res.data.refreshToken);
       const user = await getUser();
       if (setUser && user) {
         setUser(user);

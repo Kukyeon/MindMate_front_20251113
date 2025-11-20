@@ -1,15 +1,15 @@
 import axios from "axios";
 
 const ACCESS_TOKEN_KEY = "accessToken";
-const REFRESH_TOKEN_KEY = "refreshToken";
+// const REFRESH_TOKEN_KEY = "refreshToken";
 const getAccessToken = () => localStorage.getItem(ACCESS_TOKEN_KEY);
-const getRefreshToken = () => localStorage.getItem(REFRESH_TOKEN_KEY);
+// const getRefreshToken = () => localStorage.getItem(REFRESH_TOKEN_KEY);
 const setAccessToken = (token) =>
   token && localStorage.setItem(ACCESS_TOKEN_KEY, token);
 
 const clearTokens = () => {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
-  localStorage.removeItem(REFRESH_TOKEN_KEY);
+  // localStorage.removeItem(REFRESH_TOKEN_KEY);
 };
 
 const BASE_URL = "http://localhost:8888";
@@ -103,13 +103,18 @@ api.interceptors.response.use(
     isRefreshing = true;
     try {
       const accessToken = getAccessToken();
-      const refreshToken = getRefreshToken();
-      if (!accessToken || !refreshToken) {
+      // const refreshToken = getRefreshToken();
+      // if (!accessToken || !refreshToken) {
+      //   return Promise.reject(error);
+      // }
+
+      if (!accessToken) {
         return Promise.reject(error);
       }
+
       const { data } = await refreshClient.post("/api/auth/refresh", {
         accessToken,
-        refreshToken,
+        // refreshToken,
       });
 
       const newAccessToken = data?.accessToken;
@@ -126,6 +131,10 @@ api.interceptors.response.use(
     } catch (e) {
       clearTokens();
       notifyRefreshWaiters(e);
+
+      alert("로그인이 만료되었습니다. 다시 로그인 해주세요.");
+      window.location.replace("/");
+
       return Promise.reject(e);
     } finally {
       isRefreshing = false;

@@ -9,7 +9,7 @@ const Header = ({ user, setUser }) => {
   const ClickOnLogout = async () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
-      await api.post("/api/auth/logout", {
+      await api.post("/api/auth/logout", null, {
         headers: { Authorization: `Bearer ${accessToken}` },
       }); // 백엔드에서 토큰 정리
     } catch (err) {
