@@ -7,7 +7,7 @@
 }
 
 .graph-title {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: bold;
   margin-bottom: 1rem;
   color: #333;
@@ -19,7 +19,7 @@
 }
 
 .graph-subtitle {
-  margin-top: 2rem;
+  margin-top: 1rem;
   font-size: 1.2rem;
   font-weight: 600;
   color: #333;
@@ -143,21 +143,60 @@
   gap: 4px;
 }
 .date-select-container {
+  margin-top: 10px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 8px;
   margin-bottom: 16px;
-  font-size: 0.95rem;
 }
-
+.date-select-container .top-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+.month-select-box,
+.date-inputs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 .date-select-container input[type="date"] {
   padding: 6px 8px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-family: inherit;
 }
+.date-inputs label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.bottom-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.month-select-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 8px;
+}
 
+.month-select-box label {
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.month-select-box select {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: inherit;
+  cursor: pointer;
+}
 /* 퀵 선택 버튼 */
 .quick-select {
   display: flex;
@@ -166,6 +205,12 @@
 
 .quick-select button {
   padding: 6px 10px;
+  background-color: #f2d6c2;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 .date-select-container button {
   padding: 6px 12px;
