@@ -73,15 +73,34 @@ const BoardDetailPage = ({ user }) => {
     tagData = board.hashtags;
   }
 
+  // 수정·삭제 권한: 작성자 OR 관리자
+  const canModify =
+    userId && (board.writerId === user.userId || user.role === "ADMIN");
+
+  // Board 상태 확인용 콘솔
+  console.log("==== Debug Board & User ====");
+  console.log("board:", board); // board 전체 객체
+  console.log("board.writerId:", board?.writerId); // 작성자 ID
+  console.log("board.writerRole:", board?.writerRole); // 작성자 role
+  console.log("user:", user); // 로그인한 사용자
+  console.log("userId:", user?.userId); // 로그인한 사용자 ID
+  console.log("userRole:", user?.role); // 로그인한 사용자 role
+  console.log("canModify:", canModify);
   return (
     <div className="board-detail-page">
       {/* 상단 카드: 제목 + 작성자 + 작성일 + 수정/삭제 */}
       <div className="board-header-card">
         <div className="board-header-top">
-          <h2 className="board-title">{board.title}</h2>
+          <h2 className="board-title">
+            {/* 공지? */}
+            {(board.isPinned || board.writerRole === "ADMIN") && (
+              <span className="board-pinned">📌 </span>
+            )}
+            {board.title}
+          </h2>
 
           <div className="board-actions">
-            {userId && board.writerId === user.userId && (
+            {canModify && (
               <>
                 <button className="board-btn edit" onClick={handleEdit}>
                   수정
@@ -94,7 +113,10 @@ const BoardDetailPage = ({ user }) => {
           </div>
         </div>
         <div className="board-meta">
-          <span>작성자: {board.writer || board.user?.nickname}</span>
+          <span>
+            작성자: {board.writer || board.user?.nickname}{" "}
+            {board.writerRole === "ADMIN" && "(관리자)"}
+          </span>
           <span>{board.createdAt}</span>
         </div>
       </div>
@@ -107,7 +129,9 @@ const BoardDetailPage = ({ user }) => {
       {/* 해시태그 + 이모지 */}
       <div className="board-emoji-hashtag-card">
         <div className="board-emoji-card">
-          {tagData?.length > 0 && <HashtagList hashtags={tagData} />}
+          {board.writerRole !== "ADMIN" && tagData?.length > 0 && (
+            <HashtagList hashtags={tagData} />
+          )}
         </div>
         <div className="board-hashtag-card">
           <EmojiSelector boardId={board.id} userId={userId} disabled={!user} />
@@ -126,7 +150,12 @@ const BoardDetailPage = ({ user }) => {
             💬 댓글을 작성하려면 로그인하세요.
           </div>
         )}
-        <CommentList boardId={board.id} userId={userId} ref={commentListRef} />
+        <CommentList
+          boardId={board.id}
+          userId={userId}
+          user={user}
+          ref={commentListRef}
+        />
       </div>
 
       {/* 하단 목록 버튼 */}

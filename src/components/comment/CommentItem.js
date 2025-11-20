@@ -3,7 +3,7 @@ import { deleteComment } from "../../api/commentApi";
 import EmojiSelector from "../detail/EmojiSelector";
 import CommentEditForm from "./CommentEditForm";
 
-const CommentItem = ({ comment, onUpdated, userId }) => {
+const CommentItem = ({ comment, onUpdated, userId, user }) => {
   const [editing, setEditing] = useState(false);
 
   const handleDelete = async () => {
@@ -14,10 +14,15 @@ const CommentItem = ({ comment, onUpdated, userId }) => {
     }
   };
 
+  const canModify =
+    userId && (comment.writerId === userId || user.role === "ADMIN");
   return (
     <div className="comment-item-card">
       <div className="comment-header">
-        <span className="comment-writer">{comment.writer}</span>
+        <span className="comment-writer">
+          {comment.writer}
+          {comment.writerRole === "ADMIN" && " (관리자)"}
+        </span>
         <span className="comment-date">{comment.createdate}</span>
       </div>
 
@@ -39,7 +44,7 @@ const CommentItem = ({ comment, onUpdated, userId }) => {
       <div className="comment-footer">
         <EmojiSelector commentId={comment.id} userId={userId} />
         <div className="comment-actions">
-          {userId === comment.writerId && (
+          {canModify && (
             <>
               <button
                 className="comment-btn edit"
