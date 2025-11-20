@@ -167,6 +167,64 @@ const Graph = ({ user }) => {
       curr.setDate(curr.getDate() + 1);
     }
   }
+ const exportCSV = async () => {
+  if (!startDate || !endDate) {
+    showModal("조회할 기간을 먼저 선택해주세요.");
+    return;
+  }
+
+   const headers = user ? await getAuthHeader() : {};
+  if (!headers.Authorization) {
+    showModal("로그인이 필요합니다.");
+    return;
+  }
+
+  try {
+    const res = await api.get("/api/diary/week/csv", {
+      params: { start: startDate, end: endDate },
+      headers,
+    });
+
+    const data = res.data;
+    if (!data || data.length === 0) {
+      showModal("내보낼 데이터가 없습니다.");
+      return;
+    }
+
+    const csvHeaders = ["Date", "Nickname", "Title", "Content", "EmojiType", "AIComment"];
+    const rows = data.map(d => [
+      d.date,
+      d.nickname,
+      d.title,
+      d.content,
+      d.emojiType,
+      d.aiComment
+    ]);
+
+   const csvContent = [csvHeaders, ...rows]
+      .filter(Array.isArray) // 배열만 포함
+      .map((row) =>
+        row.map((cell) => `"${cell?.toString().replace(/"/g, '""')}"`).join(",")
+      )
+      .join("\n");
+
+     const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `diary_${startDate}_to_${endDate}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+
+  } catch (err) {
+    console.error(err);
+    showModal("CSV 다운로드 중 오류가 발생했습니다.");
+  }
+};
+
 
   const yValues = labels.map((date) => {
     const entry = dailyData.find((d) => d.date === date);
@@ -297,6 +355,10 @@ const Graph = ({ user }) => {
               })}
             </select>
           </div>
+
+     <div className="graph-actions">
+        <button onClick={exportCSV}>CSV 내보내기</button>
+      </div>
 
           {/* 날짜 지정 */}
           <div className="date-inputs">
