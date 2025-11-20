@@ -4,10 +4,12 @@ import { createDiary, fetchDiaryByDate } from "../api/diaryApi";
 import { authHeader, getUser } from "../api/authApi";
 import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
 import api from "../api/axiosConfig";
+import { useModal } from "../context/ModalContext";
 
 export default function DiaryWritePage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { showModal } = useModal();
   const date = location.state?.date;
 
   const [title, setTitle] = useState("");
@@ -25,23 +27,21 @@ export default function DiaryWritePage() {
       setLoadingUser(true);
       const currentUser = await getUser();
       if (!currentUser) {
-        alert("로그인이 필요합니다.");
-        navigate("/login");
+        showModal("로그인이 필요합니다.", "/login");
         return;
       }
       setUser(currentUser);
       setLoadingUser(false);
     };
     fetchUser();
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     if (!date) {
-      alert("날짜가 선택되지 않았습니다.");
-      navigate("/diary");
+      showModal("날짜가 선택되지 않았습니다.", "/diary");
       return;
     }
-    
+
     const loadDiary = async () => {
       try {
         const res = await fetchDiaryByDate(date, user?.accessToken);
@@ -51,16 +51,16 @@ export default function DiaryWritePage() {
           setEmoji(res.data.emoji || null);
         }
       } catch (errors) {
-          if (errors.response && errors.response.status === 404) {
-        console.log("해당 날짜에 일기가 없음. 새로 작성");
-        return null;
-      } else {
-        console.error("일기 조회 중 오류:", errors);
+        if (errors.response && errors.response.status === 404) {
+          console.log("해당 날짜에 일기가 없음. 새로 작성");
+          return null;
+        } else {
+          console.error("일기 조회 중 오류:", errors);
+        }
       }
-    }
-  };
+    };
     loadDiary();
-  }, [date, user?.accessToken, navigate]);
+  }, [date, user?.accessToken]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,10 +70,12 @@ export default function DiaryWritePage() {
     // ---------------------
     const newErrors = { title: "", content: "", emoji: "" };
     if (!title.trim()) newErrors.title = "제목을 입력해 주세요";
-    else if (title.trim().length < 5) newErrors.title = "글 제목은 최소 5글자 이상이어야 합니다.";
+    else if (title.trim().length < 5)
+      newErrors.title = "글 제목은 최소 5글자 이상이어야 합니다.";
 
     if (!content.trim()) newErrors.content = "내용을 입력해 주세요";
-    else if (content.trim().length < 5) newErrors.content = "글 내용은 최소 5글자 이상이어야 합니다.";
+    else if (content.trim().length < 5)
+      newErrors.content = "글 내용은 최소 5글자 이상이어야 합니다.";
 
     if (!emoji) newErrors.emoji = "감정을 선택해 주세요";
 
@@ -82,94 +84,102 @@ export default function DiaryWritePage() {
     // 에러가 있으면 제출 중단
     if (newErrors.title || newErrors.content || newErrors.emoji) return;
 
-    if (!user?.userId) return alert("로그인이 필요합니다.");
+    if (!user?.userId) return showModal("로그인이 필요합니다.");
     if (isSaving) return;
 
     setIsSaving(true);
 
     try {
       // 서버 저장
-      await createDiary({ title, content, userId: user.userId, nickname: user.nickname, date, emoji });
+      await createDiary({
+        title,
+        content,
+        userId: user.userId,
+        nickname: user.nickname,
+        date,
+        emoji,
+      });
 
       // 캐릭터 처리
       const headers = await authHeader();
-  let charResData = null;
-  
-  try {
-    const charRes = await api.get(`/ai/me`, { headers });
-    charResData = charRes.data;
-  } catch (errors) {
-    if (errors.response?.status === 404) charResData = null;
-    else throw errors;
-  }
+      let charResData = null;
 
-  if (charResData) {
-    await api.put("/ai/update", null, {
-      params: { addPoints: 10, moodChange: 5 },
-      headers,
-    });
-    alert("일기가 저장되었습니다! 캐릭터가 성장했어요!");
-    // 캐릭터가 있을 때만 달력 페이지로 이동
-    navigate("/diary/calendar", { state: { selectedDate: date } });
-  } else {
-    const createChar = window.confirm(
-      "일기가 저장되었습니다!\n캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?"
-    );
-    if (createChar) {
-      // 캐릭터 생성 페이지로 이동
-      navigate("/profile", { state: { tab: "Character" } });
-    } else {
-      // 캐릭터 생성하지 않으면 달력 페이지로 이동
-      navigate("/diary/calendar", { state: { selectedDate: date } });
+      try {
+        const charRes = await api.get(`/ai/me`, { headers });
+        charResData = charRes.data;
+      } catch (errors) {
+        if (errors.response?.status === 404) charResData = null;
+        else throw errors;
+      }
+
+      if (charResData) {
+        await api.put("/ai/update", null, {
+          params: { addPoints: 10, moodChange: 5 },
+          headers,
+        });
+        showModal("일기가 저장되었습니다! 캐릭터가 성장했어요!", () => {
+          navigate("/diary/calendar", { state: { selectedDate: date } });
+        });
+      } else {
+        showModal(
+          "일기가 저장되었습니다!\n캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?",
+          null,
+          {
+            confirmCallback: () =>
+              navigate("/profile", { state: { tab: "Character" } }),
+            cancelCallback: () =>
+              navigate("/diary/calendar", { state: { selectedDate: date } }),
+          }
+        );
+      }
+    } catch (errors) {
+      console.error("일기 저장 실패:", errors);
+      showModal(errors.response?.data?.message || "일기 저장에 실패했습니다.");
+    } finally {
+      setIsSaving(false);
     }
-  }
-
-} catch (errors) {
-  console.error("일기 저장 실패:", errors);
-  alert(errors.response?.data?.message || "일기 저장에 실패했습니다.");
-} finally {
-  setIsSaving(false);
-}
   };
 
   if (loadingUser) return <div>사용자 정보 로딩 중...</div>;
   if (!user?.userId) return <p>로그인이 필요합니다.</p>;
-  if (!date) return <div>날짜 정보 확인 중...</div>;  
+  if (!date) return <div>날짜 정보 확인 중...</div>;
 
   return (
-   <div className="diary-write-card">
-  <h2>📝 {date} 일기 작성</h2>
+    <div className="diary-write-card">
+      <h2>📝 {date} 일기 작성</h2>
 
-  <form onSubmit={handleSubmit}>
-    <div>
-      <input
-        type="text"
-        placeholder="제목을 입력하세요"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      {errors.title && <p className="diary-error">{errors.title}</p>}
-    </div>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <input
+            type="text"
+            placeholder="제목을 입력하세요"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          {errors.title && <p className="diary-error">{errors.title}</p>}
+        </div>
 
-    <div>
-      <textarea
-        placeholder="내용을 입력하세요"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
-      {errors.content && <p className="diary-error">{errors.content}</p>}
-    </div>
+        <div>
+          <textarea
+            placeholder="내용을 입력하세요"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+          {errors.content && <p className="diary-error">{errors.content}</p>}
+        </div>
 
-    <div className="emoji-picker-wrapper">
-      <DiaryEmojiPicker selectedEmoji={emoji} onSelectEmoji={setEmoji} />
-      {errors.emoji && <p className="diary-error">{errors.emoji}</p>}
-    </div>
+        <div className="emoji-picker-wrapper">
+          <DiaryEmojiPicker selectedEmoji={emoji} onSelectEmoji={setEmoji} />
+          {errors.emoji && <p className="diary-error">{errors.emoji}</p>}
+        </div>
 
-    <div className="diary-write-buttons">
-      <button type="submit">저장</button>
-      <button type="button" onClick={() => navigate(-1)}>취소</button>
+        <div className="diary-write-buttons">
+          <button type="submit">저장</button>
+          <button type="button" onClick={() => navigate(-1)}>
+            취소
+          </button>
+        </div>
+      </form>
     </div>
-  </form>
-</div>
   );
 }

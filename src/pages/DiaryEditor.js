@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
 import { fetchDiaryByDate, updateDiaryByDate } from "../api/diaryApi";
+import { useModal } from "../context/ModalContext";
 
 export default function DiaryEditor() {
   const { date } = useParams();
   const navigate = useNavigate();
-
+  const { showModal } = useModal();
   const [emoji, setEmoji] = useState(null);
   const [diary, setDiary] = useState({ title: "", content: "", username: "" });
   const [errors, setErrors] = useState({ title: "", content: "", emoji: "" });
@@ -25,9 +26,9 @@ export default function DiaryEditor() {
       } catch (error) {
         console.error("❌ fetchDiary 오류:", error);
         const status = error.response?.status;
-        if (status === 404) alert("해당 날짜에 작성된 일기가 없습니다.");
-        else if (status === 403) alert("로그인이 필요합니다.");
-        else alert("일기 조회 실패");
+        if (status === 404) showModal("해당 날짜에 작성된 일기가 없습니다.");
+        else if (status === 403) showModal("로그인이 필요합니다.");
+        else showModal("일기 조회 실패");
 
         navigate("/diary/calendar");
       }
@@ -76,8 +77,9 @@ export default function DiaryEditor() {
 
     try {
       await updateDiaryByDate(date, dataToSend);
-      alert("수정되었습니다.");
-      navigate("/diary/calendar", { state: { selectedDate: date } });
+      showModal("수정되었습니다.", () => {
+        navigate("/diary/calendar", { state: { selectedDate: date } });
+      });
     } catch (error) {
       console.error("❌ handleSave 오류:", error);
       const status = error.response?.status;
@@ -88,12 +90,11 @@ export default function DiaryEditor() {
           setErrors(serverErrors);
           return;
         }
-        alert("입력값이 올바르지 않습니다.");
+        showModal("입력값이 올바르지 않습니다.");
       } else if (status === 403) {
-        alert("권한이 없습니다. 다시 로그인 해주세요!");
-        navigate("/login");
+        showModal("권한이 없습니다. 다시 로그인 해주세요!", "/login");
       } else {
-        alert("수정 중 오류가 발생했습니다.");
+        showModal("수정 중 오류가 발생했습니다.");
       }
     }
   };
@@ -103,7 +104,6 @@ export default function DiaryEditor() {
       <h2>✏️ {date} 일기 수정</h2>
 
       <form onSubmit={handleSave}>
-        
         {/* 제목 */}
         <div className="editor-field">
           <label>제목</label>

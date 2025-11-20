@@ -13,6 +13,7 @@ import api from "../api/axiosConfig";
 import { emojiList } from "../api/emojiApi";
 import "./Graph.css";
 import { authHeader as getAuthHeader } from "../api/authApi";
+import { useModal } from "../context/ModalContext";
 
 ChartJS.register(
   CategoryScale,
@@ -52,6 +53,7 @@ const emotionColors = {
 };
 
 const Graph = ({ user }) => {
+  const { showModal } = useModal();
   const [dailyData, setDailyData] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -116,7 +118,7 @@ const Graph = ({ user }) => {
         setAiComment(res.data.aiComment || "");
       } catch (err) {
         console.error("데이터 불러오기 실패", err);
-        alert("데이터를 불러오는데 실패했습니다.");
+        showModal("데이터를 불러오는데 실패했습니다.");
       } finally {
         setLoading(false);
         setFetchTrigger(false);

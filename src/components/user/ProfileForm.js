@@ -1,6 +1,7 @@
 // EditProfile.jsx
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { useModal } from "../../context/ModalContext";
 
 const mbtiOptions = [
   "INTJ",
@@ -37,6 +38,7 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
 
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
+  const { showModal } = useModal();
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -73,15 +75,15 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
       setIsNicknameOk(true);
       return;
     } else if (!nickname.trim()) {
-      alert("닉네임 입력후 다시 시도해주세요");
+      showModal("닉네임 입력후 다시 시도해주세요");
       return;
     } else if (!nicknamePattern.test(nickname)) {
-      alert(
+      showModal(
         "닉네임은 한글, 영문, 숫자만 사용할 수 있습니다.  (한글 초성 사용불가)"
       );
       return;
     } else if (nickname.length < 3 || nickname.length > 20) {
-      alert("닉네임은 3 ~ 20글자만 입력할 수 있습니다.");
+      showModal("닉네임은 3 ~ 20글자만 입력할 수 있습니다.");
       return;
     }
 
@@ -89,16 +91,16 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
       await api.get("/api/user/check_nickname", {
         params: { nickname: profile.nickname.trim() },
       });
-      alert("사용 가능한 닉네임입니다.");
+      showModal("사용 가능한 닉네임입니다.");
       setNicknameMessage("유효한 닉네임 입니다.");
       setIsNicknameOk(true);
     } catch (err) {
       if (err.response && err.response.status === 409) {
-        alert("사용중인 닉네임입니다, 기존 닉네임으로 유지됩니다.");
+        showModal("사용중인 닉네임입니다, 기존 닉네임으로 유지됩니다.");
         setProfile({ ...profile, nickname: originalNickname });
         setIsNicknameOk(true);
       } else {
-        alert("닉네임 확인 중 오류가 발생했습니다.");
+        showModal("닉네임 확인 중 오류가 발생했습니다.");
         setProfile({ ...profile, nickname: "" });
         setIsNicknameOk(false);
       }
@@ -116,7 +118,7 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
     }
 
     if (!isNicknameOk) {
-      alert("닉네임 중복체크후 다시 시도해주세요");
+      showModal("닉네임 중복체크후 다시 시도해주세요");
       return;
     }
 

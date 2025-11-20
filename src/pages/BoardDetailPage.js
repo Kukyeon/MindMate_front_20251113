@@ -6,10 +6,12 @@ import CommentForm from "../components/comment/CommentForm";
 import CommentList from "../components/comment/CommentList";
 import HashtagList from "../components/detail/HashtagList";
 import { authHeader } from "../api/authApi";
+import { useModal } from "../context/ModalContext";
 
 const BoardDetailPage = ({ user }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { showModal } = useModal();
   const commentListRef = useRef();
 
   const [board, setBoard] = useState(null);
@@ -27,30 +29,27 @@ const BoardDetailPage = ({ user }) => {
       setBoard(res.data);
     } catch (err) {
       console.error("게시글 불러오기 실패:", err);
-      alert("게시글을 불러오지 못했습니다.");
-      navigate("/boards");
+      showModal("게시글을 불러오지 못했습니다.", "/boards");
     } finally {
       setLoading(false);
     }
   };
 
   const handleEdit = () => {
-    if (!userId) return alert("로그인이 필요합니다.");
-    navigate(`/board/edit/${id}`);
+    if (!userId) return showModal("로그인이 필요합니다.", `/board/edit/${id}`);
   };
 
   const handleDelete = async () => {
-    if (!userId) return alert("로그인이 필요합니다.");
+    if (!userId) return showModal("로그인이 필요합니다.", "/login");
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
     try {
       const headers = await authHeader();
       await api.delete(`/api/boards/${id}`, { headers });
-      alert("삭제되었습니다.");
-      navigate("/boards");
+      showModal("삭제되었습니다.", "/boards");
     } catch (err) {
       console.error("게시글 삭제 실패:", err);
-      alert("삭제 실패");
+      showModal("삭제 실패");
     }
   };
 
@@ -146,7 +145,7 @@ const BoardDetailPage = ({ user }) => {
             onCommentAdded={fetchBoard}
           />
         ) : (
-          <div className="comment-login-alert">
+          <div className="comment-login-showModal">
             💬 댓글을 작성하려면 로그인하세요.
           </div>
         )}
