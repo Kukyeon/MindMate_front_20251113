@@ -147,9 +147,22 @@
   text-decoration: none;
   font-weight: 500;
 }
-
-.board-item a:hover {
-  color: #d18b60;
+.board-admin {
+  background-color: #f5d7b0; /* 부드러운 살구색 */
+  font-weight: 600;
+  color: #6b4226;
+  text-align: center;
+  vertical-align: middle; /* 테이블 중앙 정렬 */
+  font-size: 0.85rem; /* 글자 조금 작게 */
+  line-height: 0.7; /* 행 높이 맞추기 */
+  padding: 0; /* padding 제거 */
+}
+.board-admin .board-title {
+  font-size: 1.3rem;
+}
+.board-admin:hover {
+  background-color: #e7b58a;
+  transition: background-color 0.2s;
 }
 
 /* 반응형: 화면 폭이 600px 이하일 때 스크롤 */
@@ -635,7 +648,7 @@
 }
 
 .board-title {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: bold;
   margin-bottom: 12px;
 }

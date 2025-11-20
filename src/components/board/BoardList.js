@@ -18,7 +18,7 @@ const BoardList = ({ boards, page, size, totalElements }) => {
 
           // 관리자는 무조건 "공지" 표시
           const displayIndex = board.pinned
-            ? "공지"
+            ? "공지📢"
             : totalElements - (page * size + idx);
 
           return (
