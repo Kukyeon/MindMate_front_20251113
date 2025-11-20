@@ -79,7 +79,7 @@ const handleSave = async (e) => {
   if (imageFile) formData.append("image", imageFile);
 
   try {
-    await updateDiaryWithImage(date, formData);
+     await updateDiaryWithImage(date, dataToSend, imageFile);
     showModal("수정되었습니다.", () => {
       navigate("/diary/calendar", { state: { selectedDate: date } });
     });
