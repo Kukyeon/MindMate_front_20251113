@@ -14,6 +14,8 @@ import { emojiList } from "../api/emojiApi";
 import "./Graph.css";
 import { authHeader as getAuthHeader } from "../api/authApi";
 import { useModal } from "../context/ModalContext";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 ChartJS.register(
   CategoryScale,
@@ -167,13 +169,13 @@ const Graph = ({ user }) => {
       curr.setDate(curr.getDate() + 1);
     }
   }
- const exportCSV = async () => {
+ const exportXLS = async () => {
   if (!startDate || !endDate) {
     showModal("조회할 기간을 먼저 선택해주세요.");
     return;
   }
 
-   const headers = user ? await getAuthHeader() : {};
+  const headers = user ? await getAuthHeader() : {};
   if (!headers.Authorization) {
     showModal("로그인이 필요합니다.");
     return;
@@ -191,37 +193,37 @@ const Graph = ({ user }) => {
       return;
     }
 
-    const csvHeaders = ["Date", "Nickname", "Title", "Content", "EmojiType", "AIComment"];
-    const rows = data.map(d => [
-      d.date,
-      d.nickname,
-      d.title,
-      d.content,
-      d.emojiType,
-      d.aiComment
-    ]);
+    // 워크시트용 데이터 생성
+    const worksheetData = data.map((d) => ({
+      Date: d.date,
+      Nickname: d.nickname,
+      Title: d.title,
+      Content: d.content,
+      EmojiType: d.emojiType,
+      AIComment: d.aiComment,
+    }));
 
-   const csvContent = [csvHeaders, ...rows]
-      .filter(Array.isArray) // 배열만 포함
-      .map((row) =>
-        row.map((cell) => `"${cell?.toString().replace(/"/g, '""')}"`).join(",")
-      )
-      .join("\n");
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
 
-     const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `diary_${startDate}_to_${endDate}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    // 열 너비 자동 맞춤 (Excel 열 너비)
+    const colWidths = Object.keys(worksheetData[0]).map((key) => ({
+      wch: Math.max(
+        key.length,
+        ...worksheetData.map((row) => (row[key] ? row[key].toString().length : 0))
+      ),
+    }));
+    worksheet["!cols"] = colWidths;
 
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Diary");
 
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+
+    saveAs(blob, `diary_${startDate}_to_${endDate}.xlsx`);
   } catch (err) {
     console.error(err);
-    showModal("CSV 다운로드 중 오류가 발생했습니다.");
+    showModal("XLS 다운로드 중 오류가 발생했습니다.");
   }
 };
 
@@ -357,7 +359,7 @@ const Graph = ({ user }) => {
           </div>
 
      <div className="graph-actions">
-        <button onClick={exportCSV}>CSV 내보내기</button>
+        <button onClick={exportXLS}>엑셀로 내보내기</button>
       </div>
 
           {/* 날짜 지정 */}
