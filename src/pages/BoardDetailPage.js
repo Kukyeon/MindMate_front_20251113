@@ -36,7 +36,8 @@ const BoardDetailPage = ({ user }) => {
   };
 
   const handleEdit = () => {
-    if (!userId) return showModal("로그인이 필요합니다.", `/board/edit/${id}`);
+    if (!userId) return showModal("로그인이 필요합니다.");
+    navigate(`/board/edit/${id}`);
   };
 
   const handleDelete = async () => {
