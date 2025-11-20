@@ -26,6 +26,7 @@ const BoardList = ({ boards, page, size, totalElements }) => {
               key={board.id}
               board={board}
               index={displayIndex} // 최신순 번호
+              isPinned={board.pinned}
             />
           );
         })}

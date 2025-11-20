@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const BoardItem = ({ board, index }) => {
+const BoardItem = ({ board, index, isPinned }) => {
   const navigate = useNavigate();
 
   const displayTitle =
@@ -9,7 +9,7 @@ const BoardItem = ({ board, index }) => {
   const displayIndex = board.isPinned ? "공지" : index;
   return (
     <tr
-      className={`board-item" ${board.isPinned ? "board-admin" : ""}`}
+      className={`board-item ${board.isPinned ? "board-admin" : ""}`}
       onClick={() => navigate(`/board/${board.id}`)}
     >
       <td>{displayIndex}</td>
