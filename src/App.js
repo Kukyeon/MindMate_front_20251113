@@ -10,7 +10,7 @@ import BoardEditPage from "./pages/BoardEditPage";
 import BoardWritePage from "./pages/BoardWritePage";
 import CommentEditForm from "./components/comment/CommentEditForm";
 import MyBoards from "./pages/MyBoards";
-
+import HashtagBoardPage from "./components/detail/HashtagBoardPage.js";
 // 📘 일기 / 캘린더 관련
 import Calendar from "./pages/Calendar";
 import DiaryDetail from "./pages/DiaryDetail";
@@ -88,6 +88,7 @@ export default function App() {
           )}
           {/* 게시판 */}
           <Route path="/boards" element={<BoardListPage user={user} />} />
+          <Route path="/boards/hashtag/:tag" element={<HashtagBoardPage />} />
           <Route
             path="/board/write"
             element={
