@@ -40,6 +40,7 @@ import DeleteCompletePage from "./pages/DeleteCompletePage.js";
 import NaverDeleteCallback from "./pages/NaverDeleteCallBack.js";
 import KakaoDeleteCallback from "./pages/KakaoDeleteCallBack.js";
 import GoogleDeleteCallback from "./pages/GoogleDeleteCallBack.js";
+import HashtagBoardPage from "./components/detail/HashtagBoardPage.js";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -86,6 +87,7 @@ export default function App() {
         )}
         {/* 게시판 */}
         <Route path="/boards" element={<BoardListPage user={user} />} />
+        <Route path="/boards/hashtag/:tag" element={<HashtagBoardPage />} />
         <Route
           path="/board/write"
           element={
