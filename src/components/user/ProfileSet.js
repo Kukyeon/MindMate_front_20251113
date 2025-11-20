@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ProfileSet.css";
 import api from "../../api/axiosConfig";
+import { useModal } from "../../context/ModalContext";
 const mbtiOptions = [
   "INTJ",
   "INTP",
@@ -23,6 +24,7 @@ const mbtiOptions = [
 
 const ProfileSetupPage = ({ setUser, user }) => {
   const navigate = useNavigate();
+  const { showModal } = useModal();
 
   const [profile, setProfile] = useState({
     nickname: user.nickname || "",
@@ -65,15 +67,15 @@ const ProfileSetupPage = ({ setUser, user }) => {
     const nickname = profile.nickname;
     setIsNicknameOk(false);
     if (!nickname.trim()) {
-      alert("닉네임 입력후 다시 시도해주세요");
+      showModal("닉네임 입력후 다시 시도해주세요");
       return;
     } else if (!nicknamePattern.test(nickname)) {
-      alert(
+      showModal(
         "닉네임은 한글, 영문, 숫자만 사용할 수 있습니다.  (한글 초성 사용불가)"
       );
       return;
     } else if (nickname.length < 3 || nickname.length > 20) {
-      alert("닉네임은 3 ~ 20글자만 입력할 수 있습니다.");
+      showModal("닉네임은 3 ~ 20글자만 입력할 수 있습니다.");
       return;
     }
 
@@ -81,16 +83,16 @@ const ProfileSetupPage = ({ setUser, user }) => {
       await api.get("/api/user/check_nickname", {
         params: { nickname: profile.nickname.trim() },
       });
-      alert("사용 가능한 닉네임입니다.");
+      showModal("사용 가능한 닉네임입니다.");
       setNicknameMessage("유효한 닉네임 입니다.");
       setIsNicknameOk(true);
     } catch (err) {
       setIsNicknameOk(false);
       if (err.response && err.response.status === 409) {
-        alert("사용중인 닉네임입니다.");
+        showModal("사용중인 닉네임입니다.");
         setProfile({ ...profile, nickname: "" });
       } else {
-        alert("닉네임 확인 중 오류가 발생했습니다.");
+        showModal("닉네임 확인 중 오류가 발생했습니다.");
         setProfile({ ...profile, nickname: "" });
       }
     }
@@ -104,7 +106,7 @@ const ProfileSetupPage = ({ setUser, user }) => {
     e.preventDefault();
     setErrors({});
     if (!isNicknameOk) {
-      alert("닉네임 중복체크후 다시 시도해주세요");
+      showModal("닉네임 중복체크후 다시 시도해주세요");
       return;
     }
     const accessToken = localStorage.getItem("accessToken");
@@ -129,7 +131,7 @@ const ProfileSetupPage = ({ setUser, user }) => {
       if (err.response && err.response.status === 400) {
         setErrors(err.response.data);
       } else {
-        alert("프로필설정 실패");
+        showModal("프로필설정 실패");
         console.error(err);
       }
     }

@@ -6,6 +6,7 @@ import {
   buildKakaoDeleteAuthUrl,
   buildNaverDeleteAuthUrl,
 } from "../../api/socialAuth";
+import { useModal } from "../../context/ModalContext";
 const getAuthHeader = () => {
   const token = localStorage.getItem("accessToken"); // 토큰 키 이름 확인
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -13,7 +14,7 @@ const getAuthHeader = () => {
 // ProfileView.jsx
 const ProfileView = ({ setUser, user, setActiveTab }) => {
   const navigate = useNavigate();
-
+  const { showModal } = useModal();
   const handleDeleteAccount = async () => {
     const ok = window.confirm(
       "정말 회원탈퇴 하시겠습니까?\n모든 데이터가 삭제될 수 있습니다."
@@ -48,7 +49,7 @@ const ProfileView = ({ setUser, user, setActiveTab }) => {
       navigate("/delete-complete", { replace: true });
     } catch (err) {
       console.error("회원탈퇴 실패:", err);
-      alert("회원탈퇴 중 오류가 발생했습니다.");
+      showModal("회원탈퇴 중 오류가 발생했습니다.");
     }
   };
 

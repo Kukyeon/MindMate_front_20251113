@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { postComment } from "../../api/commentApi";
 import { authHeader } from "../../api/authApi";
+import { useModal } from "../../context/ModalContext";
 
 const CommentForm = ({ boardId, onCommentAdded, userId }) => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const { showModal } = useModal();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userId) return alert("로그인이 필요합니다.");
@@ -21,7 +22,7 @@ const CommentForm = ({ boardId, onCommentAdded, userId }) => {
       }
     } catch (err) {
       console.error("댓글 등록 실패:", err);
-      alert("댓글 등록 중 오류가 발생했습니다.");
+      showModal("댓글 등록 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }

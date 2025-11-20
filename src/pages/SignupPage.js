@@ -8,9 +8,11 @@ import {
   buildNaverAuthUrl,
 } from "../api/socialAuth";
 import { getUser } from "../api/authApi";
+import { useModal } from "../context/ModalContext";
 
 const SignupPage = ({ setUser }) => {
   const navigate = useNavigate();
+  const { showModal } = useModal();
   const [state, setState] = useState({
     email: "",
     code: "",
@@ -84,10 +86,10 @@ const SignupPage = ({ setUser }) => {
     const email = state.email.trim();
 
     if (!email) {
-      alert("이메일을 입력 후 다시 시도해주세요.");
+      showModal("이메일을 입력 후 다시 시도해주세요.");
       return;
     } else if (!emailPattern.test(email)) {
-      alert("올바른 이메일 형식이 아닙니다.");
+      showModal("올바른 이메일 형식이 아닙니다.");
       return;
     }
 
@@ -97,18 +99,18 @@ const SignupPage = ({ setUser }) => {
       await api.get("/api/auth/check_username", {
         params: { username: state.email.trim() }, // username 자리에 email 전달
       });
-      alert("인증 코드를 이메일로 전송했습니다. 메일함을 확인해주세요.");
+      showModal("인증 코드를 이메일로 전송했습니다. 메일함을 확인해주세요.");
       setEmailMessage("사용 가능한 이메일입니다.");
       setIsEmailOk(true);
     } catch (err) {
       setIsEmailOk(false);
       if (err.response && err.response.status === 409) {
-        alert("이미 사용 중인 이메일입니다.");
+        showModal("이미 사용 중인 이메일입니다.");
         setState({ ...state, email: "" });
       } else if (err.response && err.response.status === 429) {
-        alert(err.response.data || "요청 가능 횟수를 초과했습니다.");
+        showModal(err.response.data || "요청 가능 횟수를 초과했습니다.");
       } else {
-        alert("이메일 확인/코드 발급 중 오류가 발생했습니다.");
+        showModal("이메일 확인/코드 발급 중 오류가 발생했습니다.");
         setState({ ...state, email: "" });
       }
     }
@@ -118,11 +120,11 @@ const SignupPage = ({ setUser }) => {
     e.preventDefault();
     setErrors({});
     if (!isEmailOk) {
-      alert("이메일 중복체크후 다시 시도해주세요");
+      showModal("이메일 중복체크후 다시 시도해주세요");
       return;
     }
     if (!isPasswordOk) {
-      alert("비밀번호가 유효하지 않습니다 다시 시도해주세요");
+      showModal("비밀번호가 유효하지 않습니다 다시 시도해주세요");
       setState({ ...state, password: "" });
       return;
     }
@@ -141,15 +143,15 @@ const SignupPage = ({ setUser }) => {
       navigate("/profile/set", { replace: true });
     } catch (err) {
       if (err.response && err.response.status === 422) {
-        alert("이메일 인증코드가 틀렸거나 만료되었습니다.");
+        showModal("이메일 인증코드가 틀렸거나 만료되었습니다.");
         setState((prev) => ({ ...prev, code: "" })); // 코드만 초기화
         return;
       }
       if (err.response && err.response.status === 400) {
-        alert("유효하지 않은 값이 들어왔습니다 확인해주세요.");
+        showModal("유효하지 않은 값이 들어왔습니다 확인해주세요.");
         setErrors(err.response.data);
       } else {
-        alert("회원가입 실패");
+        showModal("회원가입 실패");
         console.error(err);
       }
     }
