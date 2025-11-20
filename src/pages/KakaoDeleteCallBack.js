@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { clearAuth } from "../api/authApi";
+import { useModal } from "../context/ModalContext";
 
 const getAuthHeader = () => {
   const token = localStorage.getItem("accessToken"); // 토큰 키 이름 확인
@@ -12,6 +13,7 @@ const KakaoDeleteCallback = ({ setUser }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const calledRef = useRef(false);
+  const { showModal } = useModal();
 
   useEffect(() => {
     // 여러 번 실행 방지
@@ -23,8 +25,7 @@ const KakaoDeleteCallback = ({ setUser }) => {
     const state = query.get("state"); // 카카오도 state 오긴 하는데, 필수는 아님 (옵션)
 
     if (!code) {
-      alert("카카오 인가 코드가 없습니다.");
-      navigate("/profile", { replace: true });
+      showModal("카카오 인가 코드가 없습니다.", "/profile");
       return;
     }
 
@@ -42,11 +43,10 @@ const KakaoDeleteCallback = ({ setUser }) => {
         if (setUser) setUser(null);
 
         // 3) 탈퇴 완료 페이지로 이동
-        navigate("/delete-complete", { replace: true });
+        showModal("카카오 회원탈퇴가 완료되었습니다.", "/delete-complete");
       } catch (err) {
         console.error("카카오 회원탈퇴 실패:", err);
-        alert("카카오 회원탈퇴 중 오류가 발생했습니다.");
-        navigate("/profile", { replace: true });
+        showModal("카카오 회원탈퇴 중 오류가 발생했습니다.", "/profile");
       }
     })();
   }, [location.search, navigate, setUser]);

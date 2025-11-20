@@ -4,9 +4,11 @@ import { createBoard } from "../api/boardApi";
 import { authHeader } from "../api/authApi";
 import "./BoardWritePage.css";
 import api from "../api/axiosConfig";
+import { useModal } from "../context/ModalContext";
 
 const BoardWritePage = ({ user }) => {
   const navigate = useNavigate();
+  const { showModal } = useModal();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
@@ -49,8 +51,10 @@ const BoardWritePage = ({ user }) => {
           params: { addPoints: 10, moodChange: 5 },
           headers,
         });
-        alert("게시글이 작성되었습니다! 캐릭터가 성장했어요!");
-        navigate(`/board/${boardId}`); // 알림 이후 게시판으로 다시
+        showModal(
+          "게시글이 작성되었습니다! 캐릭터가 성장했어요!",
+          `/board/${boardId}`
+        );
       } else {
         // 캐릭터 없음 → 생성 여부 확인
         const createChar = window.confirm(
@@ -64,7 +68,7 @@ const BoardWritePage = ({ user }) => {
       }
     } catch (err) {
       console.error("게시글 작성 실패:", err);
-      alert("게시글 작성에 실패했습니다.");
+      showModal("게시글 작성에 실패했습니다.");
     } finally {
       setLoading(false);
     }

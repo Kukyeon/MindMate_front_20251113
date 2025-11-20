@@ -14,12 +14,19 @@ const BoardList = ({ boards, page, size, totalElements }) => {
       </thead>
       <tbody className="board-table-body">
         {boards.map((board, idx) => {
-          const reverseIndex = totalElements - (page * size + idx);
+          // const reverseIndex = totalElements - (page * size + idx );
+
+          // 관리자는 무조건 "공지" 표시
+          const displayIndex = board.pinned
+            ? "공지"
+            : totalElements - (page * size + idx);
+
           return (
             <BoardItem
               key={board.id}
               board={board}
-              index={reverseIndex} // 최신순 번호
+              index={displayIndex} // 최신순 번호
+              isPinned={board.pinned}
             />
           );
         })}

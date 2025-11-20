@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { clearAuth } from "../api/authApi";
+import { useModal } from "../context/ModalContext";
 const getAuthHeader = () => {
   const token = localStorage.getItem("accessToken"); // 토큰 키 이름 확인
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -10,6 +11,7 @@ const GoogleDeleteCallback = ({ setUser }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const calledRef = useRef(false);
+  const { showModal } = useModal();
 
   useEffect(() => {
     // 여러 번 실행 방지
@@ -21,8 +23,7 @@ const GoogleDeleteCallback = ({ setUser }) => {
     const state = query.get("state"); // 구글도 state를 쓸 수 있지만, 여기서는 옵션
 
     if (!code) {
-      alert("구글 인가 코드가 없습니다.");
-      navigate("/profile", { replace: true });
+      showModal("구글 인가 코드가 없습니다.", "/profile");
       return;
     }
 
@@ -40,11 +41,10 @@ const GoogleDeleteCallback = ({ setUser }) => {
         if (setUser) setUser(null);
 
         // 3) 탈퇴 완료 페이지로 이동
-        navigate("/delete-complete", { replace: true });
+        showModal("구글 회원탈퇴가 완료되었습니다.", "/delete-complete");
       } catch (err) {
         console.error("구글 회원탈퇴 실패:", err);
-        alert("구글 회원탈퇴 중 오류가 발생했습니다.");
-        navigate("/profile", { replace: true });
+        showModal("구글 회원탈퇴 중 오류가 발생했습니다.", "/profile");
       }
     })();
   }, [location.search, navigate, setUser]);

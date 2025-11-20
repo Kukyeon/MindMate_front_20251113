@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import api from "../api/axiosConfig";
 import html2canvas from "html2canvas";
 import { authHeader, authHeader as getAuthHeader } from "../api/authApi";
+import { useModal } from "../context/ModalContext";
 
 function DailyTest({ user }) {
   const [testData, setTestData] = useState("");
@@ -10,6 +11,7 @@ function DailyTest({ user }) {
   const [selected, setSelected] = useState(null);
   const [result, setResult] = useState("");
   const resultRef = useRef(null);
+  const { showModal } = useModal();
   const [loading, setLoading] = useState(false);
   const mbti = user?.mbti;
 
@@ -64,7 +66,7 @@ function DailyTest({ user }) {
       setChoices(lines.filter((l) => /^[A-D]:/.test(l)));
     } catch (error) {
       console.error("테스트 생성 실패:", error);
-      alert("서버 연결에 문제가 있거나, 데이터가 올바르지 않습니다.");
+      showModal("서버 연결에 문제가 있거나, 데이터가 올바르지 않습니다.");
     } finally {
       setLoading(false);
     }
@@ -86,7 +88,7 @@ function DailyTest({ user }) {
       setSelected(selectedAnswer);
     } catch (error) {
       console.error("결과 전송 실패:", error);
-      alert("결과 생성 중 오류가 발생했습니다.");
+      showModal("결과 생성 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }
@@ -99,8 +101,8 @@ function DailyTest({ user }) {
       MindMate - 감정 일기
       http://localhost:3000/daily`
       )
-      .then(() => alert("결과가 복사되었습니다!"))
-      .catch(() => alert("복사 실패"));
+      .then(() => showModal("결과가 복사되었습니다!"))
+      .catch(() => showModal("복사 실패"));
   };
   const shareKakao = () => {
     const text = encodeURIComponent(result);
