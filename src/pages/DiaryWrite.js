@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createDiary, fetchDiaryByDate } from "../api/diaryApi";
+// import { createDiary, fetchDiaryByDate } from "../api/diaryApi";
 import { authHeader, getUser } from "../api/authApi";
 import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
 import api from "../api/axiosConfig";
+import { createDiaryWithImage } from "../api/diaryApi";
+import { fetchDiaryByDate } from "../api/diaryApi";
 import { useModal } from "../context/ModalContext";
-
 export default function DiaryWritePage() {
+  
   const location = useLocation();
   const navigate = useNavigate();
   const { showModal } = useModal();
@@ -17,6 +19,7 @@ export default function DiaryWritePage() {
   const [emoji, setEmoji] = useState(null); // 반드시 선택하도록 null 초기값
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [image, setImage] = useState(null);
 
   // 에러 상태
   const [errors, setErrors] = useState({ title: "", content: "", emoji: "" });
@@ -62,6 +65,10 @@ export default function DiaryWritePage() {
     loadDiary();
   }, [date, user?.accessToken]);
 
+  const handleFileChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -90,15 +97,19 @@ export default function DiaryWritePage() {
     setIsSaving(true);
 
     try {
-      // 서버 저장
-      await createDiary({
-        title,
-        content,
-        userId: user.userId,
-        nickname: user.nickname,
-        date,
-        emoji,
-      });
+  setIsSaving(true);
+
+  const diaryData = { 
+    title, 
+    content, 
+    userId: user.userId, 
+    nickname: user.nickname, 
+    date, 
+    emoji 
+  };
+
+  // JSON + 이미지 함께 서버로 전송
+  await createDiaryWithImage(diaryData, image);
 
       // 캐릭터 처리
       const headers = await authHeader();
@@ -168,10 +179,13 @@ export default function DiaryWritePage() {
           {errors.content && <p className="diary-error">{errors.content}</p>}
         </div>
 
-        <div className="emoji-picker-wrapper">
-          <DiaryEmojiPicker selectedEmoji={emoji} onSelectEmoji={setEmoji} />
-          {errors.emoji && <p className="diary-error">{errors.emoji}</p>}
-        </div>
+    <input type="file" accept="image/*" onChange={handleFileChange} />
+    {image && <img src={URL.createObjectURL(image)} alt="미리보기" width={200} />}
+    
+    <div className="emoji-picker-wrapper">
+      <DiaryEmojiPicker selectedEmoji={emoji} onSelectEmoji={setEmoji} />
+      {errors.emoji && <p className="diary-error">{errors.emoji}</p>}
+    </div>
 
         <div className="diary-write-buttons">
           <button type="submit">저장</button>
