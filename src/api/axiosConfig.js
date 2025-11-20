@@ -34,19 +34,32 @@ const isTokenRefreshRequire = (error) => {
   // 응답X === 재시도X
   if (!error?.response) return false;
 
-  const originalRequest = error?.config; // 실패한 요청
-  const statusCode = error?.response?.status; // 상태코드
+  const originalRequest = error.config || {}; // 실패한 요청
+  const statusCode = error.response.status; // 상태코드
+  const url = originalRequest?.url || "";
 
-  const isFromRefresh = // 리프레시 요청은 예외처리
-    typeof originalRequest?.url === "string" &&
-    originalRequest.url.includes("/api/auth/refresh");
-
-  const isAuthFailure = statusCode === 401 || statusCode === 403; // 상태코드 체크
-
+  // 리프레시 요청에서 401 오류 발생시, 리프레시 시도 X
+  const isFromRefresh = url.includes("/api/auth/refresh");
   const firstTime = !originalRequest?._retry; // 리프레시 무한루프 방지
 
+  // Authorization 헤더가 붙은 요청만 리프레시 대상
+  const headers = originalRequest.headers || {};
+  const authHeader = headers.Authorization || headers.authorization;
+  const hasAuthHeader = typeof authHeader === "string";
+
+  // 에러 발생시, message 체크;
+  const message = error.response.data?.message;
+  // 메세지 "Access token expired" => 토큰 관련 이슈
+  const isAccessTokenExpired = message === "Access token expired";
+
   // 모든 조건 충족시 true 리턴
-  return isAuthFailure && firstTime && !isFromRefresh;
+  return (
+    statusCode === 401 &&
+    firstTime &&
+    !isFromRefresh &&
+    hasAuthHeader &&
+    isAccessTokenExpired
+  );
 };
 
 // 리프레시 상태 (true => accessToken 재발급중)
