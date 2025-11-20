@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
-import { fetchDiaryByDate, updateDiaryByDate } from "../api/diaryApi";
+import { fetchDiaryByDate, updateDiaryWithImage } from "../api/diaryApi"; // Multipart용 API
 
 export default function DiaryEditor() {
   const { date } = useParams();
   const navigate = useNavigate();
 
   const [emoji, setEmoji] = useState(null);
-  const [diary, setDiary] = useState({ title: "", content: "", username: "" });
+  const [diary, setDiary] = useState({ title: "", content: "", username: "", imageUrl: "" });
+  const [imageFile, setImageFile] = useState(null); // 새 이미지
   const [errors, setErrors] = useState({ title: "", content: "", emoji: "" });
+  const [previewUrl, setPreviewUrl] = useState(diary.imageUrl || "");
 
-  // ==========================
-  // 기존 일기 불러오기
-  // ==========================
+
   useEffect(() => {
     if (!date) return;
 
@@ -28,7 +28,6 @@ export default function DiaryEditor() {
         if (status === 404) alert("해당 날짜에 작성된 일기가 없습니다.");
         else if (status === 403) alert("로그인이 필요합니다.");
         else alert("일기 조회 실패");
-
         navigate("/diary/calendar");
       }
     };
@@ -36,74 +35,85 @@ export default function DiaryEditor() {
     fetchDiary();
   }, [date, navigate]);
 
-  // ==========================
-  // 입력값 변경
-  // ==========================
   const handleChange = (e) => {
     setDiary({ ...diary, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  // ==========================
-  // 저장
-  // ==========================
+  // 이미지 선택
+const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    setImageFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  }
+};
+
   const handleSave = async (e) => {
     e.preventDefault();
+// -------------------------
+  // 유효성 검사
+  // -------------------------
+  let newErrors = { title: "", content: "", emoji: "" };
 
-    let newErrors = { title: "", content: "", emoji: "" };
+  if (!diary.title.trim()) newErrors.title = "제목을 입력해 주세요";
+  else if (diary.title.trim().length < 5)
+    newErrors.title = "글 제목은 최소 5글자 이상이어야 합니다.";
 
-    if (!diary.title.trim()) newErrors.title = "제목을 입력해 주세요";
-    else if (diary.title.trim().length < 5)
-      newErrors.title = "글 제목은 최소 5글자 이상이어야 합니다.";
+  if (!diary.content.trim()) newErrors.content = "내용을 입력해 주세요";
+  else if (diary.content.trim().length < 5)
+    newErrors.content = "글 내용은 최소 5글자 이상이어야 합니다.";
 
-    if (!diary.content.trim()) newErrors.content = "내용을 입력해 주세요";
-    else if (diary.content.trim().length < 5)
-      newErrors.content = "글 내용은 최소 5글자 이상이어야 합니다.";
+  if (!emoji) newErrors.emoji = "감정을 선택해 주세요";
 
-    if (!emoji) newErrors.emoji = "감정을 선택해 주세요";
+  setErrors(newErrors);
+  if (newErrors.title || newErrors.content || newErrors.emoji) return;
 
-    setErrors(newErrors);
-
-    // 에러 있으면 중단
-    if (newErrors.title || newErrors.content || newErrors.emoji) return;
-
-    const { id, type, imageUrl } = emoji;
+  // -------------------------
+  // FormData 준비 (JSON + 이미지)
+  // -------------------------
+  try {
+    const formData = new FormData();
     const dataToSend = {
-      title: diary.title,
-      content: diary.content,
-      emoji: { id, type, imageUrl },
-    };
+  title: diary.title.trim() || undefined,
+  content: diary.content.trim() || undefined,
+  emoji: emoji || undefined,  // id, type, imageUrl 전체 포함
+};
+formData.append("data", JSON.stringify(dataToSend));
+if (imageFile) formData.append("image", imageFile);
 
-    try {
-      await updateDiaryByDate(date, dataToSend);
-      alert("수정되었습니다.");
-      navigate("/diary/calendar", { state: { selectedDate: date } });
-    } catch (error) {
-      console.error("❌ handleSave 오류:", error);
-      const status = error.response?.status;
+    // -------------------------
+    // API 호출 (백엔드가 Multipart 지원)
+    // -------------------------
+    await updateDiaryWithImage(date, dataToSend, imageFile);
 
-      if (status === 400) {
-        const serverErrors = error.response?.data?.errors;
-        if (serverErrors) {
-          setErrors(serverErrors);
-          return;
-        }
-        alert("입력값이 올바르지 않습니다.");
-      } else if (status === 403) {
-        alert("권한이 없습니다. 다시 로그인 해주세요!");
-        navigate("/login");
-      } else {
-        alert("수정 중 오류가 발생했습니다.");
+    alert("수정되었습니다.");
+    navigate("/diary/calendar", { state: { selectedDate: date } });
+  } catch (error) {
+    console.error("❌ handleSave 오류:", error);
+    const status = error.response?.status;
+
+    if (status === 400) {
+      const serverErrors = error.response?.data?.errors;
+      if (serverErrors) {
+        setErrors(serverErrors);
+        return;
       }
+      alert("입력값이 올바르지 않습니다.");
+    } else if (status === 403) {
+      alert("권한이 없습니다. 다시 로그인 해주세요!");
+      navigate("/login");
+    } else {
+      alert("수정 중 오류가 발생했습니다.");
     }
-  };
+  }
+};
 
   return (
     <div className="diary-editor-card">
       <h2>✏️ {date} 일기 수정</h2>
 
       <form onSubmit={handleSave}>
-        
         {/* 제목 */}
         <div className="editor-field">
           <label>제목</label>
@@ -134,6 +144,19 @@ export default function DiaryEditor() {
           <DiaryEmojiPicker selectedEmoji={emoji} onSelectEmoji={setEmoji} />
           {errors.emoji && <p className="diary-error">{errors.emoji}</p>}
         </div>
+
+        {/* 이미지 업로드 */}
+         <div className="editor-field">
+        <label>첨부 이미지</label>
+        <input type="file" accept="image/*" onChange={handleImageChange} />
+        {previewUrl && (
+          <img
+            src={previewUrl}
+            alt="Preview"
+            style={{ maxWidth: "200px", marginTop: "8px" }}
+          />
+        )}
+      </div>
 
         <div className="diary-editor-buttons">
           <button type="submit">저장</button>

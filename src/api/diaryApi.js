@@ -31,6 +31,7 @@ export const createDiaryWithImage = (data, imageFile) => {
     headers: { ...getAuthHeader(), "Content-Type": "multipart/form-data" },
   });
 };
+
 // 월별 일기 조회 (캘린더용)
 export const fetchDiariesByMonth = (year, month) =>
   api.get(`/api/diary/month`, {
@@ -38,9 +39,19 @@ export const fetchDiariesByMonth = (year, month) =>
     headers: getAuthHeader(),
   });
 
-//일기 수정
-export const updateDiaryByDate = (date, data) =>
-  api.put(`/api/diary/date?date=${date}`, data, { headers: getAuthHeader() });
+// 일기 수정 (이미지 포함)
+export const updateDiaryWithImage = (date, data, imageFile) => {
+  const formData = new FormData();
+  formData.append("data", JSON.stringify(data));
+  if (imageFile) formData.append("image", imageFile);
+
+  return api.put("/api/diary/with-image?date=" + date, formData, {
+    headers: { 
+      ...getAuthHeader(), 
+      "Content-Type": "multipart/form-data" 
+    },
+  });
+};
 
 //일기 삭제
 export const deleteDiaryByDate = (date) =>
