@@ -81,6 +81,15 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
       )}
     </div>
 
+    {/* 첨부 이미지 */}
+  {diary.imageUrl && (
+    <div className="diary-image">
+      <img src={`http://localhost:8888${diary.imageUrl}`} alt="Diary" style={{ maxWidth: "50%", marginTop: "12px" }} />
+     {/*배포시에는 <img src={`${process.env.REACT_APP_API_URL}${diary.imageUrl}`} alt="Diary" />
+     REACT_APP_API_URL=http://localhost:8888 */}
+    </div>
+  )}
+
     <div className="diary-content">{diary.content}</div>
 
     {diary.aiComment && (

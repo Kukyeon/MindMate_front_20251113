@@ -18,9 +18,19 @@ export const fetchDiaryByDate = (date) =>
   api.get(`/api/diary/date`, { params: { date }, headers: getAuthHeader() });
 
 // 일기 작성
-export const createDiary = (data) =>
-  api.post(`/api/diary`, data, { headers: getAuthHeader() });
+export const createDiaryWithImage = (data, imageFile) => {
+  const formData = new FormData();
 
+  // JSON 데이터를 문자열로 변환
+  formData.append("data", JSON.stringify(data));
+
+  // 이미지 파일 추가
+  if (imageFile) formData.append("image", imageFile);
+
+  return api.post("/api/diary/with-image", formData, {
+    headers: { ...getAuthHeader(), "Content-Type": "multipart/form-data" },
+  });
+};
 // 월별 일기 조회 (캘린더용)
 export const fetchDiariesByMonth = (year, month) =>
   api.get(`/api/diary/month`, {
