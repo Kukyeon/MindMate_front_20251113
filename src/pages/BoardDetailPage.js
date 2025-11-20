@@ -166,7 +166,6 @@ const BoardDetailPage = ({ user }) => {
           />
         </div>
       )}
-
       {/* 하단 목록 버튼 */}
       <button className="board-btn back" onClick={() => navigate("/boards")}>
         목록으로
