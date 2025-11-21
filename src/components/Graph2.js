@@ -103,17 +103,19 @@ const Graph = ({ user }) => {
         setDailyData(res.data.dailyEmotions || []);
 
         const counts = res.data.weeklyCounts || [];
+        const filteredCounts = counts.filter((cur) => cur.emojiName !== "unknown");
+        const total = filteredCounts.reduce((sum, cur) => sum + cur.count, 0);
         setWeeklyCounts(
-          counts.reduce((acc, cur) => {
+          filteredCounts.reduce((acc, cur) => {
             acc[cur.emojiName] = cur.count;
             return acc;
           }, {})
         );
-
-        const total = counts.reduce((sum, cur) => sum + cur.count, 0);
+        
         const percent = {};
-        counts.forEach((cur) => {
-          percent[cur.emojiName] = total > 0 ? (cur.count / total) * 100 : 0;
+        filteredCounts.forEach((cur) => {
+          percent[cur.emojiName] =
+            total > 0 ? (cur.count / total) * 100 : 0;
         });
         setWeeklyPercent(percent);
 
@@ -428,7 +430,7 @@ const Graph = ({ user }) => {
         {sortedEmotions.map((emotion) => {
           const percent = weeklyPercent[emotion];
           const emo = emojiList.find((e) => e.type === emotion);
-          if (!emo) return null;
+          if (!emo || emo.type === "unknown") return null;
           return (
             <div
               key={emotion}
