@@ -17,6 +17,7 @@ export const emojiList = [
   { id: 13, type: "shock", image: "/emojis/shock.png" },
   { id: 14, type: "unwell", image: "/emojis/unwell.png" },
   { id: 15, type: "anger", image: "/emojis/anger.png" },
+  { id: 16, type: "unknown", image: "/emojis/unknown.png" },
 ];
 
 //  게시글 이모지 토글
