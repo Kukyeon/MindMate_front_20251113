@@ -14,6 +14,29 @@ function DailyTest({ user }) {
   const { showModal } = useModal();
   const [loading, setLoading] = useState(false);
   const mbti = user?.mbti;
+  const [percent, setPercent] = useState(0);
+
+  useEffect(() => {
+    if (!loading) {
+      setPercent(0);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setPercent((prev) => {
+        if (prev >= 95) return prev;
+        return prev + (95 - prev) * 0.05; // 남은 만큼 5%씩 증가
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [loading]);
+
+  const onAIResult = (resultText) => {
+    setPercent(100); // 100%로 완료
+    setResult(resultText);
+    setLoading(false);
+  };
 
   console.log(mbti);
   console.log(user.userId);
@@ -152,12 +175,20 @@ function DailyTest({ user }) {
           {user?.nickname} 님의 MBTI는 :{" "}
           <span className="mbti">{user?.mbti}</span>
         </h4>
-
         {loading && (
-          <p className="daily-test-status">
-            🤖 AI가 생각 중이에요... 잠시만요!
-          </p>
+          <div className="daily-test-loading">
+            <div className="loading-image"></div>
+
+            <div className="loading-bar-container">
+              <div
+                className="loading-bar-fill"
+                style={{ width: `${percent}%` }}
+              ></div>
+            </div>
+            <p>Loading...</p>
+          </div>
         )}
+
         {!testData && (
           <button
             className="daily-test-button"

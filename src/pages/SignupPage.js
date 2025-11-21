@@ -11,7 +11,6 @@ import { getUser } from "../api/authApi";
 import { requestEmailCode } from "../api/emailApi";
 import { useModal } from "../context/ModalContext";
 
-
 const SignupPage = ({ setUser }) => {
   const navigate = useNavigate();
   const { showModal } = useModal();
@@ -189,7 +188,9 @@ const SignupPage = ({ setUser }) => {
       if (setUser && user) {
         setUser(user);
       }
-      navigate("/profile/set", { replace: true });
+      showModal("회원가입이 완료되었습니다!", () => {
+        navigate("/profile/set", { replace: true });
+      });
     } catch (err) {
       if (err.response && err.response.status === 422) {
         showModal("이메일 인증코드가 틀렸거나 만료되었습니다.");
