@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../api/axiosConfig";
 import html2canvas from "html2canvas";
-import { authHeader, authHeader as getAuthHeader } from "../api/authApi";
+import { authHeader as getAuthHeader } from "../api/authApi";
 import { useModal } from "../context/ModalContext";
+import LoadingBar from "./LoadingBar";
 
 function DailyTest({ user }) {
   const [testData, setTestData] = useState("");
@@ -14,29 +15,6 @@ function DailyTest({ user }) {
   const { showModal } = useModal();
   const [loading, setLoading] = useState(false);
   const mbti = user?.mbti;
-  const [percent, setPercent] = useState(0);
-
-  useEffect(() => {
-    if (!loading) {
-      setPercent(0);
-      return;
-    }
-
-    const interval = setInterval(() => {
-      setPercent((prev) => {
-        if (prev >= 95) return prev;
-        return prev + (95 - prev) * 0.05; // 남은 만큼 5%씩 증가
-      });
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, [loading]);
-
-  const onAIResult = (resultText) => {
-    setPercent(100); // 100%로 완료
-    setResult(resultText);
-    setLoading(false);
-  };
 
   console.log(mbti);
   console.log(user.userId);
@@ -176,25 +154,27 @@ function DailyTest({ user }) {
           <span className="mbti">{user?.mbti}</span>
         </h4>
         {loading && (
-          <div className="daily-test-loading">
-            <div className="loading-image"></div>
-
-            <div className="loading-bar-container">
-              <div
-                className="loading-bar-fill"
-                style={{ width: `${percent}%` }}
-              ></div>
-            </div>
-            <p>Loading...</p>
-          </div>
+          <LoadingBar
+            loading={loading}
+            message="🤖 AI가 테스트를 생성중이에요..."
+          />
         )}
 
-        {!testData && (
+        {!loading ? (
           <button
             className="daily-test-button"
             onClick={() => generateTest(mbti)}
           >
             테스트 생성하기
+          </button>
+        ) : (
+          <button className="daily-test-button loading" disabled>
+            <div className="dot-loader">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            생성 중
           </button>
         )}
         {question && (

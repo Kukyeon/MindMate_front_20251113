@@ -1,6 +1,7 @@
 import { useState } from "react";
 import api from "../api/axiosConfig";
 import { authHeader as getAuthHeader } from "../api/authApi";
+import LoadingBar from "./LoadingBar";
 
 const Fortune = ({ user }) => {
   const [fortune, setFortune] = useState("");
@@ -89,16 +90,28 @@ const Fortune = ({ user }) => {
       <div className="fortune-card">
         <h2 className="fortune-title">오늘의 운세</h2>
         <p className="fortune-birth">생년월일: {birth}</p>
+        {loading && (
+          <LoadingBar loading={loading} message="🤖 AI가 운세를 준비 중..." />
+        )}
         <button
           className="fortune-button"
           onClick={todayLuck}
           disabled={loading}
         >
-          {loading
-            ? "🤖 AI가 운세를 준비 중..."
-            : fortune
-            ? "한 번 더 확인!"
-            : "확인하기!"}
+          {loading ? (
+            <>
+              <div className="dot-loader">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              생성 중
+            </>
+          ) : fortune ? (
+            "한 번 더 확인!"
+          ) : (
+            "확인하기!"
+          )}
         </button>
 
         {fortune && (

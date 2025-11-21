@@ -51,6 +51,19 @@
     transform: scaleX(1);
   }
 }
+.graph-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.8); /* 반투명 배경 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
 
 .emotion-segment {
   display: flex;
@@ -202,7 +215,11 @@
   display: flex;
   gap: 6px;
 }
-
+.date-select-container .graph-actions button {
+  /* padding: 0 auto; */
+  font-size: 1.2rem;
+  font-weight: 500;
+}
 .quick-select button {
   padding: 6px 10px;
   background-color: #f2d6c2;
@@ -225,6 +242,36 @@
 .quick-select button:hover {
   background-color: #e6bca1;
 }
+.loading-dots span {
+  animation: blink 1.4s infinite;
+  opacity: 0;
+  margin: 0 1px;
+  font-weight: bold;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (max-width: 480px) {
   .graph-container {
     max-width: 95%;

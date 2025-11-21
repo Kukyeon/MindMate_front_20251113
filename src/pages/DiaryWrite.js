@@ -7,6 +7,7 @@ import api from "../api/axiosConfig";
 import { createDiaryWithImage, recommendEmoji } from "../api/diaryApi";
 import { fetchDiaryByDate } from "../api/diaryApi";
 import { useModal } from "../context/ModalContext";
+import LoadingBar from "../components/LoadingBar";
 export default function DiaryWritePage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -153,7 +154,13 @@ export default function DiaryWritePage() {
   if (!date) return <div>날짜 정보 확인 중...</div>;
 
   return (
-    <div className="diary-write-card">
+    <div className="diary-write-card" style={{ position: "relative" }}>
+      {isSaving && (
+        <div className="graph-loading-overlay">
+          <LoadingBar loading={true} message="🤖 AI가 답변 중..." />
+        </div>
+      )}
+
       <h2>📝 {date} 일기 작성</h2>
 
       <form onSubmit={handleSubmit}>
@@ -176,10 +183,32 @@ export default function DiaryWritePage() {
           {errors.content && <p className="diary-error">{errors.content}</p>}
         </div>
 
-        <input type="file" accept="image/*" onChange={handleFileChange} />
-        {image && (
-          <img src={URL.createObjectURL(image)} alt="미리보기" width={200} />
-        )}
+        <div className="editor-field">
+          {/* 숨긴 input */}
+          <input
+            type="file"
+            id="customFileInput"
+            accept="image/*"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
+
+          {/* 커스텀 버튼 */}
+          <label htmlFor="customFileInput" className="custom-file-button">
+            이미지 첨부
+          </label>
+
+          {/* 미리보기 */}
+          {image ? (
+            <img
+              src={URL.createObjectURL(image)}
+              alt="미리보기"
+              className="image-preview"
+            />
+          ) : (
+            <p className="no-image-text">첨부파일 없음</p>
+          )}
+        </div>
         <div className="diary-write-buttons">
           <button type="submit">저장</button>
           <button type="button" onClick={() => navigate(-1)}>

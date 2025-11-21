@@ -16,6 +16,7 @@ import { authHeader as getAuthHeader } from "../api/authApi";
 import { useModal } from "../context/ModalContext";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import LoadingBar from "./LoadingBar";
 
 ChartJS.register(
   CategoryScale,
@@ -171,64 +172,70 @@ const Graph = ({ user }) => {
       curr.setDate(curr.getDate() + 1);
     }
   }
- const exportXLS = async () => {
-  if (!startDate || !endDate) {
-    showModal("조회할 기간을 먼저 선택해주세요.");
-    return;
-  }
-
-  const headers = user ? await getAuthHeader() : {};
-  if (!headers.Authorization) {
-    showModal("로그인이 필요합니다.");
-    return;
-  }
-
-  try {
-    const res = await api.get("/api/diary/week/csv", {
-      params: { start: startDate, end: endDate },
-      headers,
-    });
-
-    const data = res.data;
-    if (!data || data.length === 0) {
-      showModal("내보낼 데이터가 없습니다.");
+  const exportXLS = async () => {
+    if (!startDate || !endDate) {
+      showModal("조회할 기간을 먼저 선택해주세요.");
       return;
     }
 
-    // 워크시트용 데이터 생성
-    const worksheetData = data.map((d) => ({
-      Date: d.date,
-      Nickname: d.nickname,
-      Title: d.title,
-      Content: d.content,
-      EmojiType: d.emojiType,
-      AIComment: d.aiComment,
-    }));
+    const headers = user ? await getAuthHeader() : {};
+    if (!headers.Authorization) {
+      showModal("로그인이 필요합니다.");
+      return;
+    }
 
-    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    try {
+      const res = await api.get("/api/diary/week/csv", {
+        params: { start: startDate, end: endDate },
+        headers,
+      });
 
-    // 열 너비 자동 맞춤 (Excel 열 너비)
-    const colWidths = Object.keys(worksheetData[0]).map((key) => ({
-      wch: Math.max(
-        key.length,
-        ...worksheetData.map((row) => (row[key] ? row[key].toString().length : 0))
-      ),
-    }));
-    worksheet["!cols"] = colWidths;
+      const data = res.data;
+      if (!data || data.length === 0) {
+        showModal("내보낼 데이터가 없습니다.");
+        return;
+      }
 
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Diary");
+      // 워크시트용 데이터 생성
+      const worksheetData = data.map((d) => ({
+        Date: d.date,
+        Nickname: d.nickname,
+        Title: d.title,
+        Content: d.content,
+        EmojiType: d.emojiType,
+        AIComment: d.aiComment,
+      }));
 
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+      const worksheet = XLSX.utils.json_to_sheet(worksheetData);
 
-    saveAs(blob, `diary_${startDate}_to_${endDate}.xlsx`);
-  } catch (err) {
-    console.error(err);
-    showModal("XLS 다운로드 중 오류가 발생했습니다.");
-  }
-};
+      // 열 너비 자동 맞춤 (Excel 열 너비)
+      const colWidths = Object.keys(worksheetData[0]).map((key) => ({
+        wch: Math.max(
+          key.length,
+          ...worksheetData.map((row) =>
+            row[key] ? row[key].toString().length : 0
+          )
+        ),
+      }));
+      worksheet["!cols"] = colWidths;
 
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Diary");
+
+      const excelBuffer = XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "array",
+      });
+      const blob = new Blob([excelBuffer], {
+        type: "application/octet-stream",
+      });
+
+      saveAs(blob, `diary_${startDate}_to_${endDate}.xlsx`);
+    } catch (err) {
+      console.error(err);
+      showModal("XLS 다운로드 중 오류가 발생했습니다.");
+    }
+  };
 
   const yValues = labels.map((date) => {
     const entry = dailyData.find((d) => d.date === date);
@@ -367,10 +374,6 @@ const Graph = ({ user }) => {
             </select>
           </div>
 
-     <div className="graph-actions">
-        <button onClick={exportXLS}>엑셀로 내보내기</button>
-      </div>
-
           {/* 날짜 지정 */}
           <div className="date-inputs">
             <label>
@@ -400,6 +403,9 @@ const Graph = ({ user }) => {
             </label>
 
             <button onClick={() => setFetchTrigger(true)}>조회</button>
+            <div className="graph-actions">
+              <button onClick={exportXLS}>Excel</button>
+            </div>
           </div>
         </div>
 
@@ -417,7 +423,12 @@ const Graph = ({ user }) => {
       {/* ✅ 그래프 영역 조건부 렌더링 */}
       <div style={{ position: "relative", height: "500px", width: "100%" }}>
         {loading ? (
-          <div className="loading-graph">데이터를 불러오는 중입니다...</div>
+          <div className="graph-loading-overlay">
+            <LoadingBar
+              loading={loading}
+              message="🤖 AI가 통계를 생성하고 있어요..."
+            />
+          </div>
         ) : dailyData.length > 0 ? (
           <Line data={lineData} options={options} />
         ) : (
@@ -448,7 +459,22 @@ const Graph = ({ user }) => {
         })}
       </div>
 
-      <div className="ai-comment-card">{aiComment}</div>
+      <div className="ai-comment-card">
+        {loading ? (
+          <span>
+            AI가 통계를 생성 중
+            <span className="loading-dots">
+              <span>.</span>
+              <span>.</span>
+              <span>.</span>
+            </span>
+          </span>
+        ) : aiComment ? (
+          aiComment
+        ) : (
+          "일기를 작성하면 AI가 감정을 분석해 코멘트를 남겨줍니다."
+        )}
+      </div>
     </div>
   );
 };
