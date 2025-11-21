@@ -3,18 +3,18 @@ import { replace, useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { getUser, saveAuth } from "../api/authApi";
 import { handleSocialLoginError } from "../api/socialErrorHandler";
+import { useModal } from "../context/ModalContext";
 
 const KakaoCallback = ({ setUser }) => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const { showModal } = useModal();
   useEffect(() => {
     const query = new URLSearchParams(location.search);
     const code = query.get("code");
 
     if (!code) {
-      alert("카카오 인가 코드가 없습니다.");
-      navigate("/login", { replace: true });
+      showModal("카카오 인가 코드가 없습니다.", "/login");
       return;
     }
 
@@ -42,11 +42,15 @@ const KakaoCallback = ({ setUser }) => {
         }
 
         if (!user.nickname) {
-          navigate("/profile", { replace: true }); // 소셜 첫 가입 → 프로필 설정
+          showModal(
+            `${user.username}님, 환영합니다! 프로필을 설정해주세요.`,
+            "/profile"
+          );
         } else {
-          navigate("/", { replace: true });
+          showModal(`${user.nickname}님, 다시 만나서 반가워요!`, "/");
         }
       } catch (err) {
+        showModal("네이버 로그인 처리 중 오류가 발생했습니다.", "/login");
         handleSocialLoginError(err, navigate);
       }
     })();

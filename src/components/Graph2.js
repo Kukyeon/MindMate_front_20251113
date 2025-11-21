@@ -13,6 +13,9 @@ import api from "../api/axiosConfig";
 import { emojiList } from "../api/emojiApi";
 import "./Graph.css";
 import { authHeader as getAuthHeader } from "../api/authApi";
+import { useModal } from "../context/ModalContext";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 ChartJS.register(
   CategoryScale,
@@ -52,6 +55,7 @@ const emotionColors = {
 };
 
 const Graph = ({ user }) => {
+  const { showModal } = useModal();
   const [dailyData, setDailyData] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -116,7 +120,7 @@ const Graph = ({ user }) => {
         setAiComment(res.data.aiComment || "");
       } catch (err) {
         console.error("데이터 불러오기 실패", err);
-        alert("데이터를 불러오는데 실패했습니다.");
+        showModal("데이터를 불러오는데 실패했습니다.");
       } finally {
         setLoading(false);
         setFetchTrigger(false);
@@ -165,6 +169,64 @@ const Graph = ({ user }) => {
       curr.setDate(curr.getDate() + 1);
     }
   }
+ const exportXLS = async () => {
+  if (!startDate || !endDate) {
+    showModal("조회할 기간을 먼저 선택해주세요.");
+    return;
+  }
+
+  const headers = user ? await getAuthHeader() : {};
+  if (!headers.Authorization) {
+    showModal("로그인이 필요합니다.");
+    return;
+  }
+
+  try {
+    const res = await api.get("/api/diary/week/csv", {
+      params: { start: startDate, end: endDate },
+      headers,
+    });
+
+    const data = res.data;
+    if (!data || data.length === 0) {
+      showModal("내보낼 데이터가 없습니다.");
+      return;
+    }
+
+    // 워크시트용 데이터 생성
+    const worksheetData = data.map((d) => ({
+      Date: d.date,
+      Nickname: d.nickname,
+      Title: d.title,
+      Content: d.content,
+      EmojiType: d.emojiType,
+      AIComment: d.aiComment,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+
+    // 열 너비 자동 맞춤 (Excel 열 너비)
+    const colWidths = Object.keys(worksheetData[0]).map((key) => ({
+      wch: Math.max(
+        key.length,
+        ...worksheetData.map((row) => (row[key] ? row[key].toString().length : 0))
+      ),
+    }));
+    worksheet["!cols"] = colWidths;
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Diary");
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+
+    saveAs(blob, `diary_${startDate}_to_${endDate}.xlsx`);
+  } catch (err) {
+    console.error(err);
+    showModal("XLS 다운로드 중 오류가 발생했습니다.");
+  }
+};
+
 
   const yValues = labels.map((date) => {
     const entry = dailyData.find((d) => d.date === date);
@@ -295,6 +357,10 @@ const Graph = ({ user }) => {
               })}
             </select>
           </div>
+
+     <div className="graph-actions">
+        <button onClick={exportXLS}>엑셀로 내보내기</button>
+      </div>
 
           {/* 날짜 지정 */}
           <div className="date-inputs">

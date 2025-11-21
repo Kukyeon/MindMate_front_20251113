@@ -6,10 +6,12 @@ import CommentForm from "../components/comment/CommentForm";
 import CommentList from "../components/comment/CommentList";
 import HashtagList from "../components/detail/HashtagList";
 import { authHeader } from "../api/authApi";
+import { useModal } from "../context/ModalContext";
 
 const BoardDetailPage = ({ user }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { showModal } = useModal();
   const commentListRef = useRef();
 
   const [board, setBoard] = useState(null);
@@ -27,30 +29,28 @@ const BoardDetailPage = ({ user }) => {
       setBoard(res.data);
     } catch (err) {
       console.error("게시글 불러오기 실패:", err);
-      alert("게시글을 불러오지 못했습니다.");
-      navigate("/boards");
+      showModal("게시글을 불러오지 못했습니다.", "/boards");
     } finally {
       setLoading(false);
     }
   };
 
   const handleEdit = () => {
-    if (!userId) return alert("로그인이 필요합니다.");
+    if (!userId) return showModal("로그인이 필요합니다.");
     navigate(`/board/edit/${id}`);
   };
 
   const handleDelete = async () => {
-    if (!userId) return alert("로그인이 필요합니다.");
+    if (!userId) return showModal("로그인이 필요합니다.", "/login");
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
     try {
       const headers = await authHeader();
       await api.delete(`/api/boards/${id}`, { headers });
-      alert("삭제되었습니다.");
-      navigate("/boards");
+      showModal("삭제되었습니다.", "/boards");
     } catch (err) {
       console.error("게시글 삭제 실패:", err);
-      alert("삭제 실패");
+      showModal("삭제 실패");
     }
   };
 
@@ -64,15 +64,23 @@ const BoardDetailPage = ({ user }) => {
 
   // ✅ 해시태그 안전 처리
   let tagData = [];
+
   if (typeof board?.hashtags === "string") {
+    // 문자열이면 공백 기준 분리, '#'로 시작하는 것만 필터
     tagData = board.hashtags
-      .split(/[,\s]+/)
-      .map((t) => t.trim())
-      .filter((t) => t.startsWith("#"));
+      .trim() // 앞뒤 공백 제거
+      .split(/\s+/) // 연속 공백도 하나로 처리
+      .map((t) => t.trim()) // 각 태그 공백 제거
+      .filter((t) => t.startsWith("#") && t.length > 1);
   } else if (Array.isArray(board?.hashtags)) {
-    tagData = board.hashtags;
+    tagData = board.hashtags
+      .map((t) => t.trim())
+      .filter((t) => t.startsWith("#") && t.length > 1);
+  } else {
+    tagData = [];
   }
 
+  console.log("tagData:", tagData);
   // 수정·삭제 권한: 작성자 OR 관리자
   const canModify =
     userId && (board.writerId === user.userId || user.role === "ADMIN");
@@ -138,26 +146,27 @@ const BoardDetailPage = ({ user }) => {
         </div>
       </div>
       {/* 댓글 영역 */}
-      <div className="board-comment-section">
-        {user ? (
-          <CommentForm
-            userId={userId}
+      {board.writerRole !== "ADMIN" && (
+        <div className="board-comment-section">
+          {user ? (
+            <CommentForm
+              userId={userId}
+              boardId={board.id}
+              onCommentAdded={fetchBoard}
+            />
+          ) : (
+            <div className="comment-login-alert">
+              💬 댓글을 작성하려면 로그인하세요.
+            </div>
+          )}
+          <CommentList
             boardId={board.id}
-            onCommentAdded={fetchBoard}
+            userId={userId}
+            user={user}
+            ref={commentListRef}
           />
-        ) : (
-          <div className="comment-login-alert">
-            💬 댓글을 작성하려면 로그인하세요.
-          </div>
-        )}
-        <CommentList
-          boardId={board.id}
-          userId={userId}
-          user={user}
-          ref={commentListRef}
-        />
-      </div>
-
+        </div>
+      )}
       {/* 하단 목록 버튼 */}
       <button className="board-btn back" onClick={() => navigate("/boards")}>
         목록으로

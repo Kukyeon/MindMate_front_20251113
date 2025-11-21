@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchBoardDetail, updateBoard } from "../api/boardApi";
+import { useModal } from "../context/ModalContext";
 
 const BoardEditPage = ({ user }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { showModal } = useModal();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
@@ -31,15 +33,14 @@ const BoardEditPage = ({ user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!userId) return alert("로그인이 필요합니다.");
+    if (!userId) return showModal("로그인이 필요합니다.", "/login");
     try {
       await updateBoard(id, { title, content, userId });
       // await generateHashtags(id);
-      alert("게시글이 수정되었습니다!");
-      navigate(`/board/${id}`);
+      showModal("게시글이 수정되었습니다!", `/board/${id}`);
     } catch (err) {
       console.error("게시글 수정 실패:", err);
-      alert("수정 중 오류가 발생했습니다.");
+      showModal("수정 중 오류가 발생했습니다.");
     }
   };
 
