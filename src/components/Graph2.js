@@ -230,7 +230,14 @@ const Graph = ({ user }) => {
 
   const yValues = labels.map((date) => {
     const entry = dailyData.find((d) => d.date === date);
-    return entry ? entry.emojiId : null;
+    if (!entry) return null;
+
+  const emoji = emojiList.find((e) => e.id === entry.emojiId);
+
+  // unknown → 그래프에서 제거 (점 없음)
+  if (!emoji || emoji.type === "unknown") return null;
+
+  return entry.emojiId;
   });
   const days = labels.length;
   const isMobile = window.innerWidth <= 480;
@@ -243,7 +250,7 @@ const Graph = ({ user }) => {
     const entry = dailyData.find((d) => d.date === date);
     if (!entry) return null;
     const emoji = emojiList.find((e) => e.id === entry.emojiId);
-    if (!emoji) return null;
+     if (!emoji || emoji.type === "unknown") return null;
     const img = new Image();
     img.src = emoji.image;
     img.width = emojiSize;

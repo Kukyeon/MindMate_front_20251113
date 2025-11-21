@@ -16,7 +16,7 @@ export const emojiList = [
   { id: 12, type: "tears", image: "/emojis/tears.png" },
   { id: 13, type: "shock", image: "/emojis/shock.png" },
   { id: 14, type: "unwell", image: "/emojis/unwell.png" },
-  { id: 15, type: "anger", image: "/emojis/anger.png" },
+  { id: 15, type: "angry", image: "/emojis/angry.png" },
   { id: 16, type: "unknown", image: "/emojis/unknown.png" },
 ];
 
