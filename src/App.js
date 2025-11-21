@@ -70,8 +70,9 @@ export default function App() {
 
   return (
     <>
-      {!hideHeaderFooter && <Header user={user} setUser={setUser} />}
       <ModalProvider>
+        {!hideHeaderFooter && <Header user={user} setUser={setUser} />}
+
         <Routes>
           {/* 인덱스 */}
           {user ? (
