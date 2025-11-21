@@ -65,13 +65,21 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
       <h2>{diary.title}</h2>
 
       <div className="detail-meta">
-        <p><strong>작성자:</strong> {diary.nickname}</p>
-        <p><strong>작성일:</strong> {diary.date}</p>
+        <p>
+          <strong>작성자:</strong> {diary.nickname}
+        </p>
+        <p>
+          <strong>작성일:</strong> {diary.date}
+        </p>
         {diary.emoji && (
           <p>
             <strong>감정:</strong>{" "}
             <span className="diary-emoji">
-              <img src={diary.emoji.imageUrl} alt={diary.emoji.type} width="26" />
+              <img
+                src={diary.emoji.imageUrl}
+                alt={diary.emoji.type}
+                width="26"
+              />
             </span>
           </p>
         )}
@@ -89,10 +97,17 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
         </div>
       )}
 
-      {diary.aiComment && <p className="ai-comment">{diary.aiComment}</p>}
+      {diary.aiComment && (
+        <p className="ai-comment">
+          {diary.aiComment.replace(/영어단어:.*$/, "").trim()}
+        </p>
+      )}
 
       <div className="diary-buttons">
-        <button className="edit" onClick={() => navigate(`/diary/edit/${date}`)}>
+        <button
+          className="edit"
+          onClick={() => navigate(`/diary/edit/${date}`)}
+        >
           수정
         </button>
         <button className="delete" onClick={handleDelete}>

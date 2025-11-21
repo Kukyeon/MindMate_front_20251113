@@ -46,9 +46,9 @@ export const updateDiaryWithImage = (date, data, imageFile) => {
   if (imageFile) formData.append("image", imageFile);
 
   return api.put("/api/diary/with-image?date=" + date, formData, {
-    headers: { 
-      ...getAuthHeader(), 
-      "Content-Type": "multipart/form-data" 
+    headers: {
+      ...getAuthHeader(),
+      "Content-Type": "multipart/form-data",
     },
   });
 };
@@ -56,3 +56,11 @@ export const updateDiaryWithImage = (date, data, imageFile) => {
 //일기 삭제
 export const deleteDiaryByDate = (date) =>
   api.delete(`/api/diary/date/${date}`, { headers: getAuthHeader() });
+
+export const recommendEmoji = (content) => {
+  return api.post(
+    "/api/diary/emoji",
+    { content },
+    { headers: getAuthHeader() }
+  );
+};
