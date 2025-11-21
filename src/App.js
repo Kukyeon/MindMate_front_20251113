@@ -247,9 +247,9 @@ export default function App() {
           <Route
             path="/profile/set"
             element={
-              <PrivateRoute>
-                <ProfileSet setUser={setUser} user={user} />
-              </PrivateRoute>
+              //<PrivateRoute>
+              <ProfileSet setUser={setUser} user={user} />
+              //</PrivateRoute>
             }
           />
 

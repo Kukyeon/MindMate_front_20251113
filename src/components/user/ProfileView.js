@@ -71,6 +71,10 @@ const ProfileView = ({ setUser, user, setActiveTab }) => {
       <div className="edit-profile-card">
         {/* 폼 레이아웃 재사용 */}
         <div className="edit-profile-form profile-view">
+          <div className="profile-view-row">
+            <div className="profile-view-label">이메일</div>
+            <div className="profile-view-value">{user.email || "-"}</div>
+          </div>
           {/* 닉네임 */}
           <div className="profile-view-row">
             <div className="profile-view-label">닉네임</div>

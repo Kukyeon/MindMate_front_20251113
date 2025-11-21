@@ -1,11 +1,13 @@
 // src/context/ModalContext.js
 import { createContext, useContext, useState } from "react";
 import AlertModal from "../components/AlertModal";
+import { useNavigate } from "react-router-dom";
 
 const ModalContext = createContext();
 export const useModal = () => useContext(ModalContext);
 
 export const ModalProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [modalContent, setModalContent] = useState(null);
   const [navigatePath, setNavigatePath] = useState(null);
   const showModal = (message, path = null) => {
@@ -17,7 +19,7 @@ export const ModalProvider = ({ children }) => {
   const closeModal = () => {
     setModalContent(null);
     if (navigatePath) {
-      window.location.href = navigatePath;
+      navigate(navigatePath, { replace: true });
       setNavigatePath(null);
     }
   };
