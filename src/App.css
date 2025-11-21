@@ -68,7 +68,7 @@ body,
   color: #d18b60;
 }
 /* 로그아웃 버튼 링크처럼 보이게 */
-.nav button.logout-btn {
+/* .nav button.logout-btn {
   background: none;
   border: none;
   font: inherit;
@@ -78,7 +78,7 @@ body,
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
-}
+} */
 
 .nav button.logout-btn:hover {
   background-color: #f0e2d2;
@@ -91,7 +91,32 @@ body,
   font-size: 1.8rem;
   cursor: pointer;
 }
+/* 아바타 */
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  top: 2px; /* 살짝 내려주기 */
+}
 
+.logout-btn {
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 80, 50, 0.25);
+  background: rgba(255, 255, 255, 0.4);
+  color: #6b4e33;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+.header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
 /* -------------------- Header 반응형 -------------------- */
 @media (max-width: 600px) {
   .hamburger {
