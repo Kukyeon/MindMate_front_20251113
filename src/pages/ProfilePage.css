@@ -535,3 +535,86 @@
   font-style: italic;
   color: #555;
 }
+
+/* 이름 수정 전체 박스 */
+.name-edit-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  margin: 8px auto 0;
+  margin-right: 187px; /* 👉 오른쪽으로 이동 */
+
+  padding: 10px 12px;
+  background-color: #faf7f5;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  width: fit-content;
+}
+
+/* 이름 입력창 */
+.name-input {
+  padding: 6px 10px;
+  width: 120px;  /* 입력창 작게 */
+  border-radius: 8px;
+  border: 1px solid #d5c3b8;
+  font-size: 0.9rem; /* 조금 작게 */
+  color: #6b4226;
+  background: #fff;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  justify-items: center;
+}
+
+.name-input:focus {
+  border-color: #d18b60; /* 포커스 시 동일 계열 색상 */
+  box-shadow: 0 0 6px rgba(209, 139, 96, 0.4);
+  outline: none;
+ 
+}
+
+/* 저장 버튼 */
+.name-save-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #d18b60; /* 전체 UI 포인트 컬러 */
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.name-save-btn:hover {
+  background-color: #b36b49;
+}
+
+.name-save-btn:active {
+  transform: scale(0.96);
+}
+
+.name-display-wrapper {
+  display: flex;
+  justify-content: center; /* 이름 텍스트를 가운데 */
+  align-items: center;     /* 세로 중앙 정렬 */
+  position: relative;      /* 이모지 위치 조정용 */
+}
+
+.character-name {
+  text-align: center;      /* 텍스트 중앙 정렬 */
+}
+
+.edit-emoji {
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-left: 8px;       /* 이름과 이모지 간격 */
+}
+
+.edit-emoji:hover {
+  transform: scale(1.15);
+}
+
+.edit-emoji:active {
+  transform: scale(0.95);
+}
