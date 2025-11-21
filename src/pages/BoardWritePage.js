@@ -96,6 +96,9 @@ const BoardWritePage = ({ user }) => {
         <button type="submit" className="board-button" disabled={loading}>
           {loading ? "작성 중..." : "등록"}
         </button>
+        <button className="board-btn back" onClick={() => navigate("/boards")}>
+        목록으로
+      </button>
       </form>
 
       {aiTags.length > 0 && (
