@@ -16,6 +16,7 @@ export default function DiaryEditor() {
     imageUrl: "",
   });
   const [imageFile, setImageFile] = useState(null); // 새 이미지
+  const [deleteImage, setDeleteImage] = useState(false);
   const [errors, setErrors] = useState({ title: "", content: "", emoji: "" });
   const [previewUrl, setPreviewUrl] = useState(diary.imageUrl || "");
   const [isSaving, setIsSaving] = useState(false);
@@ -54,7 +55,20 @@ export default function DiaryEditor() {
       setImageFile(file);
       setPreviewUrl(URL.createObjectURL(file));
     }
+    // setImageFile("");
   };
+  useEffect(() => {
+    let objectUrl;
+    if (imageFile) {
+      objectUrl = URL.createObjectURL(imageFile);
+      setPreviewUrl(objectUrl);
+    } else if (diary.imageUrl) {
+      setPreviewUrl(`http://localhost:8888${diary.imageUrl}`);
+    } else {
+      setPreviewUrl("");
+    }
+    return () => objectUrl && URL.revokeObjectURL(objectUrl); // 메모리 해제
+  }, [diary.imageUrl, imageFile]);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -80,6 +94,7 @@ export default function DiaryEditor() {
       title: diary.title.trim() || undefined,
       content: diary.content.trim() || undefined,
       emoji: emoji || undefined, // id, type, imageUrl 전체 포함
+      deleteImage: deleteImage,
     };
     formData.append("data", JSON.stringify(dataToSend));
     if (imageFile) formData.append("image", imageFile);
@@ -109,6 +124,7 @@ export default function DiaryEditor() {
       setIsSaving(false);
     }
   };
+
   return (
     <div className="diary-editor-card">
       {isSaving && (
@@ -168,7 +184,20 @@ export default function DiaryEditor() {
 
           {/* 미리보기 */}
           {previewUrl && (
-            <img src={previewUrl} alt="Preview" className="image-preview" />
+            <div className="image-preview-wrapper">
+              <img src={previewUrl} alt="Preview" className="image-preview" />
+              <button
+                type="button"
+                className="delete-image-button"
+                onClick={() => {
+                  setPreviewUrl(""); // 화면에서 제거
+                  setImageFile(null); // 새로 선택한 이미지 제거
+                  setDeleteImage(true);
+                }}
+              >
+                ❌ 삭제
+              </button>
+            </div>
           )}
         </div>
 

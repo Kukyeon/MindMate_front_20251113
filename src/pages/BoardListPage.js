@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchBoards } from "../api/boardApi";
+import { fetchBoards, fetchTags } from "../api/boardApi";
 import BoardSearchBar from "../components/board/BoardSearchBar";
 import BoardPagination from "../components/board/BoardPagination";
 import BoardList from "../components/board/BoardList";
 import "./BoardListPage.css";
+import api from "../api/axiosConfig";
+import HashtagList from "../components/detail/HashtagList";
 
 const BoardListPage = ({ user }) => {
   const [boards, setBoards] = useState([]);
@@ -12,6 +14,7 @@ const BoardListPage = ({ user }) => {
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [search, setSearch] = useState({ field: "title", keyword: "" });
+  const [tags, setTags] = useState([]);
   const navigate = useNavigate();
   const userId = user?.userId;
 
@@ -31,7 +34,16 @@ const BoardListPage = ({ user }) => {
   useEffect(() => {
     loadBoards();
   }, [loadBoards]);
+  useEffect(() => {
+    const getTags = async () => {
+      const data = await fetchTags();
+      console.log(data);
+      setTags(data);
+    };
+    getTags();
+  }, []);
 
+  //if (!tags.length) return null;
   return (
     <div className="board-page">
       <h2 className="board-page-title">📝 게시판</h2>
@@ -49,6 +61,14 @@ const BoardListPage = ({ user }) => {
           >
             글쓰기
           </button>
+        )}
+      </div>
+      <div className="recommended-tags-section">
+        {tags.length > 0 && (
+          <div className="recommended-tags-header">
+            <h4>🔥급상승</h4>
+            <HashtagList hashtags={tags} className="inline-hashtags" />
+          </div>
         )}
       </div>
       {Array.isArray(boards) && boards.length > 0 ? (
