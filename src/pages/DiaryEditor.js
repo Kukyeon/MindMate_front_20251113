@@ -184,7 +184,10 @@ export default function DiaryEditor() {
 
           {/* 미리보기 */}
           {previewUrl && (
-            <div className="image-preview-wrapper">
+            <div
+              className="image-preview-wrapper "
+              style={{ position: "relative", display: "inline-block" }}
+            >
               <img src={previewUrl} alt="Preview" className="image-preview" />
               <button
                 type="button"
@@ -195,7 +198,7 @@ export default function DiaryEditor() {
                   setDeleteImage(true);
                 }}
               >
-                ❌ 삭제
+                ×
               </button>
             </div>
           )}

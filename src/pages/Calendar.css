@@ -426,7 +426,7 @@
 }
 /* 커스텀 파일 버튼 */
 .custom-file-button {
-  display: inline-block;
+  display: block;
   padding: 8px 16px;
   margin-top: 6px;
   margin-bottom: 12px; /* 🔥 미리보기와 간격 추가 */
@@ -725,4 +725,41 @@
 .emoji-picker-item.selected {
   border: 2px solid #d18b60;
   transform: scale(1.1);
+}
+.image-preview-wrapper {
+  position: relative; /* 🔥 이거 꼭 필요 */
+  display: inline-block;
+  margin-top: 12px;
+}
+
+.image-preview {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+  object-fit: cover;
+  display: block;
+}
+.delete-image-button {
+  position: absolute;
+  top: 4px; /* 이미지 위쪽 살짝 안쪽 */
+  right: 4px; /* 이미지 오른쪽 살짝 안쪽 */
+  width: 26px;
+  height: 26px;
+  background: rgba(255, 107, 107, 0.9);
+  border-radius: 50%;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.delete-image-button:hover {
+  background: #ff4c4c;
+  transform: scale(1.15);
 }
