@@ -80,9 +80,10 @@ const LoginPage = ({ user, setUser }) => {
     try {
       const res = await api.post("/api/auth/login", { ...state });
       const accessToken = res.data.accessToken;
-      const refreshToken = res.data.refreshToken;
+      // const refreshToken = res.data.refreshToken;
 
-      saveAuth({ accessToken, refreshToken });
+      // saveAuth({ accessToken, refreshToken });
+      saveAuth({ accessToken });
 
       const user = await getUser();
       if (setUser && user) {
