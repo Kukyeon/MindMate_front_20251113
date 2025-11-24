@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+// import { createDiary, fetchDiaryByDate } from "../api/diaryApi";
 import { authHeader, getUser } from "../api/authApi";
+import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
 import api from "../api/axiosConfig";
-import { createDiaryWithImage } from "../api/diaryApi";
+import { createDiaryWithImage, recommendEmoji } from "../api/diaryApi";
 import { fetchDiaryByDate } from "../api/diaryApi";
 import { useModal } from "../context/ModalContext";
 import LoadingBar from "../components/LoadingBar";
@@ -12,7 +14,7 @@ export default function DiaryWritePage() {
   const { showModal } = useModal();
   const { showConfirm } = useModal();
   const date = location.state?.date;
-
+  const [previewUrl, setPreviewUrl] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [emoji, setEmoji] = useState(null); // 반드시 선택하도록 null 초기값
@@ -35,7 +37,7 @@ export default function DiaryWritePage() {
       setLoadingUser(false);
     };
     fetchUser();
-  }, [showModal]);
+  }, []);
   useEffect(() => {
     if (!date) {
       showModal("날짜가 선택되지 않았습니다.", "/diary");
@@ -60,7 +62,7 @@ export default function DiaryWritePage() {
       }
     };
     loadDiary();
-  }, [date, user?.accessToken, showModal]);
+  }, [date, user?.accessToken]);
 
   const handleFileChange = (e) => {
     setImage(e.target.files[0]);
@@ -133,6 +135,10 @@ export default function DiaryWritePage() {
           "일기가 저장되었습니다!\n캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?",
           () => {
             navigate("/profile", { state: { tab: "Character" } });
+          },
+          () => {
+            // ❌ 취소 눌렀을 때 처리 (선택사항)
+            console.log("캐릭터 생성 취소");
           }
         );
       }
@@ -143,6 +149,27 @@ export default function DiaryWritePage() {
       setIsSaving(false);
     }
   };
+    const handleDeleteImage = () => {
+      setImage(null);         // state 초기화
+      setPreviewUrl("");      // preview 초기화 (이거 아래에서 만들거임)
+      document.getElementById("customFileInput").value = ""; // input 리셋
+    };
+    useEffect(() => {
+  let objectUrl;
+
+  if (image) {
+    objectUrl = URL.createObjectURL(image);
+    setPreviewUrl(objectUrl);
+  } else {
+    setPreviewUrl("");
+  }
+
+  return () => {
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+  };
+}, [image]);
+
+
 
   if (loadingUser) return <div>사용자 정보 로딩 중...</div>;
   if (!user?.userId) return <p>로그인이 필요합니다.</p>;
@@ -194,15 +221,26 @@ export default function DiaryWritePage() {
           </label>
 
           {/* 미리보기 */}
-          {image ? (
-            <img
-              src={URL.createObjectURL(image)}
-              alt="미리보기"
-              className="image-preview"
-            />
-          ) : (
-            <p className="no-image-text">첨부파일 없음</p>
-          )}
+          {previewUrl ? (
+  <div
+    className="image-preview-wrapper"
+    style={{ position: "relative", display: "inline-block" }}
+  >
+    <img src={previewUrl} alt="미리보기" className="image-preview" />
+
+    {/* 삭제 버튼 */}
+    <button
+      type="button"
+      className="delete-image-button"
+      onClick={handleDeleteImage}
+     
+    >
+      ×
+    </button>
+  </div>
+) : (
+  <p className="no-image-text">첨부파일 없음</p>
+)}
         </div>
         <div className="diary-write-buttons">
           <button type="submit">저장</button>

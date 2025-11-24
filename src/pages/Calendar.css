@@ -726,12 +726,14 @@
   border: 2px solid #d18b60;
   transform: scale(1.1);
 }
+/* 이미지 프리뷰 감싸는 영역 */
 .image-preview-wrapper {
-  position: relative; /* 🔥 이거 꼭 필요 */
+  position: relative;
   display: inline-block;
   margin-top: 12px;
 }
 
+/* 이미지 프리뷰 */
 .image-preview {
   width: 100%;
   height: auto;
@@ -740,26 +742,35 @@
   object-fit: cover;
   display: block;
 }
+
+/* 삭제 버튼 */
 .delete-image-button {
   position: absolute;
-  top: 4px; /* 이미지 위쪽 살짝 안쪽 */
-  right: 4px; /* 이미지 오른쪽 살짝 안쪽 */
-  width: 26px;
-  height: 26px;
-  background: rgba(255, 107, 107, 0.9);
+  top: 6px;
+  right: 6px;
+
+  width: 28px;
+  height: 28px;
+
+  background: rgba(255, 93, 93, 0.92);
   border-radius: 50%;
   border: none;
-  color: white;
+
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
+
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.18s ease;
 }
 
 .delete-image-button:hover {
-  background: #ff4c4c;
+  background: #ff4a4a;
   transform: scale(1.15);
 }
