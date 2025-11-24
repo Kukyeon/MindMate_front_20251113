@@ -58,7 +58,15 @@ export default function App() {
   }, []);
 
   function PrivateRoute({ children }) {
-    return user ? children : <Navigate to="/" replace />;
+    return user ? (
+      user.nickname ? (
+        children
+      ) : (
+        <Navigate to="/profile/set" replace />
+      )
+    ) : (
+      <Navigate to="/" replace />
+    );
   }
 
   if (!initialized) {
