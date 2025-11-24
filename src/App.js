@@ -69,6 +69,10 @@ export default function App() {
     );
   }
 
+  function PrivateRoute_02({ children }) {
+    return user ? children : <Navigate to="/" replace />;
+  }
+
   if (!initialized) {
     return <div>로딩 중...</div>;
   }
@@ -218,25 +222,25 @@ export default function App() {
         <Route
           path="/auth/naver/delete-callback"
           element={
-            <PrivateRoute>
+            <PrivateRoute_02>
               <NaverDeleteCallback setUser={setUser} />
-            </PrivateRoute>
+            </PrivateRoute_02>
           }
         />
         <Route
           path="/auth/kakao/delete-callback"
           element={
-            <PrivateRoute>
+            <PrivateRoute_02>
               <KakaoDeleteCallback setUser={setUser} />
-            </PrivateRoute>
+            </PrivateRoute_02>
           }
         />
         <Route
           path="/auth/google/delete-callback"
           element={
-            <PrivateRoute>
+            <PrivateRoute_02>
               <GoogleDeleteCallback setUser={setUser} />
-            </PrivateRoute>
+            </PrivateRoute_02>
           }
         />
         <Route path="/delete-complete" element={<DeleteCompletePage />} />
