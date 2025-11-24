@@ -40,13 +40,11 @@ import DeleteCompletePage from "./pages/DeleteCompletePage.js";
 import NaverDeleteCallback from "./pages/NaverDeleteCallBack.js";
 import KakaoDeleteCallback from "./pages/KakaoDeleteCallBack.js";
 import GoogleDeleteCallback from "./pages/GoogleDeleteCallBack.js";
-import { ModalProvider } from "./context/ModalContext.js";
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [initialized, setInitialized] = useState(false);
   const location = useLocation();
-  console.log(user);
   useEffect(() => {
     const savedFont = localStorage.getItem("appFont");
     if (savedFont) {

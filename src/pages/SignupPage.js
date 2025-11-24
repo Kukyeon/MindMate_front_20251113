@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import "./SignupPage.css";
 import {
@@ -12,7 +11,6 @@ import { requestEmailCode } from "../api/emailApi";
 import { useModal } from "../context/ModalContext";
 
 const SignupPage = ({ setUser }) => {
-  const navigate = useNavigate();
   const { showModal } = useModal();
   const [state, setState] = useState({
     email: "",

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { clearAuth } from "../api/authApi";
 import { useModal } from "../context/ModalContext";
@@ -9,7 +9,6 @@ const getAuthHeader = () => {
 };
 const NaverDeleteCallback = ({ setUser }) => {
   const location = useLocation();
-  const navigate = useNavigate();
   const calledRef = useRef(false);
   const { showModal } = useModal();
   useEffect(() => {
@@ -42,7 +41,7 @@ const NaverDeleteCallback = ({ setUser }) => {
         showModal("네이버 회원탈퇴 중 오류가 발생했습니다.", "/profile");
       }
     })();
-  }, [location.search, navigate, setUser]);
+  }, [location.search, setUser]);
 
   return <div>네이버 회원탈퇴 처리 중...</div>;
 };

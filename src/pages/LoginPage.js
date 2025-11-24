@@ -1,4 +1,4 @@
-import { Link, replace, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { useEffect, useState } from "react";
 import "./LoginPage.css"; // 스타일 따로 분리

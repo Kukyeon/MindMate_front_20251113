@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-// import { createDiary, fetchDiaryByDate } from "../api/diaryApi";
 import { authHeader, getUser } from "../api/authApi";
-import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
 import api from "../api/axiosConfig";
-import { createDiaryWithImage, recommendEmoji } from "../api/diaryApi";
+import { createDiaryWithImage } from "../api/diaryApi";
 import { fetchDiaryByDate } from "../api/diaryApi";
 import { useModal } from "../context/ModalContext";
 import LoadingBar from "../components/LoadingBar";
@@ -37,7 +35,7 @@ export default function DiaryWritePage() {
       setLoadingUser(false);
     };
     fetchUser();
-  }, []);
+  }, [showModal]);
   useEffect(() => {
     if (!date) {
       showModal("날짜가 선택되지 않았습니다.", "/diary");
@@ -62,7 +60,7 @@ export default function DiaryWritePage() {
       }
     };
     loadDiary();
-  }, [date, user?.accessToken]);
+  }, [date, user?.accessToken, showModal]);
 
   const handleFileChange = (e) => {
     setImage(e.target.files[0]);
@@ -135,10 +133,6 @@ export default function DiaryWritePage() {
           "일기가 저장되었습니다!\n캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?",
           () => {
             navigate("/profile", { state: { tab: "Character" } });
-          },
-          () => {
-            // ❌ 취소 눌렀을 때 처리 (선택사항)
-            console.log("캐릭터 생성 취소");
           }
         );
       }

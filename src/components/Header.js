@@ -26,7 +26,6 @@ const Header = ({ user, setUser }) => {
       });
     }
   };
-  console.log(user);
   return (
     <header className="header">
       <div className="logo">

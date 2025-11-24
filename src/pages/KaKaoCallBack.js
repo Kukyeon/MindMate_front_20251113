@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { replace, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { getUser, saveAuth } from "../api/authApi";
 import { handleSocialLoginError } from "../api/socialErrorHandler";
@@ -29,12 +29,6 @@ const KakaoCallback = ({ setUser }) => {
 
         // saveAuth({ accessToken, refreshToken });
         saveAuth({ accessToken });
-
-        console.log("kakao res:", res.data);
-        console.log("after saveAuth:", {
-          access: localStorage.getItem("accessToken"),
-          // refresh: localStorage.getItem("refreshToken"),
-        });
 
         const user = await getUser();
         if (setUser && user) {
