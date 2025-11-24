@@ -87,7 +87,7 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
 
       <div className="diary-content">{diary.content}</div>
 
-      {diary.imageUrl && (
+      {/* {diary.imageUrl && (
         <div className="diary-image">
           <img
             src={`http://localhost:8888${diary.imageUrl}`}
@@ -95,7 +95,7 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
             style={{ maxWidth: "50%", marginTop: "12px" }}
           />
         </div>
-      )}
+      )} */}
 
       {diary.aiComment && (
         <p className="ai-comment">

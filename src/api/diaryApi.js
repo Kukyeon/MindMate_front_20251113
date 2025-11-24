@@ -5,14 +5,6 @@ const getAuthHeader = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-// 전체 목록 조회
-// export const fetchDiaries = (page = 0, size = 10) =>
-//   api.get(`/api/diary?page=${page}&size=${size}`, { headers: getAuthHeader() });
-
-// 단일 조회 (id 기준)
-export const fetchDiaryDetail = (id) =>
-  api.get(`/api/diary/${id}`, { headers: getAuthHeader() });
-
 // 날짜별 조회 (YYYY-MM-DD)
 export const fetchDiaryByDate = (date) =>
   api.get(`/api/diary/date`, { params: { date }, headers: getAuthHeader() });
@@ -45,7 +37,7 @@ export const updateDiaryWithImage = (date, data, imageFile) => {
   formData.append("data", JSON.stringify(data));
   if (imageFile) formData.append("image", imageFile);
 
-  return api.put("/api/diary/with-image?date=" + date, formData, {
+  return api.put("/api/diary/edit?date=" + date, formData, {
     headers: {
       ...getAuthHeader(),
       "Content-Type": "multipart/form-data",

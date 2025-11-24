@@ -57,18 +57,18 @@ export default function DiaryEditor() {
     }
     // setImageFile("");
   };
-  useEffect(() => {
-    let objectUrl;
-    if (imageFile) {
-      objectUrl = URL.createObjectURL(imageFile);
-      setPreviewUrl(objectUrl);
-    } else if (diary.imageUrl) {
-      setPreviewUrl(`http://localhost:8888${diary.imageUrl}`);
-    } else {
-      setPreviewUrl("");
-    }
-    return () => objectUrl && URL.revokeObjectURL(objectUrl); // 메모리 해제
-  }, [diary.imageUrl, imageFile]);
+  // useEffect(() => {
+  //   let objectUrl;
+  //   if (imageFile) {
+  //     objectUrl = URL.createObjectURL(imageFile);
+  //     setPreviewUrl(objectUrl);
+  //   } else if (diary.imageUrl) {
+  //     setPreviewUrl(`http://localhost:8888${diary.imageUrl}`);
+  //   } else {
+  //     setPreviewUrl("");
+  //   }
+  //   return () => objectUrl && URL.revokeObjectURL(objectUrl); // 메모리 해제
+  // }, [diary.imageUrl, imageFile]);
 
   const handleSave = async (e) => {
     e.preventDefault();

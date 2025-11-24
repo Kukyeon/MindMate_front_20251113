@@ -80,14 +80,6 @@ export default function CalendarPage() {
   const handleDateClick = (date) => {
     const dateString = formatDate(date);
     const todayString = formatDate(new Date());
-
-    // // ✅ 미래 날짜 클릭 방지
-    // if (dateString > todayString) {
-    //   showModal("미래 날짜에는 일기를 작성할 수 없습니다.");
-    //   setClickResult({ date: null, exists: null, diary: null });
-    //   return;
-    // }
-
     const diary = monthlyDiaries.find(
       (d) => d.date.slice(0, 10) === dateString
     );
