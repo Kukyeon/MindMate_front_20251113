@@ -74,6 +74,7 @@ const HashtagBoardPage = ({ userId }) => {
           page={0}
           size={boards.length}
           totalElements={boards.length}
+          showAllButton={true} 
         />
       )}
     </div>

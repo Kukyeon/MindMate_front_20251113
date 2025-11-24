@@ -1,7 +1,11 @@
 import BoardItem from "./BoardItem";
-
-const BoardList = ({ boards, page, size, totalElements }) => {
+import { useNavigate } from "react-router-dom";
+const BoardList = ({ boards, page, size, totalElements, showAllButton }) => {
+  const navigate = useNavigate();
+  
   return (
+    
+     <div className="board-list-wrapper">
     <table className="board-table">
       <thead className="board-table-head">
         <tr>
@@ -20,7 +24,7 @@ const BoardList = ({ boards, page, size, totalElements }) => {
           const displayIndex = board.pinned
             ? "공지📢"
             : totalElements - (page * size + idx);
-
+          
           return (
             <BoardItem
               key={board.id}
@@ -30,8 +34,17 @@ const BoardList = ({ boards, page, size, totalElements }) => {
             />
           );
         })}
-      </tbody>
+      </tbody>    
     </table>
+      {showAllButton && (
+  <button
+    className="board-btn back"
+    onClick={() => navigate("/boards")}
+  >
+    전체글보기
+  </button>
+)}
+    </div>
   );
 };
 export default BoardList;
