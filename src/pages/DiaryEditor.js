@@ -20,7 +20,7 @@ export default function DiaryEditor() {
   const [errors, setErrors] = useState({ title: "", content: "", emoji: "" });
   const [previewUrl, setPreviewUrl] = useState(diary.imageUrl || "");
   const [isSaving, setIsSaving] = useState(false);
-
+  const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
   useEffect(() => {
     if (!date) return;
 
