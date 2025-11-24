@@ -1,0 +1,178 @@
+.avatar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  cursor: pointer;
+}
+
+.desktop-only {
+  display: flex;
+}
+
+/* 동그란 이미지/이니셜 */
+.avatar-img {
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar-fallback {
+  border-radius: 50%;
+  background-color: #ddd;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+/* 텍스트 영역 */
+.avatar-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.1;
+}
+
+.avatar-name-row {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.avatar-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.avatar-label {
+  font-size: 0.8rem;
+  color: #8a6b4a;
+}
+
+.avatar-email {
+  margin-top: 2px;
+  font-size: 0.73rem;
+  color: #a48b6d;
+}
+
+@media (max-width: 600px) {
+  .desktop-only {
+    display: none !important; /* 모바일에서 숨김 */
+  }
+}
+
+/* 화살표 */
+.avatar-arrow {
+  font-size: 0.75rem;
+  color: #8a6b4a;
+}
+
+/* ================= 드롭다운 공통 ================= */
+.avatar-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #fff8f0;
+  border-radius: 12px;
+  border: 1px solid #d9c5a3;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  min-width: 140px; /* 너비 확장 */
+  padding: 6px 0;
+  z-index: 200;
+}
+
+/* 데스크톱 기본 메뉴 */
+.avatar-menu-desktop {
+  display: block;
+}
+
+/* 공통 메뉴 아이템 스타일 */
+.avatar-menu-item {
+  display: block;
+  width: 100%;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  color: #6b4226;
+  cursor: pointer;
+  transition: background 0.2s;
+  background: transparent;
+  border: none;
+  text-align: left;
+  white-space: nowrap; /* 줄바꿈 방지 (세로 글씨 방지) */
+}
+
+.avatar-menu-item:hover {
+  background: #fff2e0;
+}
+
+.avatar-menu-item-logout {
+  font-weight: 500;
+}
+
+.avatar-menu-item.logout:hover {
+  color: #c45555;
+}
+
+/* ================= 모바일 전용 메뉴 ================= */
+
+.avatar-menu-mobile {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .avatar-menu {
+    min-width: 220px;
+    padding: 12px 14px;
+  }
+
+  .avatar-menu-desktop {
+    display: none; /* PC용 메뉴 숨김 */
+  }
+
+  .avatar-menu-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .avatar-menu-user {
+    text-align: left;
+  }
+
+  .avatar-menu-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #6b4226;
+  }
+
+  .avatar-menu-email {
+    font-size: 0.8rem;
+    color: #8f8f8f;
+    margin-top: 2px;
+  }
+
+  .avatar-menu-divider {
+    height: 1px;
+    background: #e3cdb1;
+    margin: 6px 0;
+  }
+
+  .avatar-menu-logout-btn {
+    align-self: flex-start;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(120, 80, 50, 0.25);
+    background: rgba(255, 255, 255, 0.7);
+    color: #6b4e33;
+    cursor: pointer;
+  }
+
+  .avatar-menu-logout-btn:hover {
+    background: #ffe9d5;
+  }
+}

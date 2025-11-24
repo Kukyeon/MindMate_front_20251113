@@ -72,11 +72,29 @@ const ProfileView = ({ setUser, user, setActiveTab }) => {
 
       <div className="edit-profile-card">
         {/* 폼 레이아웃 재사용 */}
+        {/* 프로필 이미지 */}
         <div className="edit-profile-form profile-view">
+
+          <div className="profile-image-section">
+            <div className="profile-image-preview-wrapper">
+              {user.profile_image_url ? (
+                <img
+                  src={user.profile_image_url}
+                  alt="프로필 이미지"
+                  className="profile-image-preview"
+                />
+              ) : (
+                <div className="profile-image-placeholder">이미지 없음</div>
+              )}
+            </div>
+          </div>
+
+
           <div className="profile-view-row">
             <div className="profile-view-label">이메일</div>
             <div className="profile-view-value">{user.email || "-"}</div>
           </div>
+
           {/* 닉네임 */}
           <div className="profile-view-row">
             <div className="profile-view-label">닉네임</div>

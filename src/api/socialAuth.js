@@ -13,7 +13,7 @@ const GOOGLE_CLIENT_ID =
 const GOOGLE_REDIRECT_URI = "http://localhost:3000/auth/google/callback";
 const GOOGLE_DELETE_REDIRECT_URI =
   "http://localhost:3000/auth/google/delete-callback";
-const GOOGLE_SCOPE = "openid email";
+const GOOGLE_SCOPE = "openid email profile";
 
 // 공통 state 생성 함수
 const createRandomState = () => {
