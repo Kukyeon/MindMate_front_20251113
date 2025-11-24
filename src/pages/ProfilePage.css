@@ -535,3 +535,170 @@
   font-style: italic;
   color: #555;
 }
+
+/* 이름 수정 전체 박스 */
+.name-edit-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  margin: 8px auto 0;
+  margin-right: 187px; /* 👉 오른쪽으로 이동 */
+
+  padding: 10px 12px;
+  background-color: #faf7f5;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  width: fit-content;
+}
+
+/* 이름 입력창 */
+.name-input {
+  padding: 6px 10px;
+  width: 120px; /* 입력창 작게 */
+  border-radius: 8px;
+  border: 1px solid #d5c3b8;
+  font-size: 0.9rem; /* 조금 작게 */
+  color: #6b4226;
+  background: #fff;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  justify-items: center;
+}
+
+.name-input:focus {
+  border-color: #d18b60; /* 포커스 시 동일 계열 색상 */
+  box-shadow: 0 0 6px rgba(209, 139, 96, 0.4);
+  outline: none;
+}
+
+/* 저장 버튼 */
+.name-save-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #d18b60; /* 전체 UI 포인트 컬러 */
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.name-save-btn:hover {
+  background-color: #b36b49;
+}
+
+.name-save-btn:active {
+  transform: scale(0.96);
+}
+
+.name-display-wrapper {
+  display: flex;
+  justify-content: center; /* 이름 텍스트를 가운데 */
+  align-items: center; /* 세로 중앙 정렬 */
+  position: relative; /* 이모지 위치 조정용 */
+}
+
+.character-name {
+  text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.edit-emoji {
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-left: 8px; /* 이름과 이모지 간격 */
+}
+
+.edit-emoji:hover {
+  transform: scale(1.15);
+}
+
+.edit-emoji:active {
+  transform: scale(0.95);
+}
+.delete-complete-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 1rem;
+  background: linear-gradient(135deg, #fff4e8, #ffece0);
+}
+
+.delete-complete-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 18px;
+  padding: 40px 30px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.delete-complete-card h1 {
+  font-size: 1.8rem;
+  color: #6b4226;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.delete-complete-card p {
+  font-size: 1rem;
+  color: #7a5644;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.delete-complete-card button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #d18b60, #c97a4c);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.delete-complete-card button:hover {
+  background: linear-gradient(135deg, #b8734a, #a85f3c);
+  transform: translateY(-2px);
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 모바일 대응 */
+@media (max-width: 480px) {
+  .delete-complete-card {
+    padding: 30px 20px;
+  }
+
+  .delete-complete-card h1 {
+    font-size: 1.5rem;
+  }
+
+  .delete-complete-card p {
+    font-size: 0.95rem;
+  }
+
+  .delete-complete-card button {
+    width: 100%;
+    padding: 12px 0;
+  }
+}

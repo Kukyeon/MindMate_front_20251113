@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import "./SignupPage.css";
 import {
@@ -11,9 +10,7 @@ import { getUser } from "../api/authApi";
 import { requestEmailCode } from "../api/emailApi";
 import { useModal } from "../context/ModalContext";
 
-
 const SignupPage = ({ setUser }) => {
-  const navigate = useNavigate();
   const { showModal } = useModal();
   const [state, setState] = useState({
     email: "",
@@ -115,7 +112,7 @@ const SignupPage = ({ setUser }) => {
       setEmailMessage(
         "인증코드를 이메일로 보냈습니다. 메일함에서 코드를 확인해 주세요."
       );
-      alert(
+      showModal(
         "인증코드 발송을 완료했어요. 잠시 후 메일함(또는 스팸함)을 확인해 주세요."
       );
     } catch (err) {
@@ -137,12 +134,12 @@ const SignupPage = ({ setUser }) => {
     const code = state.code.trim();
 
     if (!isEmailOk) {
-      alert("먼저 이메일 중복체크 후 인증코드를 받아주세요.");
+      showModal("먼저 이메일 중복체크 후 인증코드를 받아주세요.");
       return;
     }
 
     if (!isCodePatternOk) {
-      alert("6자리 숫자 형식의 인증코드를 입력해주세요.");
+      showModal("6자리 숫자 형식의 인증코드를 입력해주세요.");
       return;
     }
 
@@ -150,18 +147,18 @@ const SignupPage = ({ setUser }) => {
       await api.post("/api/auth/check_code", { email, code });
       setIsCodeOk(true);
       setCodeMessage("인증코드가 확인되었습니다.");
-      alert("인증코드가 확인되었습니다.");
+      showModal("인증코드가 확인되었습니다.");
     } catch (err) {
       setIsCodeOk(false);
 
       if (err.response && err.response.status === 422) {
         setCodeMessage("인증코드가 올바르지 않거나 만료되었습니다.");
-        alert("인증코드가 올바르지 않거나 만료되었습니다.");
+        showModal("인증코드가 올바르지 않거나 만료되었습니다.");
       } else {
         setCodeMessage(
           "인증코드 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
         );
-        alert("인증코드 확인 중 오류가 발생했습니다.");
+        showModal("인증코드 확인 중 오류가 발생했습니다.");
       }
     }
   };
@@ -189,7 +186,7 @@ const SignupPage = ({ setUser }) => {
       if (setUser && user) {
         setUser(user);
       }
-      navigate("/profile/set", { replace: true });
+      showModal(`${user.username}님, 환영합니다! 프로필을 설정해주세요.`);
     } catch (err) {
       if (err.response && err.response.status === 422) {
         showModal("이메일 인증코드가 틀렸거나 만료되었습니다.");
@@ -268,19 +265,20 @@ const SignupPage = ({ setUser }) => {
                   className="signup-input"
                   required
                 />
+
+                <button
+                  type="button"
+                  className="signup-check-btn"
+                  onClick={checkCode}
+                  style={{
+                    color: isCodeOk && "GrayText",
+                    backgroundColor: isCodeOk && "lightgray",
+                  }}
+                  disabled={isCodeOk}
+                >
+                  {isCodeOk ? "확인완료" : "코드확인"}
+                </button>
               </div>
-              <button
-                type="button"
-                className="signup-check-btn"
-                onClick={checkCode}
-                style={{
-                  color: isCodeOk && "GrayText",
-                  backgroundColor: isCodeOk && "lightgray",
-                }}
-                disabled={isCodeOk}
-              >
-                {isCodeOk ? "확인완료" : "코드확인"}
-              </button>
               <p className="signup-help-text">
                 <small>{codeMessage}</small>
               </p>

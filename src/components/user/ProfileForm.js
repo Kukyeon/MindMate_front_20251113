@@ -23,6 +23,7 @@ const mbtiOptions = [
 
 const EditProfile = ({ setUser, user, setActiveTab }) => {
   const [profile, setProfile] = useState({
+    email: user?.email || "",
     nickname: user?.nickname || "",
     birth_date: user?.birth_date || "",
     mbti: user?.mbti || "",
@@ -220,6 +221,7 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
 
       <div className="edit-profile-card">
         <form className="edit-profile-form" onSubmit={handleSave}>
+
           {/* 프로필 이미지 영역 */}
           <div className="profile-image-section">
             <div className="profile-image-preview-wrapper">
@@ -256,6 +258,17 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
                 <small>JPG, PNG 등 이미지 파일 · 최대 5MB</small>
               </p>
             </div>
+
+          <div className="edit-input-group">
+            <input
+              type="text"
+              name="email"
+              value={profile.email}
+              onChange={handleChange}
+              className="edit-profile-input"
+              readOnly
+            />
+
           </div>
           {/* 닉네임 + 중복확인 */}
           <div className="edit-input-group">

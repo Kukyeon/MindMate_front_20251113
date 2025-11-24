@@ -18,13 +18,15 @@ const HashtagList = ({ hashtags }) => {
     const cleanTag = tag.startsWith("#") ? tag.slice(1) : tag;
     navigate(`/boards/hashtag/${encodeURIComponent(cleanTag)}`);
   };
+
   return (
-    <div>
+    <div className="hashtag-list">
       {tagArray.map((tag, idx) => (
         <span
           key={idx}
-          style={{ cursor: "pointer" }}
+          style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}
           onClick={() => handleclick(tag)}
+          className="hashtag"
         >
           {tag}
         </span>

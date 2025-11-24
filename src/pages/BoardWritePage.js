@@ -5,10 +5,11 @@ import { authHeader } from "../api/authApi";
 import "./BoardWritePage.css";
 import api from "../api/axiosConfig";
 import { useModal } from "../context/ModalContext";
+import LoadingBar from "../components/LoadingBar";
 
 const BoardWritePage = ({ user }) => {
   const navigate = useNavigate();
-  const { showModal } = useModal();
+  const { showModal, showConfirm } = useModal();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
@@ -57,14 +58,15 @@ const BoardWritePage = ({ user }) => {
         );
       } else {
         // 캐릭터 없음 → 생성 여부 확인
-        const createChar = window.confirm(
-          "게시글이 작성되었습니다!\n 캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?"
+        showConfirm(
+          "게시글이 작성되었습니다!\n 캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?",
+          () => {
+            navigate("/profile", { state: { tab: "Character" } });
+          },
+          () => {
+            navigate(`/board/${boardId}`);
+          }
         );
-        if (createChar) {
-          navigate("/profile", { state: { tab: "Character" } }); // 캐릭터 생성 페이지로 이동
-        } else {
-          navigate(`/board/${boardId}`); // 그냥 상세페이지로 이동
-        }
       }
     } catch (err) {
       console.error("게시글 작성 실패:", err);
@@ -76,6 +78,14 @@ const BoardWritePage = ({ user }) => {
 
   return (
     <div className="board-page">
+      {loading && (
+        <div className="graph-loading-overlay">
+          <LoadingBar
+            loading={true}
+            message="🤖 AI가 맞춤 해시태그를 고르고 있어요..."
+          />
+        </div>
+      )}
       <h2 className="board-page-title">✏️ 게시글 작성</h2>
       <form className="board-write-form" onSubmit={handleSubmit}>
         <input
@@ -97,8 +107,8 @@ const BoardWritePage = ({ user }) => {
           {loading ? "작성 중..." : "등록"}
         </button>
         <button className="board-btn back" onClick={() => navigate("/boards")}>
-        목록으로
-      </button>
+          목록으로
+        </button>
       </form>
 
       {aiTags.length > 0 && (

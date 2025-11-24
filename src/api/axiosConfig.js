@@ -16,9 +16,7 @@ const BASE_URL = "http://localhost:8888";
 //const BASE_URL = "http://172.30.1.26:8888";
 const api = axios.create({
   baseURL: BASE_URL,
-  headers: {
-  
-  },
+  headers: {},
   withCredentials: true,
 });
 

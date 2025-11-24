@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { replace, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { getUser, saveAuth } from "../api/authApi";
 import { handleSocialLoginError } from "../api/socialErrorHandler";
@@ -30,12 +30,6 @@ const KakaoCallback = ({ setUser }) => {
         // saveAuth({ accessToken, refreshToken });
         saveAuth({ accessToken });
 
-        console.log("kakao res:", res.data);
-        console.log("after saveAuth:", {
-          access: localStorage.getItem("accessToken"),
-          // refresh: localStorage.getItem("refreshToken"),
-        });
-
         const user = await getUser();
         if (setUser && user) {
           setUser(user);
@@ -44,14 +38,14 @@ const KakaoCallback = ({ setUser }) => {
         if (!user.nickname) {
           showModal(
             `${user.username}님, 환영합니다! 프로필을 설정해주세요.`,
-            "/profile"
+            "/profile/set"
           );
         } else {
           showModal(`${user.nickname}님, 다시 만나서 반가워요!`, "/");
         }
       } catch (err) {
-        showModal("네이버 로그인 처리 중 오류가 발생했습니다.", "/login");
-        handleSocialLoginError(err, navigate);
+        //showModal("카카오 로그인 처리 중 오류가 발생했습니다.", "/login");
+        handleSocialLoginError(err, showModal, navigate);
       }
     })();
   }, [location.search, navigate]);

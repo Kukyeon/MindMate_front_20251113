@@ -9,8 +9,8 @@ const CommentForm = ({ boardId, onCommentAdded, userId }) => {
   const { showModal } = useModal();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!userId) return alert("로그인이 필요합니다.");
-    if (!content.trim()) return alert("댓글을 입력하세요.");
+    if (!userId) return showModal("로그인이 필요합니다.", "/login");
+    if (!content.trim()) return showModal("댓글을 입력하세요.");
     setLoading(true);
 
     try {

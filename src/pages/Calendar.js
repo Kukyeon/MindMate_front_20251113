@@ -12,6 +12,7 @@ export default function CalendarPage() {
   const navigate = useNavigate();
   const { showModal } = useModal();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [monthlyDiaries, setMonthlyDiaries] = useState([]);
   const [clickResult, setClickResult] = useState({
     date: null,
@@ -139,18 +140,26 @@ export default function CalendarPage() {
     }
     return null;
   };
-
   return (
     <div className="calendar-page-wrapper">
       <h2>📅 감정일기 캘린더</h2>
 
       <Calendar
-        onActiveStartDateChange={({ activeStartDate }) =>
-          setCurrentDate(activeStartDate)
-        }
-        value={currentDate}
-        onClickDay={handleDateClick}
+        onActiveStartDateChange={({ activeStartDate }) => {
+          setCurrentMonth(activeStartDate); // 달 변경 시 달력 기준만 변경
+        }}
+        activeStartDate={currentMonth} // 화면에 표시되는 달
+        value={currentDate} // 실제 선택된 날짜
+        onClickDay={handleDateClick} // 클릭 시 선택 날짜 변경
         tileContent={tileContent}
+        tileClassName={({ date, view }) => {
+          if (view === "month") {
+            if (date.getMonth() !== currentMonth.getMonth()) {
+              return "not-current-month";
+            }
+          }
+          return null;
+        }}
       />
 
       {clickResult.exists === true && (

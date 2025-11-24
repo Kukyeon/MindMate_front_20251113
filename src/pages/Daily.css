@@ -71,22 +71,6 @@
   transition: opacity 0.5s ease-in-out, transform 0.3s ease;
 }
 
-/* 페이드인 애니메이션 */
-.fade-in {
-  animation: fadeIn 0.4s ease-in;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* 탭 안 콘텐츠 카드 */
 .tab-content > * {
   background: #fff7f0;
@@ -145,12 +129,73 @@
   font-size: 1rem;
   transition: all 0.3s;
 }
+/* 로딩 상태 버튼 */
+.daily-test-button.loading {
+  background-color: #ffd59e;
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+/* 점 3개 점프 */
+.dot-loader {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-right: 6px;
+}
+
+.dot-loader span {
+  width: 8px;
+  height: 8px;
+  background-color: #ffb86b;
+  border-radius: 50%;
+  display: inline-block;
+  animation: dotJump 0.6s ease-in-out infinite;
+}
+
+.dot-loader span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.dot-loader span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes dotJump {
+  0% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 .daily-test-button:hover {
   background-color: #ffd59e;
   transform: translateY(-2px);
 }
 
+.daily-test-button.loading:hover {
+  transform: none;
+  background-color: #ffd59e;
+}
 .daily-test-question-section {
   margin-bottom: 16px;
 }
@@ -268,7 +313,14 @@
   color: #d18b60;
   margin-left: 4px;
 }
-
+.fortune-birth span.birth {
+  background-color: #ffdca1;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #d18b60;
+  margin-left: 4px;
+}
 /* 반응형 */
 @media (max-width: 480px) {
   .daily-test-card {
@@ -322,6 +374,10 @@
 }
 
 .fortune-button {
+  display: flex;
+  align-items: center; /* 세로 중앙 정렬 */
+  justify-content: center; /* 가로 중앙 정렬 */
+  gap: 6px; /* dot와 텍스트 사이 간격 */
   padding: 12px 20px;
   border-radius: 12px;
   border: none;

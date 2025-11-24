@@ -2,9 +2,15 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { clearAuth } from "../api/authApi";
 import api from "../api/axiosConfig";
+
 import Avatar from "./user/Avatar";
+
+import { useModal } from "../context/ModalContext";
+
+
 const Header = ({ user, setUser }) => {
   const navigate = useNavigate();
+  const { showModal } = useModal();
   const [open, setOpen] = useState(false);
   const ClickOnLogout = async () => {
     try {
@@ -15,13 +21,15 @@ const Header = ({ user, setUser }) => {
     } catch (err) {
       console.error(err);
     } finally {
-      navigate("/", { replace: true });
+      //navigate("/", { replace: true });
+
       clearAuth();
       setUser(null);
-      return;
+      showModal("로그아웃 완료", () => {
+        navigate("/", { replace: true });
+      });
     }
   };
-  console.log(user);
   return (
     <header className="header">
       <div className="logo">

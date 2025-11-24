@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../api/axiosConfig";
 import html2canvas from "html2canvas";
-import { authHeader, authHeader as getAuthHeader } from "../api/authApi";
+import { authHeader as getAuthHeader } from "../api/authApi";
 import { useModal } from "../context/ModalContext";
+import LoadingBar from "./LoadingBar";
 
 function DailyTest({ user }) {
   const [testData, setTestData] = useState("");
@@ -152,18 +153,28 @@ function DailyTest({ user }) {
           {user?.nickname} 님의 MBTI는 :{" "}
           <span className="mbti">{user?.mbti}</span>
         </h4>
-
         {loading && (
-          <p className="daily-test-status">
-            🤖 AI가 생각 중이에요... 잠시만요!
-          </p>
+          <LoadingBar
+            loading={loading}
+            message="🤖 AI가 테스트를 생성중이에요..."
+          />
         )}
-        {!testData && (
+
+        {!loading ? (
           <button
             className="daily-test-button"
             onClick={() => generateTest(mbti)}
           >
             테스트 생성하기
+          </button>
+        ) : (
+          <button className="daily-test-button loading" disabled>
+            <div className="dot-loader">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            생성 중
           </button>
         )}
         {question && (
