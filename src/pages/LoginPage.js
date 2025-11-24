@@ -94,7 +94,7 @@ const LoginPage = ({ user, setUser }) => {
         // 닉네임이 없으면 프로필이 설정 되지 않음으로 정의
         showModal(
           `${user.username}님, 환영합니다! 프로필 설정을 완료해 주세요.`,
-          "/profile" // 네비게이션 경로 전달
+          "/profile/set" // 네비게이션 경로 전달
         );
       } else {
         showModal(

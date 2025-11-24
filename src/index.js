@@ -3,10 +3,13 @@ import "./index.css";
 import App from "./App";
 
 import { BrowserRouter } from "react-router-dom";
+import { ModalProvider } from "./context/ModalContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
-    <App />
+    <ModalProvider>
+      <App />
+    </ModalProvider>
   </BrowserRouter>
 );

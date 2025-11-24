@@ -313,7 +313,14 @@
   color: #d18b60;
   margin-left: 4px;
 }
-
+.fortune-birth span.birth {
+  background-color: #ffdca1;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #d18b60;
+  margin-left: 4px;
+}
 /* 반응형 */
 @media (max-width: 480px) {
   .daily-test-card {

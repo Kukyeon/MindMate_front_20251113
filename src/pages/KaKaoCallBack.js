@@ -44,7 +44,7 @@ const KakaoCallback = ({ setUser }) => {
         if (!user.nickname) {
           showModal(
             `${user.username}님, 환영합니다! 프로필을 설정해주세요.`,
-            "/profile"
+            "/profile/set"
           );
         } else {
           showModal(`${user.nickname}님, 다시 만나서 반가워요!`, "/");

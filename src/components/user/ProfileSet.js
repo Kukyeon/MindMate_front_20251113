@@ -27,9 +27,9 @@ const ProfileSetupPage = ({ setUser, user }) => {
   const { showModal } = useModal();
 
   const [profile, setProfile] = useState({
-    nickname: user.nickname || "",
-    birth_date: user.birth_date || "",
-    mbti: user.mbti || "",
+    nickname: user?.nickname || "",
+    birth_date: user?.birth_date || "",
+    mbti: user?.mbti || "",
   });
 
   const [errors, setErrors] = useState({});

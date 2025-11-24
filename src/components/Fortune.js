@@ -88,8 +88,10 @@ const Fortune = ({ user }) => {
   return (
     <div className="fortune-content">
       <div className="fortune-card">
-        <h2 className="fortune-title">오늘의 운세</h2>
-        <p className="fortune-birth">생년월일: {birth}</p>
+        <h2 className="fortune-title">🔮 오늘의 운세</h2>
+        <p className="fortune-birth">
+          생년월일: <span className="birth">{birth}</span>
+        </p>
         {loading && (
           <LoadingBar loading={loading} message="🤖 AI가 운세를 준비 중..." />
         )}
