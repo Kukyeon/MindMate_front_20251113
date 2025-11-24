@@ -12,8 +12,9 @@ const clearTokens = () => {
   // localStorage.removeItem(REFRESH_TOKEN_KEY);
 };
 
-const BASE_URL = "http://localhost:8888";
-//const BASE_URL = "http://172.30.1.26:8888";
+const BASE_URL = "https://api.mindmate.co.kr";
+// const BASE_URL = "http://43.202.36.239:8888";
+// const BASE_URL = "http://172.30.1.26:8888";
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {},
