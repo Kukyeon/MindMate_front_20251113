@@ -221,7 +221,6 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
 
       <div className="edit-profile-card">
         <form className="edit-profile-form" onSubmit={handleSave}>
-
           {/* 프로필 이미지 영역 */}
           <div className="profile-image-section">
             <div className="profile-image-preview-wrapper">
@@ -235,6 +234,7 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
                 <div className="profile-image-placeholder">이미지 없음</div>
               )}
             </div>
+
             <div className="profile-image-actions">
               <label className="profile-image-upload-btn">
                 이미지 선택
@@ -258,6 +258,7 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
                 <small>JPG, PNG 등 이미지 파일 · 최대 5MB</small>
               </p>
             </div>
+          </div>
 
           <div className="edit-input-group">
             <input
@@ -268,7 +269,6 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
               className="edit-profile-input"
               readOnly
             />
-
           </div>
           {/* 닉네임 + 중복확인 */}
           <div className="edit-input-group">
