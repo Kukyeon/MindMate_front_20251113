@@ -7,7 +7,6 @@ export const fetchComments = async (boardId, user = null) => {
   const res = await api.get(`/api/comments/boards/${boardId}`, {
     headers,
   });
-  console.log(res.data);
   return Array.isArray(res.data) ? res.data : [];
 };
 

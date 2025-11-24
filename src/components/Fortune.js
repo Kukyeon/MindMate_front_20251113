@@ -6,7 +6,6 @@ import LoadingBar from "./LoadingBar";
 const Fortune = ({ user }) => {
   const [fortune, setFortune] = useState("");
   const birth = user.birth_date;
-  console.log(user);
   const [loading, setLoading] = useState(false);
 
   const todayLuck = async () => {
@@ -19,7 +18,6 @@ const Fortune = ({ user }) => {
         { headers }
       );
       if (res.data) {
-        console.log(res.data);
         setFortune(res.data.aicomment);
       }
     } catch (error) {

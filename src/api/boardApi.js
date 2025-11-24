@@ -83,7 +83,6 @@ export const fetchTags = async (days = 7, topN = 5) => {
     const res = await axios.get(
       `http://localhost:8888/api/boards/hashtags?days=${days}&topN=${topN}`
     );
-    console.log(res.data);
     return res.data;
   } catch (err) {
     console.error("추천 해시태그 불러오기 실패:", err);

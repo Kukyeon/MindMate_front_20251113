@@ -5,7 +5,6 @@ import BoardSearchBar from "../components/board/BoardSearchBar";
 import BoardPagination from "../components/board/BoardPagination";
 import BoardList from "../components/board/BoardList";
 import "./BoardListPage.css";
-import api from "../api/axiosConfig";
 import HashtagList from "../components/detail/HashtagList";
 
 const BoardListPage = ({ user }) => {
@@ -37,7 +36,6 @@ const BoardListPage = ({ user }) => {
   useEffect(() => {
     const getTags = async () => {
       const data = await fetchTags();
-      console.log(data);
       setTags(data);
     };
     getTags();

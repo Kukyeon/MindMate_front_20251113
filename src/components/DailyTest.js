@@ -16,8 +16,6 @@ function DailyTest({ user }) {
   const [loading, setLoading] = useState(false);
   const mbti = user?.mbti;
 
-  console.log(mbti);
-  console.log(user.userId);
   // // 테스트 생성
   // useEffect(() => {
   //   const fetchTodayResult = async () => {
@@ -77,7 +75,6 @@ function DailyTest({ user }) {
   const sendResult = async (mbti, question, selectedAnswer) => {
     const headers = user ? await getAuthHeader() : {};
     const content = `MBTI: ${mbti}\n질문: ${question}\n선택한 답변: ${selectedAnswer}`;
-    console.log(mbti);
     try {
       setLoading(true);
       const response = await api.post(

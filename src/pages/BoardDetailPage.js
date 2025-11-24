@@ -23,9 +23,7 @@ const BoardDetailPage = ({ user }) => {
     try {
       setLoading(true);
       const headers = user ? await authHeader() : {};
-
       const res = await api.get(`/api/boards/${id}`, { headers });
-      //if (response.data) setBoard(response.data);
       setBoard(res.data);
     } catch (err) {
       console.error("게시글 불러오기 실패:", err);
@@ -80,20 +78,11 @@ const BoardDetailPage = ({ user }) => {
     tagData = [];
   }
 
-  console.log("tagData:", tagData);
   // 수정·삭제 권한: 작성자 OR 관리자
   const canModify =
     userId && (board.writerId === user.userId || user.role === "ADMIN");
 
   // Board 상태 확인용 콘솔
-  console.log("==== Debug Board & User ====");
-  console.log("board:", board); // board 전체 객체
-  console.log("board.writerId:", board?.writerId); // 작성자 ID
-  console.log("board.writerRole:", board?.writerRole); // 작성자 role
-  console.log("user:", user); // 로그인한 사용자
-  console.log("userId:", user?.userId); // 로그인한 사용자 ID
-  console.log("userRole:", user?.role); // 로그인한 사용자 role
-  console.log("canModify:", canModify);
   return (
     <div className="board-detail-page">
       {/* 상단 카드: 제목 + 작성자 + 작성일 + 수정/삭제 */}
