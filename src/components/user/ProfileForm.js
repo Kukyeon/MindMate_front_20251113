@@ -1,4 +1,3 @@
-// EditProfile.jsx
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 import { useModal } from "../../context/ModalContext";
@@ -29,6 +28,13 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
     mbti: user?.mbti || "",
   });
 
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(
+    user?.profile_image_url || ""
+  );
+  const originalHasImage = !!user?.profile_image_url;
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
   // const [initialNickname, setInitialNickname] = useState(user?.nickname || "");
   const today = new Date().toISOString().split("T")[0]; // 오늘 날짜 (YYYY-MM-DD)
   const [isNicknameOk, setIsNicknameOk] = useState(true);
@@ -39,6 +45,16 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
   const { showModal } = useModal();
+
+  useEffect(() => {
+    if (!user) return;
+    setProfile({
+      nickname: user.nickname || "",
+      birth_date: user.birth_date || "",
+      mbti: user.mbti || "",
+    });
+    setImagePreview(user.profile_image_url || "");
+  }, [user]);
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -107,6 +123,29 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
     }
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      showModal("이미지 파일만 업로드할 수 있습니다.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      showModal("이미지 크기는 최대 5MB까지 가능합니다.");
+      return;
+    }
+
+    setImageFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreview(previewUrl);
+  };
+
+  const handleImageRemove = () => {
+    setImageFile(null);
+    setImagePreview("");
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     setErrors({});
@@ -123,16 +162,43 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
     }
 
     try {
-      const res = await api.put(
+      const profileRes = await api.put(
         "/api/user",
         { ...profile },
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
-      const user = res.data;
-      if (setUser && user) {
-        setUser(user);
+
+      let updatedUser = profileRes.data;
+
+      if (imageFile) {
+        setIsUploadingImage(true);
+        const formData = new FormData();
+        formData.append("file", imageFile);
+
+        const imageRes = await api.post("/api/user/profile-image", formData, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        updatedUser = imageRes.data;
+        setIsUploadingImage(false);
+      } else if (!imageFile && !imagePreview && originalHasImage) {
+        setIsUploadingImage(true);
+
+        const delRes = await api.post("/api/user/profile-image/delete", null, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        updatedUser = delRes.data;
+        setIsUploadingImage(false);
+      }
+
+      if (setUser && updatedUser) {
+        setUser(updatedUser);
       }
       setMessage("✅ 프로필이 저장되었습니다!");
       setActiveTab("ProfileView");
@@ -154,6 +220,43 @@ const EditProfile = ({ setUser, user, setActiveTab }) => {
 
       <div className="edit-profile-card">
         <form className="edit-profile-form" onSubmit={handleSave}>
+          {/* 프로필 이미지 영역 */}
+          <div className="profile-image-section">
+            <div className="profile-image-preview-wrapper">
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="프로필 미리보기"
+                  className="profile-image-preview"
+                />
+              ) : (
+                <div className="profile-image-placeholder">이미지 없음</div>
+              )}
+            </div>
+            <div className="profile-image-actions">
+              <label className="profile-image-upload-btn">
+                이미지 선택
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  hidden
+                />
+              </label>
+              {imagePreview && (
+                <button
+                  type="button"
+                  className="profile-image-remove-btn"
+                  onClick={handleImageRemove}
+                >
+                  제거
+                </button>
+              )}
+              <p className="signup-help-text">
+                <small>JPG, PNG 등 이미지 파일 · 최대 5MB</small>
+              </p>
+            </div>
+          </div>
           {/* 닉네임 + 중복확인 */}
           <div className="edit-input-group">
             <input
