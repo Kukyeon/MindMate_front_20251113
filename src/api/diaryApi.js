@@ -19,7 +19,7 @@ export const createDiaryWithImage = (data, imageFile) => {
   // 이미지 파일 추가
   if (imageFile) formData.append("image", imageFile);
 
-  return api.post("/api/diary/with-image", formData, {
+  return api.post("/api/diary", formData, {
     headers: { ...getAuthHeader(), "Content-Type": "multipart/form-data" },
   });
 };
