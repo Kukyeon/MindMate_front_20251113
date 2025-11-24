@@ -11,7 +11,7 @@ import { useModal } from "../context/ModalContext";
 const BoardDetailPage = ({ user }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { showModal } = useModal();
+  const { showModal, showConfirm } = useModal();
   const commentListRef = useRef();
 
   const [board, setBoard] = useState(null);
@@ -42,16 +42,16 @@ const BoardDetailPage = ({ user }) => {
 
   const handleDelete = async () => {
     if (!userId) return showModal("로그인이 필요합니다.", "/login");
-    if (!window.confirm("정말 삭제하시겠습니까?")) return;
-
-    try {
-      const headers = await authHeader();
-      await api.delete(`/api/boards/${id}`, { headers });
-      showModal("삭제되었습니다.", "/boards");
-    } catch (err) {
-      console.error("게시글 삭제 실패:", err);
-      showModal("삭제 실패");
-    }
+    showConfirm("정말 삭제하시겠습니까?", async () => {
+      try {
+        const headers = await authHeader();
+        await api.delete(`/api/boards/${id}`, { headers });
+        showModal("삭제되었습니다.", "/boards");
+      } catch (err) {
+        console.error("게시글 삭제 실패:", err);
+        showModal("삭제 실패");
+      }
+    });
   };
 
   useEffect(() => {

@@ -57,8 +57,8 @@ const GoogleCallback = ({ setUser }) => {
           showModal(`${user.nickname}님, 다시 만나서 반가워요!`, "/");
         }
       } catch (err) {
-        showModal("구글 로그인 처리 중 오류가 발생했습니다.", "/login");
-        handleSocialLoginError(err, navigate);
+        //showModal("구글 로그인 처리 중 오류가 발생했습니다.", "/login");
+        handleSocialLoginError(err, showModal, navigate);
       }
     })();
   }, [location.search, navigate, setUser]);

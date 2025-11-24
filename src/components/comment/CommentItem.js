@@ -2,16 +2,23 @@ import { useState } from "react";
 import { deleteComment } from "../../api/commentApi";
 import EmojiSelector from "../detail/EmojiSelector";
 import CommentEditForm from "./CommentEditForm";
+import { useModal } from "../../context/ModalContext";
 
 const CommentItem = ({ comment, onUpdated, userId, user }) => {
   const [editing, setEditing] = useState(false);
-
+  const { showModal, showConfirm } = useModal();
   const handleDelete = async () => {
-    if (!userId) return alert("로그인이 필요합니다.");
-    if (window.confirm("댓글을 삭제하시겠습니까?")) {
-      await deleteComment(comment.id, userId);
-      onUpdated();
-    }
+    if (!userId) return showModal("로그인이 필요합니다.", "/login");
+    showConfirm("댓글을 삭제하시겠습니까?", async () => {
+      try {
+        await deleteComment(comment.id, userId);
+        onUpdated();
+        showModal("댓글이 삭제되었습니다.");
+      } catch (err) {
+        console.error("댓글 삭제 실패:", err);
+        showModal("댓글 삭제 중 오류가 발생했습니다.");
+      }
+    });
   };
 
   const canModify =

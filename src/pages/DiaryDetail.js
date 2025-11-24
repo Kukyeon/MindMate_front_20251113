@@ -10,6 +10,7 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { showModal } = useModal();
+  const { showConfirm } = useModal();
   const params = useParams();
   const date = dateFromCalendar || params.date;
 
@@ -43,18 +44,17 @@ export default function DiaryDetail({ dateFromCalendar, onDelete }) {
     loadDiary();
   }, [date, navigate]);
 
-  const handleDelete = async () => {
-    if (!window.confirm(`${date} 날짜의 일기를 정말로 삭제하시겠습니까?`))
-      return;
-
-    try {
-      await deleteDiaryByDate(date);
-      showModal("일기가 삭제되었습니다.");
-      setDiary(null);
-      if (onDelete) onDelete(date);
-    } catch (err) {
-      showModal("삭제 중 오류가 발생했습니다.");
-    }
+  const handleDelete = () => {
+    showConfirm(`${date} 날짜의 일기를 정말로 삭제하시겠습니까?`, async () => {
+      try {
+        await deleteDiaryByDate(date);
+        showModal("일기가 삭제되었습니다.");
+        setDiary(null);
+        if (onDelete) onDelete(date);
+      } catch (err) {
+        showModal("삭제 중 오류가 발생했습니다.");
+      }
+    });
   };
 
   if (loading) return <div>로딩 중...</div>;

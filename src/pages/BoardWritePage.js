@@ -9,7 +9,7 @@ import LoadingBar from "../components/LoadingBar";
 
 const BoardWritePage = ({ user }) => {
   const navigate = useNavigate();
-  const { showModal } = useModal();
+  const { showModal, showConfirm } = useModal();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
@@ -58,14 +58,15 @@ const BoardWritePage = ({ user }) => {
         );
       } else {
         // 캐릭터 없음 → 생성 여부 확인
-        const createChar = window.confirm(
-          "게시글이 작성되었습니다!\n 캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?"
+        showConfirm(
+          "게시글이 작성되었습니다!\n 캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?",
+          () => {
+            navigate("/profile", { state: { tab: "Character" } });
+          },
+          () => {
+            navigate(`/board/${boardId}`);
+          }
         );
-        if (createChar) {
-          navigate("/profile", { state: { tab: "Character" } }); // 캐릭터 생성 페이지로 이동
-        } else {
-          navigate(`/board/${boardId}`); // 그냥 상세페이지로 이동
-        }
       }
     } catch (err) {
       console.error("게시글 작성 실패:", err);

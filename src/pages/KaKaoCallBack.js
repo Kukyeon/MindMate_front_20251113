@@ -50,8 +50,8 @@ const KakaoCallback = ({ setUser }) => {
           showModal(`${user.nickname}님, 다시 만나서 반가워요!`, "/");
         }
       } catch (err) {
-        showModal("카카오 로그인 처리 중 오류가 발생했습니다.", "/login");
-        handleSocialLoginError(err, navigate);
+        //showModal("카카오 로그인 처리 중 오류가 발생했습니다.", "/login");
+        handleSocialLoginError(err, showModal, navigate);
       }
     })();
   }, [location.search, navigate]);
