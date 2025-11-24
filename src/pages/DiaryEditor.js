@@ -51,24 +51,46 @@ export default function DiaryEditor() {
   // 이미지 선택
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
+    if (!file) {
+      setImageFile(null);
+      setPreviewUrl(diary.imageUrl || "");
+      setDeleteImage(false);
+      return;
     }
-    // setImageFile("");
+
+    if (file.size > MAX_IMAGE_SIZE) {
+      // 용량 초과 시 input 비우기
+      e.target.value = "";
+      setImageFile(null);
+      setPreviewUrl(diary.imageUrl || "");
+      setDeleteImage(false);
+
+      // 모달로 안내
+      showModal("이미지 용량이 너무 큽니다. 5MB 이하만 업로드할 수 있어요.");
+      return;
+    }
+
+    setImageFile(file);
+    setDeleteImage(false);
   };
-  // useEffect(() => {
-  //   let objectUrl;
-  //   if (imageFile) {
-  //     objectUrl = URL.createObjectURL(imageFile);
-  //     setPreviewUrl(objectUrl);
-  //   } else if (diary.imageUrl) {
-  //     setPreviewUrl(`http://localhost:8888${diary.imageUrl}`);
-  //   } else {
-  //     setPreviewUrl("");
-  //   }
-  //   return () => objectUrl && URL.revokeObjectURL(objectUrl); // 메모리 해제
-  // }, [diary.imageUrl, imageFile]);
+
+  useEffect(() => {
+    let objectUrl;
+
+    if (imageFile) {
+      objectUrl = URL.createObjectURL(imageFile);
+      setPreviewUrl(objectUrl);
+    } else if (diary.imageUrl) {
+      setPreviewUrl(`${diary.imageUrl}`);
+    } else {
+      setPreviewUrl("");
+    }
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [diary.imageUrl, imageFile]);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -196,6 +218,11 @@ export default function DiaryEditor() {
                   setPreviewUrl(""); // 화면에서 제거
                   setImageFile(null); // 새로 선택한 이미지 제거
                   setDeleteImage(true);
+
+                  setDiary((prev) => ({
+                    ...prev,
+                    imageUrl: "",
+                  }));
                 }}
               >
                 ×
