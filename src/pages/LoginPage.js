@@ -1,4 +1,4 @@
-import { replace, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { useEffect, useState } from "react";
 import "./LoginPage.css"; // 스타일 따로 분리
@@ -8,16 +8,25 @@ import {
   buildKakaoAuthUrl,
   buildNaverAuthUrl,
 } from "../api/socialAuth";
+import { useModal } from "../context/ModalContext";
 
-const LoginPage = ({ setUser }) => {
+const LoginPage = ({ user, setUser }) => {
   const navigate = useNavigate();
+  const { showModal } = useModal();
   const [state, setState] = useState({
     username: "",
     password: "",
   });
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
+  useEffect(() => {
+    if (user && !justLoggedIn) {
+      // 로그인 상태에서 직접 /login 접근 → 바로 이동
+      navigate(user.nickname ? "/" : "/profile/set", { replace: true });
+    }
+  }, [user, justLoggedIn, navigate]);
+
   const [isEmailOk, setIsEmailOk] = useState(false);
   const [emailMessage, setEmailMessage] = useState("이메일을 입력해주세요.");
-
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   useEffect(() => {
     const email = state.username;
@@ -64,32 +73,41 @@ const LoginPage = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isEmailOk || !isPasswordOk) {
-      alert("이메일 및 비밀번호가 유효하지 않습니다");
+      //alert("이메일 및 비밀번호가 유효하지 않습니다");
+      showModal("이메일 및 비밀번호가 유효하지 않습니다");
       return;
     }
     try {
       const res = await api.post("/api/auth/login", { ...state });
       const accessToken = res.data.accessToken;
-      const refreshToken = res.data.refreshToken;
+      // const refreshToken = res.data.refreshToken;
 
-      saveAuth({ accessToken, refreshToken });
+      // saveAuth({ accessToken, refreshToken });
+      saveAuth({ accessToken });
 
       const user = await getUser();
       if (setUser && user) {
         setUser(user);
+        setJustLoggedIn(true);
       }
       if (!user.nickname) {
         // 닉네임이 없으면 프로필이 설정 되지 않음으로 정의
-        navigate("/profile", { replace: true }); // 로그인시, 프로필설정이 안되면 이동
+        showModal(
+          `${user.username}님, 환영합니다! 프로필 설정을 완료해 주세요.`,
+          "/profile/set" // 네비게이션 경로 전달
+        );
       } else {
-        navigate("/", { replace: true });
+        showModal(
+          `${user.nickname}님, 다시 만나서 반가워요!`,
+          "/" // 네비게이션 경로 전달
+        );
       }
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+        showModal("아이디 또는 비밀번호를 다시 확인해주세요.");
       } else {
         console.error("로그인 실패", err);
-        alert(err);
+        showModal("로그인 처리 중 알 수 없는 오류가 발생했습니다.");
       }
     }
   };
@@ -162,6 +180,12 @@ const LoginPage = ({ setUser }) => {
             <button className="social-button naver" onClick={handleNaverLogin}>
               <img src="/logo/naver.png" alt="Naver" className="social-icon" />
             </button>
+            <p className="signup-link">
+              계정이 없으신가요?{" "}
+              <Link to="/signup" className="signup-text">
+                회원가입
+              </Link>
+            </p>
           </div>
         </div>
       </div>

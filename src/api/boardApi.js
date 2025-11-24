@@ -1,5 +1,6 @@
 import api from "./axiosConfig";
 import { authHeader, authHeader as getAuthHeader } from "./authApi";
+import axios from "axios";
 
 //게시글 목록
 
@@ -9,7 +10,6 @@ export const fetchBoards = async (
   search = {},
   user = null
 ) => {
-  const headers = user ? await getAuthHeader() : {};
   const params = new URLSearchParams({
     page,
     size,
@@ -77,9 +77,15 @@ export const fetchMyBoards = async (page = 0, size = 10) => {
   });
   return res.data;
 };
-
-// // 게시글 이모지
-// export const toggleBoardEmoji = async (boardId, emojiData) => {
-//   const res = await api.post(`/boards/${boardId}/emoji`, emojiData);
-//   return res.data;
-// };
+export const fetchTags = async (days = 7, topN = 5) => {
+  // const headers = await authHeader();
+  try {
+    const res = await axios.get(
+      `http://localhost:8888/api/boards/hashtags?days=${days}&topN=${topN}`
+    );
+    return res.data;
+  } catch (err) {
+    console.error("추천 해시태그 불러오기 실패:", err);
+    return [];
+  }
+};

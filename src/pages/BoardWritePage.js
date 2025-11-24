@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createBoard, updateBoard } from "../api/boardApi";
-import { generateHashtags } from "../api/aiApi";
+import { createBoard } from "../api/boardApi";
 import { authHeader } from "../api/authApi";
 import "./BoardWritePage.css";
 import api from "../api/axiosConfig";
+import { useModal } from "../context/ModalContext";
+import LoadingBar from "../components/LoadingBar";
 
 const BoardWritePage = ({ user }) => {
   const navigate = useNavigate();
+  const { showModal, showConfirm } = useModal();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,24 +32,6 @@ const BoardWritePage = ({ user }) => {
       const boardId = savedBoard.id || savedBoard.data?.id;
       if (!boardId) throw new Error("게시글 ID를 가져오지 못했습니다.");
 
-      // // 2. AI 해시태그 생성
-      // const { hashtags } = await generateHashtags(boardId, headers);
-      // setAiTags(hashtags || []);
-
-      // // 3. 게시글에 해시태그 업데이트
-      // if (hashtags && hashtags.length > 0) {
-      //   await updateBoard(
-      //     boardId,
-      //     {
-      //       title,
-      //       content,
-      //       userId,
-      //       hashtags: hashtags.join(" "),
-      //     },
-      //     headers
-      //   );
-      // }
-
       //캐릭터 처리 관련
       let charResData = null;
       try {
@@ -68,22 +52,25 @@ const BoardWritePage = ({ user }) => {
           params: { addPoints: 10, moodChange: 5 },
           headers,
         });
-        alert("게시글이 작성되었습니다! 캐릭터가 성장했어요!");
-        navigate(`/board/${boardId}`); // 알림 이후 게시판으로 다시
+        showModal(
+          "게시글이 작성되었습니다! 캐릭터가 성장했어요!",
+          `/board/${boardId}`
+        );
       } else {
         // 캐릭터 없음 → 생성 여부 확인
-        const createChar = window.confirm(
-          "게시글이 작성되었습니다!\n 캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?"
+        showConfirm(
+          "게시글이 작성되었습니다!\n 캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?",
+          () => {
+            navigate("/profile", { state: { tab: "Character" } });
+          },
+          () => {
+            navigate(`/board/${boardId}`);
+          }
         );
-        if (createChar) {
-          navigate("/profile", { state: { tab: "Character" } }); // 캐릭터 생성 페이지로 이동
-        } else {
-          navigate(`/board/${boardId}`); // 그냥 상세페이지로 이동
-        }
       }
     } catch (err) {
       console.error("게시글 작성 실패:", err);
-      alert("게시글 작성에 실패했습니다.");
+      showModal("게시글 작성에 실패했습니다.");
     } finally {
       setLoading(false);
     }
@@ -91,6 +78,14 @@ const BoardWritePage = ({ user }) => {
 
   return (
     <div className="board-page">
+      {loading && (
+        <div className="graph-loading-overlay">
+          <LoadingBar
+            loading={true}
+            message="🤖 AI가 맞춤 해시태그를 고르고 있어요..."
+          />
+        </div>
+      )}
       <h2 className="board-page-title">✏️ 게시글 작성</h2>
       <form className="board-write-form" onSubmit={handleSubmit}>
         <input
@@ -110,6 +105,9 @@ const BoardWritePage = ({ user }) => {
         />
         <button type="submit" className="board-button" disabled={loading}>
           {loading ? "작성 중..." : "등록"}
+        </button>
+        <button className="board-btn back" onClick={() => navigate("/boards")}>
+          목록으로
         </button>
       </form>
 

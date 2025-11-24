@@ -5,11 +5,14 @@ import "./Calendar.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import DiaryDetail from "./DiaryDetail";
 import { fetchDiariesByMonth } from "../api/diaryApi";
+import { useModal } from "../context/ModalContext";
 
 export default function CalendarPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { showModal } = useModal();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [monthlyDiaries, setMonthlyDiaries] = useState([]);
   const [clickResult, setClickResult] = useState({
     date: null,
@@ -55,11 +58,11 @@ export default function CalendarPage() {
       } catch (err) {
         console.error("월별 일기 로드 실패:", err);
         if (err.response?.status === 403) {
-          alert("로그인이 필요합니다.");
+          showModal("로그인이 필요합니다.");
         } else if (err.response?.status === 404) {
           setMonthlyDiaries([]);
         } else {
-          alert("일기 데이터를 불러오는 데 실패했습니다.");
+          showModal("일기 데이터를 불러오는 데 실패했습니다.");
         }
       }
     };
@@ -77,14 +80,6 @@ export default function CalendarPage() {
   const handleDateClick = (date) => {
     const dateString = formatDate(date);
     const todayString = formatDate(new Date());
-
-    // // ✅ 미래 날짜 클릭 방지
-    // if (dateString > todayString) {
-    //   alert("미래 날짜에는 일기를 작성할 수 없습니다.");
-    //   setClickResult({ date: null, exists: null, diary: null });
-    //   return;
-    // }
-
     const diary = monthlyDiaries.find(
       (d) => d.date.slice(0, 10) === dateString
     );
@@ -104,7 +99,7 @@ export default function CalendarPage() {
 
     // ❗ 미래 날짜 클릭 방지
     if (clickResult.date > today) {
-      alert("미래 날짜에는 일기를 작성할 수 없습니다.");
+      showModal("미래 날짜에는 일기를 작성할 수 없습니다.");
       return;
     }
 
@@ -137,18 +132,26 @@ export default function CalendarPage() {
     }
     return null;
   };
-
   return (
     <div className="calendar-page-wrapper">
       <h2>📅 감정일기 캘린더</h2>
 
       <Calendar
-        onActiveStartDateChange={({ activeStartDate }) =>
-          setCurrentDate(activeStartDate)
-        }
-        value={currentDate}
-        onClickDay={handleDateClick}
+        onActiveStartDateChange={({ activeStartDate }) => {
+          setCurrentMonth(activeStartDate); // 달 변경 시 달력 기준만 변경
+        }}
+        activeStartDate={currentMonth} // 화면에 표시되는 달
+        value={currentDate} // 실제 선택된 날짜
+        onClickDay={handleDateClick} // 클릭 시 선택 날짜 변경
         tileContent={tileContent}
+        tileClassName={({ date, view }) => {
+          if (view === "month") {
+            if (date.getMonth() !== currentMonth.getMonth()) {
+              return "not-current-month";
+            }
+          }
+          return null;
+        }}
       />
 
       {clickResult.exists === true && (

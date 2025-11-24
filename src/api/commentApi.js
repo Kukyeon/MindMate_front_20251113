@@ -7,7 +7,6 @@ export const fetchComments = async (boardId, user = null) => {
   const res = await api.get(`/api/comments/boards/${boardId}`, {
     headers,
   });
-  console.log(res.data);
   return Array.isArray(res.data) ? res.data : [];
 };
 
@@ -41,12 +40,3 @@ export const deleteComment = async (commentId) => {
   const headers = await getAuthHeader();
   await api.delete(`/api/comments/${commentId}`, { headers });
 };
-
-// 댓글 이모지
-// export const toggleCommentEmoji = async (commentId, emojiType, accountId) => {
-//   const res = await api.post(`/comments/${commentId}/emoji`, {
-//     accountId,
-//     emojiType,
-//   });
-//   return res.data;
-// };

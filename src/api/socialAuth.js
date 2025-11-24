@@ -12,8 +12,10 @@ const GOOGLE_CLIENT_ID =
   "866215417194-hsrr4k4h24rku7ng7le4rvnq8s9dqviv.apps.googleusercontent.com";
 const GOOGLE_REDIRECT_URI = "https://mindmate.co.kr/auth/google/callback";
 const GOOGLE_DELETE_REDIRECT_URI =
+
   "https://mindmate.co.kr/auth/google/delete-callback";
-const GOOGLE_SCOPE = "openid email";
+const GOOGLE_SCOPE = "openid email profile";
+
 
 // 공통 state 생성 함수
 const createRandomState = () => {

@@ -16,7 +16,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center; /* 🔸세로 중앙 정렬 */
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   gap: 10px;
   flex-wrap: wrap; /* 반응형 대응 */
 }
@@ -108,6 +108,38 @@
     width: 100%;
   }
 }
+/* BoardListPage.css */
+
+/* 추천 해시태그 섹션 */
+
+.recommended-tags-header {
+  display: flex;
+  align-items: center; /* 수직 가운데 정렬 */
+  gap: 10px; /* 제목과 해시태그 간 간격 */
+  flex-wrap: wrap; /* 해시태그가 길면 자동 줄 바꿈 */
+}
+
+.inline-hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px; /* 해시태그 간 간격 */
+}
+
+/* HashtagList 안에 span 클래스가 hashtag라면 */
+.inline-hashtags .hashtag {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.inline-hashtags .hashtag:hover {
+  background-color: #d9eaff;
+}
+
 /* BoardList */
 .board-table {
   width: 100%;
@@ -147,9 +179,22 @@
   text-decoration: none;
   font-weight: 500;
 }
-
-.board-item a:hover {
-  color: #d18b60;
+.board-admin {
+  background-color: #f5d7b0; /* 부드러운 살구색 */
+  font-weight: 600;
+  color: #6b4226;
+  text-align: center;
+  vertical-align: middle; /* 테이블 중앙 정렬 */
+  font-size: 0.85rem; /* 글자 조금 작게 */
+  line-height: 0.7; /* 행 높이 맞추기 */
+  padding: 0; /* padding 제거 */
+}
+.board-admin .board-title {
+  font-size: 1.3rem;
+}
+.board-admin:hover {
+  background-color: #e7b58a;
+  transition: background-color 0.2s;
 }
 
 /* 반응형: 화면 폭이 600px 이하일 때 스크롤 */
@@ -316,10 +361,21 @@
   border-radius: 12px;
   margin-bottom: 3px;
 }
-.board-emoji-card {
-  background-color: #fef5e7;
-  margin-bottom: 5px;
-  padding: 5px;
+.hashtag-list {
+  display: flex;
+  flex-wrap: wrap; /* 화면 좁으면 줄 바꿈 */
+  gap: 8px; /* 태그 사이 간격 */
+  /* margin-top: 8px; */
+}
+
+.hashtag {
+  background-color: #ffd93d33;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  color: #6b4226;
+  cursor: pointer; /* ✅ 클릭 가능 커서 */
+  display: inline-block; /* 줄 바꿈 가능 */
 }
 .board-hashtag-card {
   margin-top: 15px;
@@ -635,7 +691,7 @@
 }
 
 .board-title {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: bold;
   margin-bottom: 12px;
 }

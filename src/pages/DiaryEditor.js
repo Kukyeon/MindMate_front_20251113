@@ -1,19 +1,26 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
-import { fetchDiaryByDate, updateDiaryByDate } from "../api/diaryApi";
-
+import { fetchDiaryByDate, updateDiaryWithImage } from "../api/diaryApi"; // Multipart용 API
+import { useModal } from "../context/ModalContext";
+import LoadingBar from "../components/LoadingBar";
 export default function DiaryEditor() {
   const { date } = useParams();
   const navigate = useNavigate();
-
+  const { showModal } = useModal();
   const [emoji, setEmoji] = useState(null);
-  const [diary, setDiary] = useState({ title: "", content: "", username: "" });
+  const [diary, setDiary] = useState({
+    title: "",
+    content: "",
+    username: "",
+    imageUrl: "",
+  });
+  const [imageFile, setImageFile] = useState(null); // 새 이미지
+  const [deleteImage, setDeleteImage] = useState(false);
   const [errors, setErrors] = useState({ title: "", content: "", emoji: "" });
-
-  // ==========================
-  // 기존 일기 불러오기
-  // ==========================
+  const [previewUrl, setPreviewUrl] = useState(diary.imageUrl || "");
+  const [isSaving, setIsSaving] = useState(false);
+  const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
   useEffect(() => {
     if (!date) return;
 
@@ -25,9 +32,9 @@ export default function DiaryEditor() {
       } catch (error) {
         console.error("❌ fetchDiary 오류:", error);
         const status = error.response?.status;
-        if (status === 404) alert("해당 날짜에 작성된 일기가 없습니다.");
-        else if (status === 403) alert("로그인이 필요합니다.");
-        else alert("일기 조회 실패");
+        if (status === 404) showModal("해당 날짜에 작성된 일기가 없습니다.");
+        else if (status === 403) showModal("로그인이 필요합니다.");
+        else showModal("일기 조회 실패");
 
         navigate("/diary/calendar");
       }
@@ -36,22 +43,60 @@ export default function DiaryEditor() {
     fetchDiary();
   }, [date, navigate]);
 
-  // ==========================
-  // 입력값 변경
-  // ==========================
   const handleChange = (e) => {
     setDiary({ ...diary, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  // ==========================
-  // 저장
-  // ==========================
+  // 이미지 선택
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      setImageFile(null);
+      setPreviewUrl(diary.imageUrl || "");
+      setDeleteImage(false);
+      return;
+    }
+
+    if (file.size > MAX_IMAGE_SIZE) {
+      // 용량 초과 시 input 비우기
+      e.target.value = "";
+      setImageFile(null);
+      setPreviewUrl(diary.imageUrl || "");
+      setDeleteImage(false);
+
+      // 모달로 안내
+      showModal("이미지 용량이 너무 큽니다. 5MB 이하만 업로드할 수 있어요.");
+      return;
+    }
+
+    setImageFile(file);
+    setDeleteImage(false);
+  };
+
+  useEffect(() => {
+    let objectUrl;
+
+    if (imageFile) {
+      objectUrl = URL.createObjectURL(imageFile);
+      setPreviewUrl(objectUrl);
+    } else if (diary.imageUrl) {
+      setPreviewUrl(`${diary.imageUrl}`);
+    } else {
+      setPreviewUrl("");
+    }
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [diary.imageUrl, imageFile]);
+
   const handleSave = async (e) => {
     e.preventDefault();
 
+    // 유효성 검사
     let newErrors = { title: "", content: "", emoji: "" };
-
     if (!diary.title.trim()) newErrors.title = "제목을 입력해 주세요";
     else if (diary.title.trim().length < 5)
       newErrors.title = "글 제목은 최소 5글자 이상이어야 합니다.";
@@ -63,21 +108,24 @@ export default function DiaryEditor() {
     if (!emoji) newErrors.emoji = "감정을 선택해 주세요";
 
     setErrors(newErrors);
-
-    // 에러 있으면 중단
     if (newErrors.title || newErrors.content || newErrors.emoji) return;
 
-    const { id, type, imageUrl } = emoji;
+    // FormData 준비 (JSON + 이미지)
+    const formData = new FormData();
     const dataToSend = {
-      title: diary.title,
-      content: diary.content,
-      emoji: { id, type, imageUrl },
+      title: diary.title.trim() || undefined,
+      content: diary.content.trim() || undefined,
+      emoji: emoji || undefined, // id, type, imageUrl 전체 포함
+      deleteImage: deleteImage,
     };
-
+    formData.append("data", JSON.stringify(dataToSend));
+    if (imageFile) formData.append("image", imageFile);
+    setIsSaving(true);
     try {
-      await updateDiaryByDate(date, dataToSend);
-      alert("수정되었습니다.");
-      navigate("/diary/calendar", { state: { selectedDate: date } });
+      await updateDiaryWithImage(date, dataToSend, imageFile);
+      showModal("수정되었습니다.", () => {
+        navigate("/diary/calendar", { state: { selectedDate: date } });
+      });
     } catch (error) {
       console.error("❌ handleSave 오류:", error);
       const status = error.response?.status;
@@ -88,22 +136,28 @@ export default function DiaryEditor() {
           setErrors(serverErrors);
           return;
         }
-        alert("입력값이 올바르지 않습니다.");
+        showModal("입력값이 올바르지 않습니다.");
       } else if (status === 403) {
-        alert("권한이 없습니다. 다시 로그인 해주세요!");
-        navigate("/login");
+        showModal("권한이 없습니다. 다시 로그인 해주세요!", "/login");
       } else {
-        alert("수정 중 오류가 발생했습니다.");
+        showModal("수정 중 오류가 발생했습니다.");
       }
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return (
     <div className="diary-editor-card">
+      {isSaving && (
+        <div className="graph-loading-overlay">
+          <LoadingBar loading={true} message="🤖 일기를 저장 중이에요..." />
+        </div>
+      )}
+
       <h2>✏️ {date} 일기 수정</h2>
 
       <form onSubmit={handleSave}>
-        
         {/* 제목 */}
         <div className="editor-field">
           <label>제목</label>
@@ -133,6 +187,48 @@ export default function DiaryEditor() {
         <div className="emoji-picker-wrapper">
           <DiaryEmojiPicker selectedEmoji={emoji} onSelectEmoji={setEmoji} />
           {errors.emoji && <p className="diary-error">{errors.emoji}</p>}
+        </div>
+
+        {/* 이미지 업로드 */}
+        <div className="editor-field">
+          <input
+            type="file"
+            id="customFileInput"
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ display: "none" }}
+          />
+
+          {/* 커스텀 버튼 */}
+          <label htmlFor="customFileInput" className="custom-file-button">
+            이미지 첨부
+          </label>
+
+          {/* 미리보기 */}
+          {previewUrl && (
+            <div
+              className="image-preview-wrapper "
+              style={{ position: "relative", display: "inline-block" }}
+            >
+              <img src={previewUrl} alt="Preview" className="image-preview" />
+              <button
+                type="button"
+                className="delete-image-button"
+                onClick={() => {
+                  setPreviewUrl(""); // 화면에서 제거
+                  setImageFile(null); // 새로 선택한 이미지 제거
+                  setDeleteImage(true);
+
+                  setDiary((prev) => ({
+                    ...prev,
+                    imageUrl: "",
+                  }));
+                }}
+              >
+                ×
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="diary-editor-buttons">

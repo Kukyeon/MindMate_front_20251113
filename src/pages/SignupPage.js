@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import "./SignupPage.css";
 import {
@@ -8,9 +7,11 @@ import {
   buildNaverAuthUrl,
 } from "../api/socialAuth";
 import { getUser } from "../api/authApi";
+import { requestEmailCode } from "../api/emailApi";
+import { useModal } from "../context/ModalContext";
 
 const SignupPage = ({ setUser }) => {
-  const navigate = useNavigate();
+  const { showModal } = useModal();
   const [state, setState] = useState({
     email: "",
     code: "",
@@ -23,7 +24,13 @@ const SignupPage = ({ setUser }) => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   useEffect(() => {
     const email = state.email.trim();
+
     setIsEmailOk(false);
+
+    setState((prev) => ({ ...prev, code: "" }));
+    setIsCodeOk(false);
+    setIsCodePatternOk(false);
+    setCodeMessage("이메일로 받은 인증코드를 입력해주세요.");
 
     if (!email) {
       setEmailMessage("이메일을 입력해주세요.");
@@ -56,6 +63,7 @@ const SignupPage = ({ setUser }) => {
   }, [state.password]);
 
   const [isCodeOk, setIsCodeOk] = useState(false);
+  const [isCodePatternOk, setIsCodePatternOk] = useState(false);
   const [codeMessage, setCodeMessage] = useState(
     "이메일로 받은 인증코드를 입력해주세요."
   );
@@ -65,14 +73,17 @@ const SignupPage = ({ setUser }) => {
   useEffect(() => {
     const code = state.code.trim();
     setIsCodeOk(false);
+    setIsCodePatternOk(false);
 
     if (!code) {
       setCodeMessage("이메일로 받은 인증코드를 입력해주세요.");
     } else if (!codePattern.test(code)) {
       setCodeMessage("인증코드는 6자리 숫자로 입력해주세요.");
     } else {
-      setCodeMessage("인증코드를 입력했습니다.");
-      setIsCodeOk(true);
+      setCodeMessage(
+        "인증코드 형식이 올바릅니다. '코드확인' 버튼을 눌러주세요."
+      );
+      setIsCodePatternOk(true);
     }
   }, [state.code]);
 
@@ -84,45 +95,82 @@ const SignupPage = ({ setUser }) => {
     const email = state.email.trim();
 
     if (!email) {
-      alert("이메일을 입력 후 다시 시도해주세요.");
+      showModal("이메일을 입력 후 다시 시도해주세요.");
       return;
     } else if (!emailPattern.test(email)) {
-      alert("올바른 이메일 형식이 아닙니다.");
+      showModal("올바른 이메일 형식이 아닙니다.");
       return;
     }
 
     setIsEmailOk(false);
+
     try {
       // 백엔드 메서드는 checkUsername 이지만, 실제 값은 이메일
-      await api.get("/api/auth/check_username", {
-        params: { username: state.email.trim() }, // username 자리에 email 전달
-      });
-      alert("인증 코드를 이메일로 전송했습니다. 메일함을 확인해주세요.");
-      setEmailMessage("사용 가능한 이메일입니다.");
+      await requestEmailCode(email);
+
       setIsEmailOk(true);
+      setEmailMessage(
+        "인증코드를 이메일로 보냈습니다. 메일함에서 코드를 확인해 주세요."
+      );
+      showModal(
+        "인증코드 발송을 완료했어요. 잠시 후 메일함(또는 스팸함)을 확인해 주세요."
+      );
     } catch (err) {
       setIsEmailOk(false);
+
       if (err.response && err.response.status === 409) {
-        alert("이미 사용 중인 이메일입니다.");
+        showModal("이미 사용 중인 이메일입니다.");
         setState({ ...state, email: "" });
       } else if (err.response && err.response.status === 429) {
-        alert(err.response.data || "요청 가능 횟수를 초과했습니다.");
+        showModal(err.response.data || "요청 가능 횟수를 초과했습니다.");
       } else {
-        alert("이메일 확인/코드 발급 중 오류가 발생했습니다.");
+        showModal("이메일 확인/코드 발급 중 오류가 발생했습니다.");
         setState({ ...state, email: "" });
       }
     }
   };
+  const checkCode = async () => {
+    const email = state.email.trim();
+    const code = state.code.trim();
 
+    if (!isEmailOk) {
+      showModal("먼저 이메일 중복체크 후 인증코드를 받아주세요.");
+      return;
+    }
+
+    if (!isCodePatternOk) {
+      showModal("6자리 숫자 형식의 인증코드를 입력해주세요.");
+      return;
+    }
+
+    try {
+      await api.post("/api/auth/check_code", { email, code });
+      setIsCodeOk(true);
+      setCodeMessage("인증코드가 확인되었습니다.");
+      showModal("인증코드가 확인되었습니다.");
+    } catch (err) {
+      setIsCodeOk(false);
+
+      if (err.response && err.response.status === 422) {
+        setCodeMessage("인증코드가 올바르지 않거나 만료되었습니다.");
+        showModal("인증코드가 올바르지 않거나 만료되었습니다.");
+      } else {
+        setCodeMessage(
+          "인증코드 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+        );
+        showModal("인증코드 확인 중 오류가 발생했습니다.");
+      }
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
     if (!isEmailOk) {
-      alert("이메일 중복체크후 다시 시도해주세요");
+      showModal("이메일 중복체크후 다시 시도해주세요");
       return;
     }
     if (!isPasswordOk) {
-      alert("비밀번호가 유효하지 않습니다 다시 시도해주세요");
+      showModal("비밀번호가 유효하지 않습니다 다시 시도해주세요");
       setState({ ...state, password: "" });
       return;
     }
@@ -133,23 +181,23 @@ const SignupPage = ({ setUser }) => {
     try {
       const res = await api.post("/api/auth/signup", { ...state });
       localStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
+      // localStorage.setItem("refreshToken", res.data.refreshToken);
       const user = await getUser();
       if (setUser && user) {
         setUser(user);
       }
-      navigate("/profile/set", { replace: true });
+      showModal(`${user.username}님, 환영합니다! 프로필을 설정해주세요.`);
     } catch (err) {
       if (err.response && err.response.status === 422) {
-        alert("이메일 인증코드가 틀렸거나 만료되었습니다.");
+        showModal("이메일 인증코드가 틀렸거나 만료되었습니다.");
         setState((prev) => ({ ...prev, code: "" })); // 코드만 초기화
         return;
       }
       if (err.response && err.response.status === 400) {
-        alert("유효하지 않은 값이 들어왔습니다 확인해주세요.");
+        showModal("유효하지 않은 값이 들어왔습니다 확인해주세요.");
         setErrors(err.response.data);
       } else {
-        alert("회원가입 실패");
+        showModal("회원가입 실패");
         console.error(err);
       }
     }
@@ -207,15 +255,30 @@ const SignupPage = ({ setUser }) => {
           </p>
           {isEmailOk && (
             <>
-              <input
-                type="text"
-                name="code"
-                value={state.code}
-                placeholder="인증코드"
-                onChange={handleOnChange}
-                className="signup-input"
-                required
-              />
+              <div className="input-group">
+                <input
+                  type="text"
+                  name="code"
+                  value={state.code}
+                  placeholder="인증코드"
+                  onChange={handleOnChange}
+                  className="signup-input"
+                  required
+                />
+
+                <button
+                  type="button"
+                  className="signup-check-btn"
+                  onClick={checkCode}
+                  style={{
+                    color: isCodeOk && "GrayText",
+                    backgroundColor: isCodeOk && "lightgray",
+                  }}
+                  disabled={isCodeOk}
+                >
+                  {isCodeOk ? "확인완료" : "코드확인"}
+                </button>
+              </div>
               <p className="signup-help-text">
                 <small>{codeMessage}</small>
               </p>

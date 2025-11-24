@@ -1,15 +1,16 @@
 import { useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { clearAuth } from "../api/authApi";
+import { useModal } from "../context/ModalContext";
 const getAuthHeader = () => {
   const token = localStorage.getItem("accessToken"); // 토큰 키 이름 확인
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 const NaverDeleteCallback = ({ setUser }) => {
   const location = useLocation();
-  const navigate = useNavigate();
   const calledRef = useRef(false);
+  const { showModal } = useModal();
   useEffect(() => {
     if (calledRef.current) return;
     calledRef.current = true;
@@ -19,8 +20,7 @@ const NaverDeleteCallback = ({ setUser }) => {
     const state = query.get("state"); // 네이버는 state 필수
 
     if (!code || !state) {
-      alert("네이버 인가 코드 또는 state 값이 없습니다.");
-      navigate("/profile", { replace: true });
+      showModal("네이버 인가 코드 또는 state 값이 없습니다.", "/profile");
       return;
     }
 
@@ -35,14 +35,13 @@ const NaverDeleteCallback = ({ setUser }) => {
         clearAuth();
         if (setUser) setUser(null);
 
-        navigate("/delete-complete", { replace: true });
+        showModal("네이버 회원탈퇴가 완료되었습니다.", "/delete-complete");
       } catch (err) {
         console.error("네이버 회원탈퇴 실패:", err);
-        alert("네이버 회원탈퇴 중 오류가 발생했습니다.");
-        navigate("/profile", { replace: true });
+        showModal("네이버 회원탈퇴 중 오류가 발생했습니다.", "/profile");
       }
     })();
-  }, [location.search, navigate, setUser]);
+  }, [location.search, setUser]);
 
   return <div>네이버 회원탈퇴 처리 중...</div>;
 };

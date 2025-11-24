@@ -106,7 +106,7 @@ const EmojiSelector = ({ boardId, commentId, userId }) => {
         <div className="selected-emoji">
           {emojiList.map((emoji) => {
             const info = emojiCounts[emoji.type];
-            if (!info || !info.selected) return null;
+            if (!info || info.count === 0) return null;
             return (
               <span
                 key={emoji.type}

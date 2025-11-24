@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../api/axiosConfig";
 import html2canvas from "html2canvas";
-import { authHeader, authHeader as getAuthHeader } from "../api/authApi";
+import { authHeader as getAuthHeader } from "../api/authApi";
+import { useModal } from "../context/ModalContext";
+import LoadingBar from "./LoadingBar";
 
 function DailyTest({ user }) {
   const [testData, setTestData] = useState("");
@@ -10,11 +12,10 @@ function DailyTest({ user }) {
   const [selected, setSelected] = useState(null);
   const [result, setResult] = useState("");
   const resultRef = useRef(null);
+  const { showModal } = useModal();
   const [loading, setLoading] = useState(false);
   const mbti = user?.mbti;
 
-  console.log(mbti);
-  console.log(user.userId);
   // // 테스트 생성
   // useEffect(() => {
   //   const fetchTodayResult = async () => {
@@ -64,7 +65,7 @@ function DailyTest({ user }) {
       setChoices(lines.filter((l) => /^[A-D]:/.test(l)));
     } catch (error) {
       console.error("테스트 생성 실패:", error);
-      alert("서버 연결에 문제가 있거나, 데이터가 올바르지 않습니다.");
+      showModal("서버 연결에 문제가 있거나, 데이터가 올바르지 않습니다.");
     } finally {
       setLoading(false);
     }
@@ -74,7 +75,6 @@ function DailyTest({ user }) {
   const sendResult = async (mbti, question, selectedAnswer) => {
     const headers = user ? await getAuthHeader() : {};
     const content = `MBTI: ${mbti}\n질문: ${question}\n선택한 답변: ${selectedAnswer}`;
-    console.log(mbti);
     try {
       setLoading(true);
       const response = await api.post(
@@ -86,7 +86,7 @@ function DailyTest({ user }) {
       setSelected(selectedAnswer);
     } catch (error) {
       console.error("결과 전송 실패:", error);
-      alert("결과 생성 중 오류가 발생했습니다.");
+      showModal("결과 생성 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }
@@ -99,8 +99,8 @@ function DailyTest({ user }) {
       MindMate - 감정 일기
       http://localhost:3000/daily`
       )
-      .then(() => alert("결과가 복사되었습니다!"))
-      .catch(() => alert("복사 실패"));
+      .then(() => showModal("결과가 복사되었습니다!"))
+      .catch(() => showModal("복사 실패"));
   };
   const shareKakao = () => {
     const text = encodeURIComponent(result);
@@ -150,18 +150,28 @@ function DailyTest({ user }) {
           {user?.nickname} 님의 MBTI는 :{" "}
           <span className="mbti">{user?.mbti}</span>
         </h4>
-
         {loading && (
-          <p className="daily-test-status">
-            🤖 AI가 생각 중이에요... 잠시만요!
-          </p>
+          <LoadingBar
+            loading={loading}
+            message="🤖 AI가 테스트를 생성중이에요..."
+          />
         )}
-        {!testData && (
+
+        {!loading ? (
           <button
             className="daily-test-button"
             onClick={() => generateTest(mbti)}
           >
             테스트 생성하기
+          </button>
+        ) : (
+          <button className="daily-test-button loading" disabled>
+            <div className="dot-loader">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            생성 중
           </button>
         )}
         {question && (

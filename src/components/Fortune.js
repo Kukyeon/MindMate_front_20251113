@@ -1,11 +1,11 @@
 import { useState } from "react";
 import api from "../api/axiosConfig";
-import { authHeader, authHeader as getAuthHeader } from "../api/authApi";
+import { authHeader as getAuthHeader } from "../api/authApi";
+import LoadingBar from "./LoadingBar";
 
 const Fortune = ({ user }) => {
   const [fortune, setFortune] = useState("");
   const birth = user.birth_date;
-  console.log(user);
   const [loading, setLoading] = useState(false);
 
   const todayLuck = async () => {
@@ -18,7 +18,6 @@ const Fortune = ({ user }) => {
         { headers }
       );
       if (res.data) {
-        console.log(res.data);
         setFortune(res.data.aicomment);
       }
     } catch (error) {
@@ -87,18 +86,32 @@ const Fortune = ({ user }) => {
   return (
     <div className="fortune-content">
       <div className="fortune-card">
-        <h2 className="fortune-title">오늘의 운세</h2>
-        <p className="fortune-birth">생년월일: {birth}</p>
+        <h2 className="fortune-title">🔮 오늘의 운세</h2>
+        <p className="fortune-birth">
+          생년월일: <span className="birth">{birth}</span>
+        </p>
+        {loading && (
+          <LoadingBar loading={loading} message="🤖 AI가 운세를 준비 중..." />
+        )}
         <button
           className="fortune-button"
           onClick={todayLuck}
           disabled={loading}
         >
-          {loading
-            ? "🤖 AI가 운세를 준비 중..."
-            : fortune
-            ? "한 번 더 확인!"
-            : "확인하기!"}
+          {loading ? (
+            <>
+              <div className="dot-loader">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              생성 중
+            </>
+          ) : fortune ? (
+            "한 번 더 확인!"
+          ) : (
+            "확인하기!"
+          )}
         </button>
 
         {fortune && (
