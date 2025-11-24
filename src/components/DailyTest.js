@@ -92,12 +92,14 @@ function DailyTest({ user }) {
     }
   };
   const copyToClipboard = () => {
+    const shareUrl = `${window.location.origin}/daily`;
+
     navigator.clipboard
       .writeText(
         `💬 오늘의 심리 결과
       ${result}
       MindMate - 감정 일기
-      http://localhost:3000/daily`
+      ${shareUrl}`
       )
       .then(() => showModal("결과가 복사되었습니다!"))
       .catch(() => showModal("복사 실패"));
