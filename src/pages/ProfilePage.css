@@ -36,11 +36,6 @@
   color: #fff;
 }
 
-/* 탭 콘텐츠 영역 */
-.tab-content {
-  margin-top: 20px;
-}
-
 /* 기타 설정 영역 */
 .settings-placeholder {
   padding: 20px;
@@ -66,16 +61,6 @@
   align-items: center;
   flex-wrap: wrap; /* 좁아지면 value가 아래로 내려가도록 */
   margin-bottom: 12px;
-}
-.profile-view-label {
-  font-weight: 600;
-  color: #6b4226;
-  min-width: 100px; /* 최소 폭 확보 */
-}
-.profile-view-value {
-  flex: 1; /* 나머지 공간 차지 */
-  color: #555;
-  word-break: break-word; /* 긴 텍스트 줄바꿈 */
 }
 
 .edit-profile-title {
@@ -161,123 +146,32 @@
   .edit-profile-check-btn {
     width: 100%;
   }
-}
-.character-card {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 16px;
-  /* width: 320px; */
-  max-width: 90%;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  .profile-view-row {
+    flex-direction: row; /* 가로 정렬 유지 */
+    align-items: center; /* 세로 중앙 정렬 */
+    margin-bottom: 10px; /* 간격 조정 */
+    gap: 1px;
+  }
+
+  .profile-view-label {
+    flex: 0 0 50px; /* 라벨 최소 폭 설정, 필요하면 더 줄임 */
+    font-size: 0.9rem; /* 라벨 글자 조금 작게 */
+    /* margin-right: 8px; 라벨과 입력칸 사이 간격 */
+  }
+
+  .profile-view-value {
+    flex: 1; /* 남은 공간 꽉 채우기 */
+    font-size: 0.95rem;
+    word-break: break-word; /* 길어도 줄바꿈 가능 */
+  }
+
+  .edit-profile-input {
+    flex: 1; /* 입력칸 넓이 늘리기 */
+    min-width: 0; /* overflow 방지 */
+    font-size: 0.9rem;
+  }
 }
 
-.character-name {
-  font-size: 1.6rem;
-  font-weight: bold;
-  color: #6b4226;
-  margin-bottom: 10px;
-}
-
-.character-image-wrapper {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 12px;
-  background-color: #f5f5f5;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.character-image {
-  max-width: 100%;
-  max-height: 100%;
-}
-
-.character-level,
-.character-points,
-.character-mood {
-  margin: 4px 0;
-  font-weight: 500;
-}
-
-.character-mood-bar {
-  width: 100%;
-  height: 8px;
-  background-color: #eee;
-  border-radius: 4px;
-  margin-top: 8px;
-}
-
-.character-mood-fill {
-  height: 100%;
-  background-color: #f472b6; /* 핑크 계열 */
-  border-radius: 4px;
-}
-
-.character-cheer-btn {
-  border: 0;
-  margin-top: 12px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  background-color: #f472b6;
-  color: #fff;
-  font-weight: 600;
-  margin-left: 250px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.character-cheer-btn:hover:not(:disabled) {
-  background-color: #ec4899;
-}
-
-.character-cheer-btn:disabled {
-  background-color: #ddd;
-  cursor: not-allowed;
-}
-
-.character-message {
-  margin-top: 8px;
-  color: #6b4226;
-  font-weight: 500;
-  text-align: center;
-}
-
-/* 캐릭터 생성 폼 */
-.character-create-wrapper {
-  text-align: center;
-}
-
-.character-create-form {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 8px;
-  flex-wrap: wrap;
-}
-
-.character-create-input {
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.character-create-btn {
-  border: 0;
-  padding: 8px 12px;
-  border-radius: 8px;
-  background-color: #d18b60;
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.character-create-btn:hover {
-  background-color: #b36b49;
-}
 /* 페이지 전체 */
 .my-boards-page {
   max-width: 700px;
@@ -416,15 +310,360 @@
   text-align: left;
   color: #6b4226;
 }
+
+.edit-emoji {
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-left: 8px; /* 이름과 이모지 간격 */
+}
+
+.edit-emoji:hover {
+  transform: scale(1.15);
+}
+
+.edit-emoji:active {
+  transform: scale(0.95);
+}
+.delete-complete-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 1rem;
+  background: linear-gradient(135deg, #fff4e8, #ffece0);
+}
+
+.delete-complete-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 18px;
+  padding: 40px 30px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.delete-complete-card h1 {
+  font-size: 1.8rem;
+  color: #6b4226;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.delete-complete-card p {
+  font-size: 1rem;
+  color: #7a5644;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.delete-complete-card button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #d18b60, #c97a4c);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.delete-complete-card button:hover {
+  background: linear-gradient(135deg, #b8734a, #a85f3c);
+  transform: translateY(-2px);
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 모바일 대응 */
+@media (max-width: 480px) {
+  .delete-complete-card {
+    padding: 30px 20px;
+  }
+
+  .delete-complete-card h1 {
+    font-size: 1.5rem;
+  }
+
+  .delete-complete-card p {
+    font-size: 0.95rem;
+  }
+
+  .delete-complete-card button {
+    width: 100%;
+    padding: 12px 0;
+  }
+}
+/* ===== 여기부터 프로필 뷰 공통 스타일 (모든 화면에서 적용) ===== */
+
+/* 프로필 뷰 - 라벨 / 값 2열 구조 */
+.profile-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-view-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 왼쪽 텍스트(라벨) */
+.profile-view-label {
+  flex: 0 0 80px; /* 라벨 고정 너비 */
+  text-align: left;
+  font-weight: 600;
+  color: #6b4226;
+}
+
+/* 오른쪽 값 카드 (인풋처럼 보이게) */
+.profile-view-value {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  text-align: left;
+  box-sizing: border-box;
+  color: #555;
+}
+
+/* 버튼 영역 */
+.profile-view-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+/* 회원탈퇴 버튼 보조 스타일 */
+.edit-profile-delete-btn {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.profile-image-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.profile-image-preview-wrapper {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f0e2d2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-image-placeholder {
+  font-size: 0.75rem;
+  color: #8f8f8f;
+}
+
+.profile-image-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.profile-image-upload-btn {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 80, 50, 0.25);
+  background: rgba(255, 255, 255, 0.7);
+  color: #6b4e33;
+  cursor: pointer;
+}
+
+.profile-image-upload-btn:hover {
+  background: #ffe9d5;
+}
+
+.profile-image-remove-btn {
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: #c45555;
+  cursor: pointer;
+}
+.character-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  /* width: 320px; */
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.character-name {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #6b4226;
+  margin-bottom: 10px;
+}
+
+.character-image-wrapper {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 12px;
+  background-color: #f5f5f5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.character-image {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.character-level,
+.character-points,
+.character-mood {
+  margin: 4px 0;
+  font-weight: 500;
+}
+
+.character-mood-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #eee;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.character-mood-fill {
+  height: 100%;
+  background-color: #f472b6; /* 핑크 계열 */
+  border-radius: 4px;
+}
+
+.character-cheer-btn {
+  display: block; /* 블록 요소로 변경 */
+  margin: 12px auto 0 auto; /* 위쪽 12px, 좌우 자동 */
+  border: 0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: #f472b6;
+  color: #fff;
+  font-weight: 600;
+  /* margin-left: 250px; */
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.character-cheer-btn:hover:not(:disabled) {
+  background-color: #ec4899;
+}
+
+.character-cheer-btn:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+.character-message {
+  margin-top: 8px;
+  color: #6b4226;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* 캐릭터 생성 폼 */
+.character-create-wrapper {
+  text-align: center;
+}
+
+.character-create-form {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.character-create-input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.character-create-btn {
+  border: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background-color: #d18b60;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.character-create-btn:hover {
+  background-color: #b36b49;
+}
 .character-chat-container {
   background-color: #fff;
   border-radius: 16px;
-  max-width: 90%;
+  max-width: 90%; /* 최대폭 */
+  width: 100%; /* 모바일에서 화면 폭 꽉 차도록 */
   margin: 20px auto;
   padding: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  box-sizing: border-box; /* 패딩 포함해서 폭 계산 */
+}
+@media (max-width: 480px) {
+  .character-chat-container {
+    max-width: 100%;
+    padding: 12px;
+  }
+}
+@media (max-width: 480px) {
+  .character-chat-input {
+    flex-direction: row; /* input과 버튼 세로 배치 */
+    gap: 6px;
+  }
+
+  .character-chat-input button {
+    /* width: 100%; 버튼 폭 꽉 채움 */
+  }
 }
 
 .character-chat-messages {
@@ -467,21 +706,24 @@
   align-items: center;
   justify-content: center;
 }
-
 .character-chat-input {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap; /* 작은 화면에서는 버튼이 아래로 내려감 */
 }
 
 .character-chat-input input {
-  flex: 1;
+  flex: 1 1 0; /* 가능한 공간 다 차지 */
+  min-width: 0; /* overflow 방지 */
   padding: 10px 12px;
   border-radius: 20px;
   border: 1px solid #ccc;
   font-size: 1rem;
+  box-sizing: border-box; /* 패딩 포함해서 폭 계산 */
 }
 
 .character-chat-input button {
+  flex: 0 0 auto; /* 버튼 크기 유지 */
   padding: 10px 16px;
   border-radius: 20px;
   border: none;
@@ -500,6 +742,7 @@
   background-color: #ddd;
   cursor: not-allowed;
 }
+
 .typing-indicator .dots span {
   animation: blink 1s infinite;
   margin: 0 2px;
@@ -602,103 +845,4 @@
 
 .character-name {
   text-align: center; /* 텍스트 중앙 정렬 */
-}
-
-.edit-emoji {
-  cursor: pointer;
-  font-size: 1.2rem;
-  margin-left: 8px; /* 이름과 이모지 간격 */
-}
-
-.edit-emoji:hover {
-  transform: scale(1.15);
-}
-
-.edit-emoji:active {
-  transform: scale(0.95);
-}
-.delete-complete-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 80vh;
-  padding: 1rem;
-  background: linear-gradient(135deg, #fff4e8, #ffece0);
-}
-
-.delete-complete-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 18px;
-  padding: 40px 30px;
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  animation: fadeIn 0.4s ease-in-out;
-}
-
-.delete-complete-card h1 {
-  font-size: 1.8rem;
-  color: #6b4226;
-  margin-bottom: 16px;
-  font-weight: 700;
-}
-
-.delete-complete-card p {
-  font-size: 1rem;
-  color: #7a5644;
-  margin-bottom: 30px;
-  line-height: 1.5;
-}
-
-.delete-complete-card button {
-  padding: 10px 20px;
-  background: linear-gradient(135deg, #d18b60, #c97a4c);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.delete-complete-card button:hover {
-  background: linear-gradient(135deg, #b8734a, #a85f3c);
-  transform: translateY(-2px);
-}
-
-/* 애니메이션 */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* 모바일 대응 */
-@media (max-width: 480px) {
-  .delete-complete-card {
-    padding: 30px 20px;
-  }
-
-  .delete-complete-card h1 {
-    font-size: 1.5rem;
-  }
-
-  .delete-complete-card p {
-    font-size: 0.95rem;
-  }
-
-  .delete-complete-card button {
-    width: 100%;
-    padding: 12px 0;
-  }
 }
