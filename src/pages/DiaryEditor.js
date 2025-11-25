@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import DiaryEmojiPicker from "../components/DiaryEmojiPicker";
 import { fetchDiaryByDate, updateDiaryWithImage } from "../api/diaryApi"; // Multipart용 API
 import { useModal } from "../context/ModalContext";
+import imageCompression from "browser-image-compression";
+
 import LoadingBar from "../components/LoadingBar";
 export default function DiaryEditor() {
   const { date } = useParams();
@@ -20,7 +22,10 @@ export default function DiaryEditor() {
   const [errors, setErrors] = useState({ title: "", content: "", emoji: "" });
   const [previewUrl, setPreviewUrl] = useState(diary.imageUrl || "");
   const [isSaving, setIsSaving] = useState(false);
-  const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
+  const MAX_ORIGIN_SIZE = 20 * 1024 * 1024; // 원본 최대 20MB
+  const MAX_FINAL_SIZE = 5 * 1024 * 1024; // 압축 후 최대 5MB
+
   useEffect(() => {
     if (!date) return;
 
@@ -49,7 +54,7 @@ export default function DiaryEditor() {
   };
 
   // 이미지 선택
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) {
       setImageFile(null);
@@ -58,20 +63,49 @@ export default function DiaryEditor() {
       return;
     }
 
-    if (file.size > MAX_IMAGE_SIZE) {
-      // 용량 초과 시 input 비우기
+    if (!file.type.startsWith("image/")) {
+      showModal("이미지 파일만 업로드할 수 있습니다.");
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > MAX_ORIGIN_SIZE) {
+      showModal("원본 이미지가 너무 큽니다. 최대 20MB까지 가능합니다.");
       e.target.value = "";
       setImageFile(null);
       setPreviewUrl(diary.imageUrl || "");
       setDeleteImage(false);
-
-      // 모달로 안내
-      showModal("이미지 용량이 너무 큽니다. 5MB 이하만 업로드할 수 있어요.");
       return;
     }
 
-    setImageFile(file);
-    setDeleteImage(false);
+    try {
+      const options = {
+        maxSizeMB: 0.7, // DiaryWritePage와 동일
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+
+      const compressedFile = await imageCompression(file, options);
+
+      if (compressedFile.size > MAX_FINAL_SIZE) {
+        showModal("이미지 크기는 최대 5MB까지 가능합니다.");
+        e.target.value = "";
+        setImageFile(null);
+        setPreviewUrl(diary.imageUrl || "");
+        setDeleteImage(false);
+        return;
+      }
+
+      setImageFile(compressedFile);
+      setDeleteImage(false);
+    } catch (error) {
+      console.error(error);
+      showModal("이미지 처리 중 오류가 발생했습니다.");
+      e.target.value = "";
+      setImageFile(null);
+      setPreviewUrl(diary.imageUrl || "");
+      setDeleteImage(false);
+    }
   };
 
   useEffect(() => {

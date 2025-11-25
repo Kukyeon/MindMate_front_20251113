@@ -6,6 +6,8 @@ import { createDiaryWithImage } from "../api/diaryApi";
 import { fetchDiaryByDate } from "../api/diaryApi";
 import { useModal } from "../context/ModalContext";
 import LoadingBar from "../components/LoadingBar";
+import imageCompression from "browser-image-compression";
+
 export default function DiaryWritePage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -62,10 +64,38 @@ export default function DiaryWritePage() {
     loadDiary();
   }, [date, user?.accessToken, showModal]);
 
-  const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
-  };
+  const handleFileChange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
 
+    if (!file.type.startsWith("image/")) {
+      showModal("이미지 파일만 업로드할 수 있습니다.");
+      return;
+    }
+    try {
+      const options = {
+        maxSizeMB: 0.7, // 압축 목표 용량
+        maxWidthOrHeight: 1920, // 긴 변 기준 리사이즈
+        useWebWorker: true,
+      };
+      if (file.size > 20 * 1024 * 1024) {
+        showModal("원본 이미지가 너무 큽니다. 최대 20MB까지 가능합니다.");
+        return;
+      }
+      const compressedFile = await imageCompression(file, options);
+
+      if (compressedFile.size > 5 * 1024 * 1024) {
+        showModal("이미지 크기는 최대 5MB까지 가능합니다.");
+        return;
+      }
+
+      setImage(compressedFile);
+      // const previewUrl = URL.createObjectURL(compressedFile);
+    } catch (error) {
+      console.error(error);
+      showModal("이미지 처리 중 오류가 발생했습니다.");
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
