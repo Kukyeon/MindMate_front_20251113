@@ -98,14 +98,33 @@
 /* 반응형: 화면 폭 500px 이하 */
 @media (max-width: 500px) {
   .board-search-form {
-    flex-direction: column;
     align-items: stretch;
+    flex-direction: row;
+    gap: 8px;
   }
 
   .board-search-input,
   .board-search-select,
   .board-search-button {
     width: 100%;
+  }
+  .board-search-input {
+    flex: 5; /* 입력창이 넓게 */
+    min-width: 0; /* 잘림 방지 */
+  }
+
+  .board-search-select {
+    flex: 0; /* 셀렉트는 입력창보다 좁게 */
+    min-width: 75px;
+  }
+
+  .board-search-button {
+    flex: 0;
+    min-width: 60px;
+  }
+  .board-top-bar {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 /* BoardListPage.css */
@@ -201,14 +220,16 @@
 @media (max-width: 600px) {
   .board-table th,
   .board-table td {
-    white-space: normal; /* 줄바꿈 허용 */
-    word-break: break-word;
-    font-size: 0.85rem; /* 글자 작게 */
-    padding: 6px 8px; /* 패딩 줄이기 */
+    white-space: nowrap; /* 줄바꿈 금지 */
+    overflow: hidden; /* 넘치는 부분 숨김 */
+    text-overflow: ellipsis; /* ... 처리 */
+    font-size: 0.75rem; /* 글자 조금 줄임 */
+    padding: 15px 7px; /* 패딩 줄임 */
   }
 
   .board-table {
-    width: 100%; /* 부모 폭에 맞춤 */
+    width: 100%; /* 테이블 폭 화면에 맞춤 */
+    table-layout: auto; /* 내용에 따라 열 폭 자동 조정 */
   }
 }
 
@@ -235,15 +256,20 @@
 }
 /* BoardDetailPage */
 .board-detail-page {
-  max-width: 800px;
+  max-width: 750px;
   margin: 20px auto;
-  padding: 20px;
+  padding: 0 10px;
   background-color: #fff8f0; /* 웜톤 배경 */
   border-radius: 12px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   color: #6b4226;
 }
-
+@media (max-width: 600px) {
+  .board-detail-page {
+    margin: 0 auto 35px; /* 모바일에서 위 여백 제거 */
+    padding: 10px; /* 내부 여백도 조금 줄일 수 있음 */
+  }
+}
 .board-detail-title {
   font-size: 2rem;
   margin-bottom: 15px;
@@ -324,11 +350,6 @@
   margin-top: 50px;
   color: #8c6239;
 }
-.board-detail-page {
-  max-width: 750px;
-  margin: 20px auto;
-  padding: 0 10px;
-}
 
 .board-header-card {
   background-color: #fff3e0;
@@ -339,12 +360,6 @@
   flex-direction: column;
   gap: 8px;
   margin-bottom: 15px;
-}
-
-.board-header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .board-content-card {
@@ -388,11 +403,6 @@
   display: block;
   margin: 20px auto;
 }
-.board-detail-page {
-  max-width: 750px;
-  margin: 20px auto;
-  padding: 0 10px;
-}
 
 .board-header-card {
   background-color: #fff3e0;
@@ -407,13 +417,19 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .board-title {
   font-size: 1.5rem;
   color: #6b4226;
 }
-
+.board-actions {
+  align-self: flex-end; /* 부모 flex-direction: column일 때 오른쪽 정렬 */
+  display: flex;
+  gap: 8px; /* 버튼 사이 간격 */
+}
 .board-actions button {
   margin-left: 8px;
 }
@@ -610,6 +626,7 @@
   font-size: 0.85rem;
   cursor: pointer;
   transition: 0.25s ease;
+  white-space: nowrap;
 }
 
 .comment-btn.edit {
@@ -773,15 +790,5 @@
 
   .board-hashtag-emoji-card {
     gap: 6px; /* 해시태그 간격 축소 */
-  }
-  .board-search-form {
-    flex-direction: row;
-    gap: 8px;
-  }
-
-  .board-search-input,
-  .board-search-select,
-  .board-search-button {
-    width: 100%; /* 입력창 & 버튼 전체 폭 사용 */
   }
 }

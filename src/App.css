@@ -31,6 +31,7 @@ body,
 .app-main {
   flex: 1; /* Header와 Footer 제외한 영역 */
   padding: 20px; /* 모든 페이지 여백 */
+  padding-bottom: 80px;
 }
 /* -------------------- Header CSS -------------------- */
 .header {
@@ -199,7 +200,12 @@ body,
   color: var(--color-text-medium);
   min-height: calc(100vh - 80px); /* 푸터 높이 고려 */
 }
-
+@media (max-width: 600px) {
+  .home-page-scroll {
+    margin: 0 auto 35px; /* 상단 0, 좌우 auto, 하단 35px 유지 */
+    padding: 10px;
+  }
+}
 /* 2. Hero Section 스타일 */
 .hero {
   padding: 60px 0 80px;
@@ -488,7 +494,7 @@ body,
     gap: 8px;
   }
   .cta-buttons .btn {
-    width: 100%;
+    /* width: 100%; */
     padding: 10px 30px;
   }
 }
@@ -500,6 +506,11 @@ body,
   .feature-grid {
     grid-template-columns: minmax(auto, 650px);
     gap: 50px;
+  }
+  .hero-title {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: var(--color-text-dark);
   }
 }
 
@@ -532,6 +543,13 @@ body,
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   color: #333;
+  padding-bottom: 100px;
+}
+@media (max-width: 600px) {
+  .page-container {
+    margin: 0 auto 35px; /* 모바일에서 위 여백 제거 */
+    padding: 10px; /* 내부 여백도 조금 줄일 수 있음 */
+  }
 }
 .page-title {
   text-align: center;
@@ -592,11 +610,6 @@ body,
   flex-wrap: wrap;
 }
 
-.edit-profile-card {
-  max-width: 400px;
-  margin: 0 auto;
-}
-
 .edit-profile-input {
   padding: 10px 12px;
   border-radius: 8px;
@@ -635,10 +648,6 @@ body,
 
 /* ===== 공통 반응형 ===== */
 @media (max-width: 480px) {
-  .page-container {
-    padding: 16px;
-  }
-
   .tab-button,
   .tab {
     flex: 1 1 100%;

@@ -1,7 +1,7 @@
 // ProfileSetupPage.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./ProfileSet.css";
+// import "./ProfileSet.css";
 import api from "../../api/axiosConfig";
 import { useModal } from "../../context/ModalContext";
 import imageCompression from "browser-image-compression";

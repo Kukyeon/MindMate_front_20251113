@@ -214,12 +214,72 @@
 .quick-select {
   display: flex;
   gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
 }
-.date-select-container .graph-actions button {
-  /* padding: 0 auto; */
-  font-size: 1.2rem;
-  font-weight: 500;
+.graph-actions {
+  /* margin-top: 12px; */
+  display: flex;
+  justify-content: flex-end; /* 오른쪽 정렬 */
+  gap: 8px; /* 버튼 간 간격 */
 }
+.graph-actions button {
+  all: unset; /* 기존 스타일 완전 제거 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  appearance: none;
+}
+.graph-actions .excel-btn {
+  all: unset; /* 기존 버튼 스타일 모두 제거 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+}
+
+.graph-actions .excel-btn img {
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+}
+
+.graph-actions button:focus {
+  outline: none;
+}
+
+.graph-actions button img {
+  width: 32px; /* 아이콘 사이즈 */
+  height: 32px;
+  display: block;
+  pointer-events: none; /* 이미지 자체는 이벤트 안 받음 */
+}
+
+@media (max-width: 480px) {
+  .graph-actions {
+    /* margin-top: 10px; */
+    justify-content: flex-end; /* 모바일도 오른쪽 */
+  }
+
+  .graph-actions button {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    background-color: none;
+  }
+  .graph-actions button img {
+    width: 30px; /* 아이콘 사이즈 */
+    height: 30px;
+    display: block;
+  }
+}
+
 .quick-select button {
   padding: 6px 10px;
   background-color: #f2d6c2;
@@ -345,6 +405,90 @@
     font-size: 0.7rem;
   }
 
+  .graph-title {
+    font-size: 1.2rem;
+  }
+
+  .graph-subtitle {
+    font-size: 1rem;
+  }
+}
+@media (max-width: 480px) {
+  .graph-container {
+    max-width: 95%;
+    padding: 0 10px 40px;
+    margin-bottom: 50px;
+  }
+
+  /* 그래프 막대 */
+  .emotion-bar-wrapper {
+    flex-wrap: wrap; /* 퍼센트 막대가 짤리지 않도록 */
+    height: 28px;
+    gap: 1px;
+  }
+
+  .emotion-segment {
+    font-size: 0.7rem;
+    min-width: 28px;
+    justify-content: space-between;
+    padding: 0 4px;
+  }
+
+  .emotion-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 2px;
+  }
+
+  .emotion-percent {
+    font-size: 0.65rem;
+    white-space: nowrap;
+  }
+
+  /* AI 코멘트 카드 */
+  .ai-comment-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+
+  .ai-comment-card::before {
+    font-size: 1.2rem;
+  }
+
+  .ai-comment-card::after {
+    left: 10px; /* 꼬리 위치 조정 */
+  }
+
+  /* 날짜 선택 */
+  .date-select-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .date-select-container .top-row,
+  .bottom-row,
+  .month-select-box,
+  .date-inputs,
+  .quick-select {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .date-select-container button,
+  .quick-select button,
+  .month-select-box select,
+  .date-select-container input {
+    width: auto;
+    max-width: 80px;
+    font-size: 0.7rem;
+  }
+
+  /* 그래프 제목/부제목 */
   .graph-title {
     font-size: 1.2rem;
   }
