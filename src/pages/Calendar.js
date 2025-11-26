@@ -39,8 +39,8 @@ export default function CalendarPage() {
   // 월별 일기 로드
   // --------------------------
   useEffect(() => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth() + 1;
     const token = localStorage.getItem("accessToken");
 
     if (!token) {
@@ -72,7 +72,7 @@ export default function CalendarPage() {
     if (!location.state?.selectedDate) {
       setClickResult({ date: null, exists: null, diary: null });
     }
-  }, [currentDate, location.state]);
+  }, [currentMonth, location.state]);
 
   // --------------------------
   // 날짜 클릭
