@@ -104,7 +104,9 @@ const Graph = ({ user }) => {
         setDailyData(res.data.dailyEmotions || []);
 
         const counts = res.data.weeklyCounts || [];
-        const filteredCounts = counts.filter((cur) => cur.emojiName !== "unknown");
+        const filteredCounts = counts.filter(
+          (cur) => cur.emojiName !== "unknown"
+        );
         const total = filteredCounts.reduce((sum, cur) => sum + cur.count, 0);
         setWeeklyCounts(
           filteredCounts.reduce((acc, cur) => {
@@ -112,11 +114,10 @@ const Graph = ({ user }) => {
             return acc;
           }, {})
         );
-        
+
         const percent = {};
         filteredCounts.forEach((cur) => {
-          percent[cur.emojiName] =
-            total > 0 ? (cur.count / total) * 100 : 0;
+          percent[cur.emojiName] = total > 0 ? (cur.count / total) * 100 : 0;
         });
         setWeeklyPercent(percent);
 
@@ -241,12 +242,12 @@ const Graph = ({ user }) => {
     const entry = dailyData.find((d) => d.date === date);
     if (!entry) return null;
 
-  const emoji = emojiList.find((e) => e.id === entry.emojiId);
+    const emoji = emojiList.find((e) => e.id === entry.emojiId);
 
-  // unknown → 그래프에서 제거 (점 없음)
-  if (!emoji || emoji.type === "unknown") return null;
+    // unknown → 그래프에서 제거 (점 없음)
+    if (!emoji || emoji.type === "unknown") return null;
 
-  return entry.emojiId;
+    return entry.emojiId;
   });
   const days = labels.length;
   const isMobile = window.innerWidth <= 480;
@@ -259,7 +260,7 @@ const Graph = ({ user }) => {
     const entry = dailyData.find((d) => d.date === date);
     if (!entry) return null;
     const emoji = emojiList.find((e) => e.id === entry.emojiId);
-     if (!emoji || emoji.type === "unknown") return null;
+    if (!emoji || emoji.type === "unknown") return null;
     const img = new Image();
     img.src = emoji.image;
     img.width = emojiSize;
@@ -350,7 +351,7 @@ const Graph = ({ user }) => {
                 setStartDate(startStr);
                 setEndDate(endStr);
                 setSelectedMonth(month);
-                setWeekOffset(0);
+                setWeekOffset(null);
                 setFetchTrigger(true);
               }}
             >
@@ -403,9 +404,6 @@ const Graph = ({ user }) => {
             </label>
 
             <button onClick={() => setFetchTrigger(true)}>조회</button>
-            <div className="graph-actions">
-              <button onClick={exportXLS}>Excel</button>
-            </div>
           </div>
         </div>
 
@@ -413,11 +411,18 @@ const Graph = ({ user }) => {
         <div className="quick-select">
           <button onClick={handleThisWeek}>이번 주</button>
           <button onClick={handleLastWeek}>지난 주</button>
+          <div className="graph-actions">
+            <button className="excel-btn" onClick={exportXLS}>
+              <img src="/img/excel.png"></img>
+            </button>
+          </div>
         </div>
       </div>
 
       <h2 className="graph-title">
-        {getWeekLabel(weekOffset)} ({startDate} ~ {endDate}) 감정 통계
+        {weekOffset !== null
+          ? `${getWeekLabel(weekOffset)} (${startDate} ~ ${endDate}) 감정 통계`
+          : `${selectedMonth}월 (${startDate} ~ ${endDate}) 감정 통계`}
       </h2>
 
       {/* ✅ 그래프 영역 조건부 렌더링 */}

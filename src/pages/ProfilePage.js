@@ -48,7 +48,10 @@ const ProfilePage = ({ user, setUser }) => {
         </button>
 
         {/* 폰트 변경 버튼 */}
-        <button className="tab font-btn" onClick={() => setShowFontPopup(true)}>
+        <button
+          className="tab-button font-btn"
+          onClick={() => setShowFontPopup(true)}
+        >
           글꼴 변경
         </button>
       </div>

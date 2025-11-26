@@ -91,28 +91,22 @@ const Fortune = ({ user }) => {
           생년월일: <span className="birth">{birth}</span>
         </p>
         {loading && (
-          <LoadingBar loading={loading} message="🤖 AI가 운세를 준비 중..." />
+          <LoadingBar loading={loading} message="🤖 AI가 생성중..." />
         )}
-        <button
-          className="fortune-button"
-          onClick={todayLuck}
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              <div className="dot-loader">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              생성 중
-            </>
-          ) : fortune ? (
-            "한 번 더 확인!"
-          ) : (
-            "확인하기!"
-          )}
-        </button>
+        {!loading ? (
+          <button className="fortune-button" onClick={todayLuck}>
+            {fortune ? "한 번 더 확인!" : "확인하기!"}
+          </button>
+        ) : (
+          <button className="daily-test-button loading" disabled>
+            <div className="dot-loader">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            생성 중
+          </button>
+        )}
 
         {fortune && (
           <div className="fortune-text">{renderFortune(fortune)}</div>
