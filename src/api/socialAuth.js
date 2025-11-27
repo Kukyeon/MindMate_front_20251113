@@ -3,7 +3,7 @@ const FRONT_BASE_URL =
 
 const KAKAO_REST_API_KEY =
   process.env.REACT_APP_KAKAO_REST_API_KEY ||
-  "a5394eb2205635bd3ac15e9e8a09e764";
+  "d032aea47f7cde0d9d176389f15a4053";
 
 const NAVER_CLIENT_ID =
   process.env.REACT_APP_NAVER_CLIENT_ID || "ca5VSclizDaIGPg981EJ";
