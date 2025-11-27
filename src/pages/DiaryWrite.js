@@ -2,42 +2,53 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { authHeader, getUser } from "../api/authApi";
 import api from "../api/axiosConfig";
-import { createDiaryWithImage } from "../api/diaryApi";
-import { fetchDiaryByDate } from "../api/diaryApi";
+import { createDiaryWithImage, fetchDiaryByDate } from "../api/diaryApi";
 import { useModal } from "../context/ModalContext";
 import LoadingBar from "../components/LoadingBar";
-import imageCompression from "browser-image-compression";
 
 export default function DiaryWritePage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { showModal } = useModal();
-  const { showConfirm } = useModal();
+  const { showModal, showConfirm } = useModal();
+
   const date = location.state?.date;
 
+  const [previewUrl, setPreviewUrl] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [emoji, setEmoji] = useState(null); // 반드시 선택하도록 null 초기값
+  const [emoji, setEmoji] = useState(null);
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
+
   const [image, setImage] = useState(null);
-  // 에러 상태
   const [errors, setErrors] = useState({ title: "", content: "", emoji: "" });
   const [isSaving, setIsSaving] = useState(false);
 
+  // 🌟 이미지 삭제 버튼
+  const handleDeleteImage = () => {
+    setImage(null);
+    setPreviewUrl("");
+    document.getElementById("customFileInput").value = "";
+  };
+
+  // 사용자 정보 가져오기
   useEffect(() => {
     const fetchUser = async () => {
       setLoadingUser(true);
       const currentUser = await getUser();
+
       if (!currentUser) {
         showModal("로그인이 필요합니다.", "/login");
         return;
       }
+
       setUser(currentUser);
       setLoadingUser(false);
     };
     fetchUser();
-  }, [showModal]);
+  }, []);
+
+  // 기존 일기 불러오기
   useEffect(() => {
     if (!date) {
       showModal("날짜가 선택되지 않았습니다.", "/diary");
@@ -53,79 +64,45 @@ export default function DiaryWritePage() {
           setEmoji(res.data.emoji || null);
         }
       } catch (errors) {
-        if (errors.response && errors.response.status === 404) {
-          console.log("해당 날짜에 일기가 없음. 새로 작성");
-          return null;
-        } else {
-          console.error("일기 조회 중 오류:", errors);
+        if (errors.response?.status === 404) {
+          console.log("해당 날짜에 일기가 없음");
+          return;
         }
+        console.error("일기 조회 오류:", errors);
       }
     };
     loadDiary();
-  }, [date, user?.accessToken, showModal]);
+  }, [date, user?.accessToken]);
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
+  // 파일 변경 핸들러
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
 
-    if (!file.type.startsWith("image/")) {
-      showModal("이미지 파일만 업로드할 수 있습니다.");
-      return;
-    }
-    try {
-      const options = {
-        maxSizeMB: 0.7, // 압축 목표 용량
-        maxWidthOrHeight: 1920, // 긴 변 기준 리사이즈
-        useWebWorker: true,
-      };
-      if (file.size > 20 * 1024 * 1024) {
-        showModal("원본 이미지가 너무 큽니다. 최대 20MB까지 가능합니다.");
-        return;
-      }
-      const compressedFile = await imageCompression(file, options);
-
-      if (compressedFile.size > 5 * 1024 * 1024) {
-        showModal("이미지 크기는 최대 5MB까지 가능합니다.");
-        return;
-      }
-
-      setImage(compressedFile);
-      // const previewUrl = URL.createObjectURL(compressedFile);
-    } catch (error) {
-      console.error(error);
-      showModal("이미지 처리 중 오류가 발생했습니다.");
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
     }
   };
+
+  // 폼 제출
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ---------------------
-    // 프론트 유효성 검사
-    // ---------------------
     const newErrors = { title: "", content: "", emoji: "" };
+
     if (!title.trim()) newErrors.title = "제목을 입력해 주세요";
-    else if (title.trim().length < 5)
-      newErrors.title = "글 제목은 최소 5글자 이상이어야 합니다.";
-
     if (!content.trim()) newErrors.content = "내용을 입력해 주세요";
-    else if (content.trim().length < 5)
-      newErrors.content = "글 내용은 최소 5글자 이상이어야 합니다.";
-
-    //if (!emoji) newErrors.emoji = "감정을 선택해 주세요";
 
     setErrors(newErrors);
 
-    // 에러가 있으면 제출 중단
-    if (newErrors.title || newErrors.content || newErrors.emoji) return;
-
+    if (newErrors.title || newErrors.content) return;
     if (!user?.userId) return showModal("로그인이 필요합니다.");
-    if (isSaving) return;
 
+    if (isSaving) return;
     setIsSaving(true);
 
     try {
-      setIsSaving(true);
-
       const diaryData = {
         title,
         content,
@@ -135,19 +112,16 @@ export default function DiaryWritePage() {
         emoji,
       };
 
-      // JSON + 이미지 함께 서버로 전송
       await createDiaryWithImage(diaryData, image);
 
-      // 캐릭터 처리
       const headers = await authHeader();
       let charResData = null;
 
       try {
         const charRes = await api.get(`/ai/me`, { headers });
         charResData = charRes.data;
-      } catch (errors) {
-        if (errors.response?.status === 404) charResData = null;
-        else throw errors;
+      } catch (err) {
+        if (err.response?.status !== 404) throw err;
       }
 
       if (charResData) {
@@ -160,29 +134,27 @@ export default function DiaryWritePage() {
         });
       } else {
         showConfirm(
-          "일기가 저장되었습니다!\n캐릭터가 없어서 성장하지 못했어요.\n캐릭터를 생성할까요?",
-          () => {
-            navigate("/profile", { state: { tab: "Character" } });
-          }
+          "일기가 저장되었습니다!\n캐릭터가 없어요.\n캐릭터를 생성할까요?",
+          () => navigate("/profile", { state: { tab: "Character" } })
         );
       }
     } catch (errors) {
       console.error("일기 저장 실패:", errors);
-      showModal(errors.response?.data?.message || "일기 저장에 실패했습니다.");
+      showModal(errors.response?.data?.message || "일기 저장 실패");
     } finally {
       setIsSaving(false);
     }
   };
 
   if (loadingUser) return <div>사용자 정보 로딩 중...</div>;
-  if (!user?.userId) return <p>로그인이 필요합니다.</p>;
+  if (!user) return <p>로그인이 필요합니다.</p>;
   if (!date) return <div>날짜 정보 확인 중...</div>;
 
   return (
     <div className="diary-write-card" style={{ position: "relative" }}>
       {isSaving && (
         <div className="graph-loading-overlay">
-          <LoadingBar loading={true} message="🤖 AI가 답변 중..." />
+          <LoadingBar loading={true} message="AI가 답변 중..." />
         </div>
       )}
 
@@ -208,8 +180,8 @@ export default function DiaryWritePage() {
           {errors.content && <p className="diary-error">{errors.content}</p>}
         </div>
 
+        {/* 이미지 첨부 & 미리보기 */}
         <div className="editor-field">
-          {/* 숨긴 input */}
           <input
             type="file"
             id="customFileInput"
@@ -218,22 +190,26 @@ export default function DiaryWritePage() {
             style={{ display: "none" }}
           />
 
-          {/* 커스텀 버튼 */}
           <label htmlFor="customFileInput" className="custom-file-button">
             이미지 첨부
           </label>
 
-          {/* 미리보기 */}
-          {image ? (
-            <img
-              src={URL.createObjectURL(image)}
-              alt="미리보기"
-              className="image-preview"
-            />
+          {previewUrl ? (
+            <div className="image-preview-wrapper">
+              <img src={previewUrl} alt="미리보기" className="image-preview" />
+              <button
+                type="button"
+                className="delete-image-button"
+                onClick={handleDeleteImage}
+              >
+                x
+              </button>
+            </div>
           ) : (
             <p className="no-image-text">첨부파일 없음</p>
           )}
         </div>
+
         <div className="diary-write-buttons">
           <button type="submit">저장</button>
           <button type="button" onClick={() => navigate(-1)}>
