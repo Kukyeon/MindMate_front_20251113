@@ -6,11 +6,11 @@ const KAKAO_REST_API_KEY =
   "a5394eb2205635bd3ac15e9e8a09e764";
 
 const NAVER_CLIENT_ID =
-  process.env.REACT_APP_NAVER_CLIENT_ID || "ca5VSclizDaIGPg981EJ";
+  process.env.REACT_APP_NAVER_CLIENT_ID || "xtncSGKFasVsSB8xGikk";
 
 const GOOGLE_CLIENT_ID =
   process.env.REACT_APP_GOOGLE_CLIENT_ID ||
-  "866215417194-hsrr4k4h24rku7ng7le4rvnq8s9dqviv.apps.googleusercontent.com";
+  "618639929588-1dee0647tlcainhnhlhrs2khdtu89uo1.apps.googleusercontent.com";
 
 const KAKAO_REDIRECT_URI =
   process.env.REACT_APP_KAKAO_REDIRECT_URI ||
