@@ -27,6 +27,8 @@ export default function CalendarPage() {
     if (location.state?.selectedDate) {
       const selected = new Date(location.state.selectedDate);
       setCurrentDate(selected);
+       setCurrentMonth(
+       new Date(selected.getFullYear(), selected.getMonth(), 1));
       setClickResult({
         date: location.state.selectedDate,
         exists: true,
@@ -39,8 +41,8 @@ export default function CalendarPage() {
   // 월별 일기 로드
   // --------------------------
   useEffect(() => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth() + 1;
     const token = localStorage.getItem("accessToken");
 
     if (!token) {
@@ -72,7 +74,7 @@ export default function CalendarPage() {
     if (!location.state?.selectedDate) {
       setClickResult({ date: null, exists: null, diary: null });
     }
-  }, [currentDate, location.state]);
+  }, [currentMonth, location.state]);
 
   // --------------------------
   // 날짜 클릭
@@ -96,13 +98,17 @@ export default function CalendarPage() {
   // --------------------------
   const handleWriteClick = () => {
     const today = formatDate(new Date());
-
+    
     // ❗ 미래 날짜 클릭 방지
     if (clickResult.date > today) {
       showModal("미래 날짜에는 일기를 작성할 수 없습니다.");
       return;
     }
-
+     const selected = new Date(clickResult.date);
+      setCurrentDate(selected);
+      setCurrentMonth(
+        new Date(selected.getFullYear(), selected.getMonth(), 1)
+      ); // ⭐ 클릭한 달력 month까지 이동
     if (clickResult.date) {
       navigate("/diary/write", { state: { date: clickResult.date } });
     }
