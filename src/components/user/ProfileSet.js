@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 // import "./ProfileSet.css";
 import api from "../../api/axiosConfig";
 import { useModal } from "../../context/ModalContext";
+import imageCompression from "browser-image-compression";
+
 const mbtiOptions = [
   "INTJ",
   "INTP",
@@ -112,7 +114,7 @@ const ProfileSetupPage = ({ setUser, user }) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
 
@@ -121,14 +123,32 @@ const ProfileSetupPage = ({ setUser, user }) => {
       showModal("이미지 파일만 업로드할 수 있습니다.");
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      showModal("이미지 크기는 최대 5MB까지 가능합니다.");
-      return;
-    }
 
-    setImageFile(file);
-    const previewUrl = URL.createObjectURL(file);
-    setImagePreview(previewUrl);
+    try {
+      const options = {
+        maxSizeMB: 0.7, // 최종 0.7MB 정도로
+        maxWidthOrHeight: 1920, // 긴 변 1920px로 제한
+        useWebWorker: true,
+      };
+
+      if (file.size > 10 * 1024 * 1024) {
+        showModal("원본 이미지가 너무 큽니다. 최대 10MB까지 가능합니다.");
+        return;
+      }
+
+      const compressedFile = await imageCompression(file, options);
+
+      if (compressedFile.size > 5 * 1024 * 1024) {
+        showModal("이미지 크기는 최대 5MB까지 가능합니다.");
+        return;
+      }
+      setImageFile(compressedFile);
+      const previewUrl = URL.createObjectURL(compressedFile);
+      setImagePreview(previewUrl);
+    } catch (error) {
+      console.error(error);
+      showModal("이미지 처리 중 오류가 발생했습니다.");
+    }
   };
 
   const handleImageRemove = () => {
@@ -162,30 +182,39 @@ const ProfileSetupPage = ({ setUser, user }) => {
 
       if (imageFile) {
         setIsUploadingImage(true);
-        const formData = new FormData();
-        formData.append("file", imageFile);
+        try {
+          const formData = new FormData();
+          formData.append("file", imageFile);
 
-        const imageRes = await api.post("/api/user/profile-image", formData, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+          const imageRes = await api.post("/api/user/profile-image", formData, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              // "Content-Type": "multipart/form-data",
+            },
+          });
 
-        updatedUser = imageRes.data;
-        setIsUploadingImage(false);
+          updatedUser = imageRes.data;
+        } finally {
+          setIsUploadingImage(false);
+        }
       } else if (!imageFile && !imagePreview && originalHasImage) {
         setIsUploadingImage(true);
+        try {
+          const delRes = await api.post(
+            "/api/user/profile-image/delete",
+            null,
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            }
+          );
 
-        const delRes = await api.post("/api/user/profile-image/delete", null, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-
-        updatedUser = delRes.data;
-        setIsUploadingImage(false);
+          updatedUser = delRes.data;
+        } finally {
+          setIsUploadingImage(false);
+        }
       }
 
-      if (setUser && user) {
+      if (setUser && updatedUser) {
         setUser(updatedUser);
       }
       navigate("/");
@@ -238,7 +267,7 @@ const ProfileSetupPage = ({ setUser, user }) => {
                 </button>
               )}
               <p className="signup-help-text">
-                <small>JPG, PNG 등 이미지 파일 · 최대 5MB</small>
+                <small>JPG, PNG 등 이미지 파일 · 최대 10MB</small>
               </p>
             </div>
           </div>

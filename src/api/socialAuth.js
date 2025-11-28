@@ -1,19 +1,40 @@
-const KAKAO_REST_API_KEY = "d032aea47f7cde0d9d176389f15a4053";
-const KAKAO_REDIRECT_URI = "http://localhost:3000/auth/kakao/callback";
-const KAKAO_DELETE_REDIRECT_URI =
-  "http://localhost:3000/auth/kakao/delete-callback";
+const FRONT_BASE_URL =
+  process.env.REACT_APP_FRONT_BASE_URL || window.location.origin;
 
-const NAVER_CLIENT_ID = "ca5VSclizDaIGPg981EJ";
-const NAVER_REDIRECT_URI = "http://localhost:3000/auth/naver/callback";
-const NAVER_DELETE_REDIRECT_URI =
-  "http://localhost:3000/auth/naver/delete-callback";
+const KAKAO_REST_API_KEY =
+  process.env.REACT_APP_KAKAO_REST_API_KEY ||
+  "d032aea47f7cde0d9d176389f15a4053";
+
+const NAVER_CLIENT_ID =
+  process.env.REACT_APP_NAVER_CLIENT_ID || "ca5VSclizDaIGPg981EJ";
 
 const GOOGLE_CLIENT_ID =
+  process.env.REACT_APP_GOOGLE_CLIENT_ID ||
   "866215417194-hsrr4k4h24rku7ng7le4rvnq8s9dqviv.apps.googleusercontent.com";
-const GOOGLE_REDIRECT_URI = "http://localhost:3000/auth/google/callback";
+
+const KAKAO_REDIRECT_URI =
+  process.env.REACT_APP_KAKAO_REDIRECT_URI ||
+  `${FRONT_BASE_URL}/auth/kakao/callback`;
+const KAKAO_DELETE_REDIRECT_URI =
+  process.env.REACT_APP_KAKAO_DELETE_REDIRECT_URI ||
+  `${FRONT_BASE_URL}/auth/kakao/delete-callback`;
+
+const NAVER_REDIRECT_URI =
+  process.env.REACT_APP_NAVER_REDIRECT_URI ||
+  `${FRONT_BASE_URL}/auth/naver/callback`;
+const NAVER_DELETE_REDIRECT_URI =
+  process.env.REACT_APP_NAVER_DELETE_REDIRECT_URI ||
+  `${FRONT_BASE_URL}/auth/naver/delete-callback`;
+
+const GOOGLE_REDIRECT_URI =
+  process.env.REACT_APP_GOOGLE_REDIRECT_URI ||
+  `${FRONT_BASE_URL}/auth/google/callback`;
 const GOOGLE_DELETE_REDIRECT_URI =
-  "http://localhost:3000/auth/google/delete-callback";
-const GOOGLE_SCOPE = "openid email profile";
+  process.env.REACT_APP_GOOGLE_DELETE_REDIRECT_URI ||
+  `${FRONT_BASE_URL}/auth/google/delete-callback`;
+
+const GOOGLE_SCOPE =
+  process.env.REACT_APP_GOOGLE_SCOPE || "openid email profile";
 
 // 공통 state 생성 함수
 const createRandomState = () => {

@@ -179,31 +179,40 @@ export default function DiaryWritePage() {
         </div>
 
         <div className="editor-field">
-          {/* 숨긴 input */}
-          <input
-            type="file"
-            id="customFileInput"
-            accept="image/*"
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
+            {/* 숨긴 input */}
+  <input
+    type="file"
+    id="customFileInput"
+    accept="image/*"
+    onChange={handleFileChange}
+    style={{ display: "none" }}
+  />
 
-          {/* 커스텀 버튼 */}
-          <label htmlFor="customFileInput" className="custom-file-button">
-            이미지 첨부
-          </label>
+  {/* 커스텀 버튼 */}
+  <label htmlFor="customFileInput" className="custom-file-button">
+    이미지 첨부
+  </label>
 
-          {/* 미리보기 */}
-          {image ? (
-            <img
-              src={URL.createObjectURL(image)}
-              alt="미리보기"
-              className="image-preview"
-            />
-          ) : (
-            <p className="no-image-text">첨부파일 없음</p>
-          )}
-        </div>
+  {/* 미리보기 */}
+  {image ? (
+  <div className="image-preview-wrapper">
+    <img
+      src={URL.createObjectURL(image)}
+      alt="미리보기"
+      className="image-preview"
+    />
+    <button
+      type="button"
+      className="delete-image-button"
+      onClick={() => setImage(null)}
+    >
+      ×
+    </button>
+  </div>
+) : (
+  <p className="no-image-text">첨부파일 없음</p>
+)}
+</div>
         <div className="diary-write-buttons">
           <button type="submit">저장</button>
           <button type="button" onClick={() => navigate(-1)}>

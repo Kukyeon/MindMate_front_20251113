@@ -20,7 +20,10 @@ export const createDiaryWithImage = (data, imageFile) => {
   if (imageFile) formData.append("image", imageFile);
 
   return api.post("/api/diary", formData, {
-    headers: { ...getAuthHeader(), "Content-Type": "multipart/form-data" },
+    headers: {
+      ...getAuthHeader(),
+      // "Content-Type": "multipart/form-data"
+    },
   });
 };
 
@@ -40,7 +43,7 @@ export const updateDiaryWithImage = (date, data, imageFile) => {
   return api.put("/api/diary/edit?date=" + date, formData, {
     headers: {
       ...getAuthHeader(),
-      "Content-Type": "multipart/form-data",
+      // "Content-Type": "multipart/form-data",
     },
   });
 };
