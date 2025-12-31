@@ -1,7 +1,10 @@
 # 🐣 MindMate (마인드메이트)
 > **나만의 감정 기록을 통해 스스로를 이해하고 위로하는 AI 감정 일기장 웹앱**
 
-[![MindMate Banner](https://github.com/user-attachments/assets/adf0424a-4b9a-4236-9536-3d0470ddaee5)](http://mindmate-front-end.s3-website.ap-northeast-2.amazonaws.com/)
+
+<a href="http://mindmate-front-end.s3-website.ap-northeast-2.amazonaws.com/">
+  <img src="https://github.com/user-attachments/assets/adf0424a-4b9a-4236-9536-3d0470ddaee5" width="500px" alt="MindMate Banner">
+</a>
 
 ## 🌟 프로젝트 소개
 현대인들이 AI와 상호작용하며 마음을 정리하고, 캐릭터 성장과 커뮤니티를 통해 지속적인 심리 관리를 할 수 있도록 돕는 힐링 서비스입니다.
