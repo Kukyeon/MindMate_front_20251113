@@ -48,10 +48,10 @@
 ## 📐 System Design
 
 ### 🏗 구조도 (Structure Chart)
-(https://github.com/user-attachments/assets/af2189f5-5f34-4342-a66c-02e0838a0ec5)
+![Structure Chart](https://github.com/user-attachments/assets/af2189f5-5f34-4342-a66c-02e0838a0ec5)
 
 ### 💾 DB 설계 (ERD)
-(https://github.com/user-attachments/assets/4d25e29a-09bd-4193-90d3-6d812760c7f1)
+![ERD](https://github.com/user-attachments/assets/4d25e29a-09bd-4193-90d3-6d812760c7f1)
 
 ---
 
