@@ -1,70 +1,59 @@
-# Getting Started with Create React App
+# 🐣 MindMate (마인드메이트)
+> **나만의 감정 기록을 통해 스스로를 이해하고 위로하는 AI 감정 일기장 웹앱**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![MindMate Banner](이미지_주소_있으면_넣기)
 
-## Available Scripts
+## 🌟 프로젝트 소개
+현대인들이 AI와 상호작용하며 마음을 정리하고, 캐릭터 성장과 커뮤니티를 통해 지속적인 심리 관리를 할 수 있도록 돕는 힐링 서비스입니다.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🛠 Tech Stack (기술 스택)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Infrastructure & DB
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Frontend & Library
+<img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> <img src="https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white">
 
-### `npm test`
+### AI & Tools
+<img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white"> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## ✨ 주요 기능 (Key Features)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. 📅 AI 감정 일기 & 캘린더
+- **감정 시각화**: 15가지 이모지를 활용해 하루의 기분을 캘린더에 기록합니다.
+- **AI 분석 답변**: 일기를 작성하면 AI가 내용을 분석해 따뜻한 위로의 피드백을 제공합니다.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. 📊 감정 통계 데이터 (Visual Chart)
+- **감정 분포 분석**: 작성된 일기 데이터를 5가지 주요 감정 카테고리로 분류하여 Chart.js 그래프로 시각화합니다.
+- **월간 리포트**: 한 달간의 감정 변화 추이를 한눈에 확인할 수 있습니다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 3. 💬 AI 커뮤니티 게시판
+- **자동 해시태그**: AI가 게시글 내용을 분석하여 관련 해시태그를 자동으로 생성하고 연결합니다.
+- **공감 스티커**: 이모지 스티커를 통해 유저 간 따뜻한 소통과 공감을 나눕니다.
 
-### `npm run eject`
+### 4. 🐣 캐릭터 성장 시스템
+- **성장형 위젯**: 일기 작성 및 활동에 따라 포인트를 얻고 캐릭터를 성장시킬 수 있습니다.
+- **무드 반영**: 사용자의 오늘의 기분에 따라 캐릭터의 표정이 실시간으로 변화합니다.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 5. 🔮 AI 심리 테스트 및 운세
+- **MBTI 맞춤형**: 사용자의 MBTI 정보를 바탕으로 매일 새로운 AI 심리 테스트를 제공합니다.
+- **오늘의 별자리 운세**: 생년월일 기반의 행운의 컬러, 아이템, 시간 정보를 제공합니다.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📐 System Design
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 🏗 구조도 (Structure Chart)
+*여기에 PPT 24페이지의 구조도 이미지를 넣으세요*
 
-## Learn More
+### 💾 DB 설계 (ERD)
+*여기에 PPT 25페이지의 ERD 이미지를 넣으세요*
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🧑‍💻 팀원 소개
+- **김국연, 김윤섭, 이상명, 한수정**
