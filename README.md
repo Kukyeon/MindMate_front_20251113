@@ -3,7 +3,7 @@
 
 
 <a href="http://mindmate-front-end.s3-website.ap-northeast-2.amazonaws.com/">
-  <img src="https://github.com/user-attachments/assets/adf0424a-4b9a-4236-9536-3d0470ddaee5" width="500px" alt="MindMate Banner">
+  <img src="https://github.com/user-attachments/assets/adf0424a-4b9a-4236-9536-3d0470ddaee5" width="600px" alt="MindMate Banner">
 </a>
 
 ## 🌟 프로젝트 소개
@@ -51,11 +51,11 @@
 ## 📐 System Design
 
 ### 🏗 구조도 (Structure Chart)
-![Structure Chart]
-<img src="https://github.com/user-attachments/assets/af2189f5-5f34-4342-a66c-02e0838a0ec5" width="800px" title="Structure Chart">
-### 💾 DB 설계 (ERD)
-![ERD](https://github.com/user-attachments/assets/4d25e29a-09bd-4193-90d3-6d812760c7f1)
 
+<img src="https://github.com/user-attachments/assets/af2189f5-5f34-4342-a66c-02e0838a0ec5" width="600px" title="Structure Chart">
+### 💾 DB 설계 (ERD)
+
+<img src="https://github.com/user-attachments/assets/4d25e29a-09bd-4193-90d3-6d812760c7f1" width="600px" title="ERD">
 ---
 
 ## 🧑‍💻 팀원 소개
