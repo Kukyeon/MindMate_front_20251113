@@ -34,18 +34,22 @@
 ### 2. 📊 감정 통계 데이터 (Visual Chart)
 - **감정 분포 분석**: 작성된 일기 데이터를 5가지 주요 감정 카테고리로 분류하여 Chart.js 그래프로 시각화합니다.
 - **월간 리포트**: 한 달간의 감정 변화 추이를 한눈에 확인할 수 있습니다.
+<img src="https://github.com/user-attachments/assets/08279d1c-bffb-4199-9ddd-9252f438a0fd" width="600px">
 
 ### 3. 💬 AI 커뮤니티 게시판
 - **자동 해시태그**: AI가 게시글 내용을 분석하여 관련 해시태그를 자동으로 생성하고 연결합니다.
 - **공감 스티커**: 이모지 스티커를 통해 유저 간 따뜻한 소통과 공감을 나눕니다.
+<img src="https://github.com/user-attachments/assets/9bc913ac-6ec2-456f-a12c-d5736bf106c9" width="600px">
 
 ### 4. 🐣 캐릭터 성장 시스템
 - **성장형 위젯**: 일기 작성 및 활동에 따라 포인트를 얻고 캐릭터를 성장시킬 수 있습니다.
 - **무드 반영**: 사용자의 오늘의 기분에 따라 캐릭터의 표정이 실시간으로 변화합니다.
+<img src="https://github.com/user-attachments/assets/19ee91d5-4728-4d0b-a129-dbe607ab83f8" width="600px">
 
 ### 5. 🔮 AI 심리 테스트 및 운세
 - **MBTI 맞춤형**: 사용자의 MBTI 정보를 바탕으로 매일 새로운 AI 심리 테스트를 제공합니다.
 - **오늘의 별자리 운세**: 생년월일 기반의 행운의 컬러, 아이템, 시간 정보를 제공합니다.
+<img src="https://github.com/user-attachments/assets/31dc6b5c-8832-495c-8550-f81f18398cc5" width="600px">
 
 ---
 
@@ -66,8 +70,6 @@
     - **DB Normalization**: `Emoji_Reaction` 테이블을 독립적으로 생성하고 `(User_ID, Target_ID, Emoji_Type)`를 복합키(Composite Key)로 설정하여 DB 레벨에서 중복 생성을 원천 차단함.
     - **Stateful Interaction**: 프론트엔드에서 사용자의 기선택 여부를 체크하여, 이미 선택된 이모지 클릭 시 해당 데이터를 삭제하는 '토글(Toggle)' 방식의 인터랙션을 구현함.
 - **Result**: 데이터 무결성을 보장하고, 유저 간의 직관적이고 안정적인 감정 교류 시스템을 구축함.
-
-
 
 ### 3. 실시간 인기 태그 집계 성능 및 검색 최적화
 - **Problem**: 일주일간 가장 많이 사용된 해시태그를 메인 상단에 배치하기 위해 매 로딩 시마다 전체 게시글 데이터를 Join/Group By 연산하면서, 게시글 수 증가에 따른 메인 페이지 로딩 속도 저하 발생.
